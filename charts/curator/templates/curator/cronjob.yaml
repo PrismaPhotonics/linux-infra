@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: curator
+spec:
+  schedule: "{{ .Values.curator.cron.schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: curator
+              image: {{ .Values.curator.image }}
+              imagePullPolicy: {{ .Values.curator.imagePullPolicy }}
+              command: ["/curator/curator", "--config", "/.curator/curator.yml", "/.curator/delete_old_indices.yml"]
+              volumeMounts:
+                - name: config
+                  mountPath: /.curator
+          restartPolicy: {{ .Values.curator.cron.restartPolicy }}
+          volumes:
+            - name: config
+              configMap:
+                name: curator-config

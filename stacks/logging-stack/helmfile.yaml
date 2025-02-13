@@ -1,0 +1,58 @@
+releases:
+  - name: eventexporter
+    namespace: elk
+    path: /home/prisma/offline_deploy/helm_charts/eventexporter         # Local chart for Elasticsearch
+    wait: true
+    timeout: 600
+    values:
+      - {{ toYaml .Values.eventexporter | nindent 2 }}
+
+  - name: elasticsearch
+    namespace: elk
+    path: /home/prisma/offline_deploy/helm_charts/elasticsearch   
+    wait: true
+    timeout: 600
+    values:
+      - {{ toYaml .Values.elasticsearch | nindent 2 }}
+
+  - name: kibana
+    namespace: elk
+    needs: [elasticsearch]                # Wait for Elasticsearch before deploying
+    path: /home/prisma/offline_deploy/helm_charts/kibana                 # Local chart for Kibana
+    wait: true
+    timeout: 600
+    hooks:
+      - events: ["postSync"]
+        showlogs: true
+        command: "bash"
+        args:
+          - "./scripts/update_kibana.sh"
+    values:
+      - {{ toYaml .Values.kibana | nindent 2 }}
+
+  - name: logstash
+    namespace: elk
+    needs: [elasticsearch]
+    path: /home/prisma/offline_deploy/helm_charts/logstash               # Local chart for Logstash
+    wait: true
+    timeout: 600
+    values:
+      - {{ toYaml .Values.logstash | nindent 2 }}
+
+  - name: filebeat
+    namespace: elk
+    needs: [elasticsearch]
+    path: /home/prisma/offline_deploy/helm_charts/filebeat               # Local chart for Filebeat
+    wait: true
+    timeout: 600
+    values:
+      - {{ toYaml .Values.filebeat | nindent 2 }}
+
+  - name: curator
+    namespace: elk
+    needs: [elasticsearch]
+    path: /home/prisma/offline_deploy/helm_charts/curator                # Local path to your custom Curator chart
+    wait: true
+    timeout: 600
+    values:
+      - {{ toYaml .Values.curator | nindent 2 }}

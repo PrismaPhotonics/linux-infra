@@ -1,0 +1,103 @@
+subnetOctet: 10
+
+openebs:
+  engines:
+    replicated:
+      mayastor:
+        enabled: false
+
+nginx-controller:
+  controller:
+    replicaCount: 1
+
+    # Service configuration
+    service:
+      type: LoadBalancer
+      loadBalancerIP: "10.10.{{ .Values.subnetOctet }}.100"
+      externalTrafficPolicy: Local
+
+    # Enable SSL passthrough
+    extraArgs:
+      enable-ssl-passthrough: "true"
+
+    # TLS configuration
+    config:
+      ssl-redirect: "true"
+      enable-real-ip: "true"
+      use-forwarded-headers: "true"
+
+    # Resource allocation
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "500Mi"
+      limits:
+        cpu: "500m"
+        memory: "1Gi"
+
+  defaultBackend:
+    enabled: true
+
+  rbac:
+    create: true
+
+  podSecurityPolicy:
+    enabled: false
+
+pihole:
+  replicaCount: 1
+  maxUnavailable: 0
+
+  adminPassword: "prisma"
+
+  serviceDhcp:
+    enabled: false
+
+  dnsmasq:
+    customDnsEntries:
+      - address=/switch.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.1
+      - address=/pandaserver.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.100
+      - address=/data-rabbitmq.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.101
+      - address=/inner-rabbitmq.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.102
+      - address=/mongo.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.103
+      - address=/postgres.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.104
+      - address=/appserver.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.150
+      - address=/controlserver.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.151
+      - address=/clientui-1.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.200
+      - address=/clientui-2.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.201
+      - address=/clientui-3.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.202
+      - address=/clientui-4.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.203
+      - address=/clientui-5.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.204
+      - address=/manageserver.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.230
+      - address=/bmcapp.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.231
+      - address=/bmcsan.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.232
+      - address=/bmccontrol.prismaphotonics.net/10.10.{{ .Values.subnetOctet }}.233
+
+  serviceDns:
+    type: LoadBalancer
+    loadBalancerIP: 10.10.{{ .Values.subnetOctet }}.50
+    annotations:
+      metallb.universe.tf/allow-shared-ip: pihole
+
+  serviceWeb:
+    type: LoadBalancer
+    loadBalancerIP: 10.10.{{ .Values.subnetOctet }}.50
+    annotations:
+      metallb.universe.tf/allow-shared-ip: pihole
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  persistentVolumeClaim:
+    enabled: true
+
+
+  image:
+    repository: localhost:5000/pihole/pihole
+    tag: 2024.07.0
+    pullPolicy: IfNotPresent
