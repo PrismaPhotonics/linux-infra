@@ -6,10 +6,13 @@
 # can be used as a Helm repository.
 #
 # Usage:
-#   ./publish-all-charts.sh <repo_root> <charts_base_directory> <gh-pages_branch> <repo_url>
+#   ./publish-all-charts.sh [repo_root] [charts_base_directory] [gh-pages_branch] [repo_url]
 #
-# Example:
-#   ./publish-all-charts.sh /c/opt/helm-charts charts gh-pages https://yourusername.github.io/helm-charts/
+# Defaults:
+# - repo_root: .. (current directory)
+# - charts_base_directory: charts
+# - gh-pages_branch: gh-pages
+# - repo_url: https://prismaphotonics.github.io/linux-infra/
 #
 # Requirements:
 # - helm and git must be installed.
@@ -17,17 +20,11 @@
 
 set -e
 
-# Verify that exactly four arguments are provided.
-if [ "$#" -ne 4 ]; then
-  echo "Usage: $0 <repo_root> <charts_base_directory> <gh-pages_branch> <repo_url>"
-  exit 1
-fi
-
-# Arguments:
-REPO_ROOT="$1"          # The repository's root directory.
-BASE_DIR="$2"           # Directory (relative to REPO_ROOT) containing individual chart subdirectories.
-GH_PAGES_BRANCH="$3"    # Git branch for GitHub Pages (e.g., gh-pages).
-REPO_URL="$4"           # URL where your charts will be hosted.
+# Assign default values if arguments are not provided.
+REPO_ROOT="${1:-..}"
+BASE_DIR="${2:-charts}"
+GH_PAGES_BRANCH="${3:-gh-pages}"
+REPO_URL="${4:-https://prismaphotonics.github.io/linux-infra/}"
 
 # Change to repository root.
 echo "Changing directory to repository root: $REPO_ROOT"
