@@ -17,14 +17,17 @@ releases:
 
   - name: kibana
     namespace: elk
-    needs: [elasticsearch]                # Wait for Elasticsearch before deploying
-    path: /home/prisma/offline_deploy/helm_charts/kibana                 # Local chart for Kibana
+    needs: [elasticsearch]
+    path: /home/prisma/offline_deploy/helm_charts/kibana
     wait: true
     timeout: 600
     hooks:
       - events: ["postSync"]
         showlogs: true
         command: "bash"
+        env:
+          - name: SUBNET_OCTET
+            value: "{{ .Values.subnetOctet }}"
         args:
           - "./scripts/update_kibana.sh"
     values:
