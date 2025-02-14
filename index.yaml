@@ -2,12 +2,22 @@ apiVersion: v1
 entries:
   curator:
   - apiVersion: v2
-    created: "2025-02-13T20:09:53.556995+02:00"
-    description: Index rotration of elasticsearch
-    digest: fe2ccda49c8a9d2e6eaae45b88f65fbc169acd79407047bfd149297c86cfd733
+    created: "2025-02-14T17:00:51.7062056+02:00"
+    description: Index rotation of elasticsearch
+    digest: a7d76cfafab0fd925486bf432cfb636fd0bbe17d6f12dca910374480fe2b285c
     name: curator
     type: application
     urls:
     - https://prismaphotonics.github.io/linux-infra/curator-1.0.0.tgz
     version: 1.0.0
-generated: "2025-02-13T20:09:53.5559165+02:00"
+  metallb:
+  - apiVersion: v2
+    created: "2025-02-14T17:00:51.7067365+02:00"
+    description: Ip provider
+    digest: 18cde2dccd51232ace13e175fd2e67b34cdd7db91d7e468085c9fb0fae15ce57
+    name: metallb
+    type: application
+    urls:
+    - https://prismaphotonics.github.io/linux-infra/metallb-1.0.0.tgz
+    version: 1.0.0
+generated: "2025-02-14T17:00:51.7056793+02:00"
