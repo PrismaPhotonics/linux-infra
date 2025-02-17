@@ -1,0 +1,44 @@
+- name: Check if Docker image {{ item.name }}:{{ item.version }} is already installed
+  command: "docker images -q {{ item.name }}:{{ item.version }}"
+  register: docker_image_result
+  changed_when: false
+  loop: "{{ docker_images }}"
+  loop_control:
+    loop_var: item
+    index_var: loop_index
+    label: "{{ item.name }}:{{ item.version }}"
+
+- name: Check for local tar file for {{ item.name }}:{{ item.version }}
+  stat:
+    path: "../{{ offline_artifact_path }}/docker-images/{{ item.name }}_{{ item.version }}.tar"
+  register: local_tar_file
+  loop: "{{ docker_images }}"
+  loop_control:
+    loop_var: item
+    index_var: loop_index
+    label: "{{ item.name }}:{{ item.version }}"
+
+- name: Ensure variables exist before setting facts
+  set_fact:
+    docker_image_result_safe: "{{ docker_image_result.results | default([]) }}"
+    local_tar_file_safe: "{{ local_tar_file.results | default([]) }}"
+
+- name: Set facts for docker image check
+  set_fact:
+    docker_image_exists: "{{ docker_image_result_safe[loop_index].stdout != '' | default(false) }}"
+    docker_tar_exists: "{{ local_tar_file_safe[loop_index].stat.exists | default(false) }}"
+  loop: "{{ docker_images }}"
+  loop_control:
+    loop_var: item
+    index_var: loop_index
+    label: "{{ item.name }}:{{ item.version }}"
+
+- name: Load Docker image from local tar file (Offline Mode)
+  command: "docker load -i ../{{ offline_artifact_path }}/docker-images/{{ item.name }}_{{ item.version }}.tar"
+  when:
+    - not docker_image_exists
+    - docker_tar_exists
+  loop: "{{ docker_images }}"
+  loop_control:
+    loop_var: item
+    label: "{{ item.name }}:{{ item.version }}"

@@ -1,0 +1,19 @@
+---
+- name: Check Helm binary
+  command: helm version
+  register: helm_check
+  changed_when: false
+  failed_when: helm_check.rc != 0
+
+- name: Install or upgrade Helm charts
+  vars:
+    helm_chart_dir: "{{ offline_artifact_path }}/helm_charts"
+  shell: >
+    helm upgrade --install
+    {{ item.name }}
+    {{ helm_chart_dir }}/{{ item.file }}
+    --namespace default
+  loop: "{{ helm_charts | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"
+

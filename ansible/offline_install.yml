@@ -1,0 +1,35 @@
+---
+- name: Offline Installation Playbook
+  hosts: all
+  become: true
+  gather_facts: true
+
+  # 1) First, load the site’s versions.yml
+  pre_tasks:
+    - name: Load versions file
+      include_vars:
+        file: "{{ versions_file }}"
+        name: versions_data
+
+  roles:
+    - role: offline-apt-repo
+      when: enable_offline_apt_repo | default(false)
+    
+    # 3) Always run apt-install (pass apt_packages from versions_data)
+    - role: apt-install
+      when: enable_apt_install | default(false)
+      vars:
+        apt_packages: "{{ versions_data.apt_packages | default([]) }}"
+
+    # 4) Docker load if enabled (pass docker_images from versions_data)
+    - role: docker-load
+      when: enable_docker_load | default(false)
+      vars:
+        docker_images: "{{ versions_data.docker_images | default([]) }}"
+
+    # 5) Helm install if enabled (pass helm_charts from versions_data)
+    - role: helm-install
+      when: enable_helm_install | default(false)
+      vars:
+        helm_charts: "{{ versions_data.helm_charts | default([]) }}"
+

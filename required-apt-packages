@@ -1,0 +1,32 @@
+BASE_PACKAGES=(
+    autofs
+    containerd.io
+    curl
+    docker-ce
+    dos2unix
+    gcc
+    gdb
+    git
+    google-chrome-stable
+    jq
+    kubectl
+    libvirt-daemon-system
+    make
+    net-tools
+    nfs-common
+    nfs-kernel-server
+    psutils
+    qemu-kvm
+    rar
+    samba
+    samba-common
+    samba-common-bin
+    sshpass
+    traceroute
+    unzip
+    virt-manager
+    virtinst
+    zfs-zed
+    zfsutils-linux
+    zip
+)
