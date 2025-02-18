@@ -1,11 +1,16 @@
+environments:
+  default:
+    values:
+      - subnetOctet: {{ env "SUBNET_OCTET" | default "70" }}
+
 releases:
-  - name: eventexporter
+  - name: event-exporter
     namespace: elk
-    path: /home/prisma/offline_deploy/helm_charts/eventexporter         # Local chart for Elasticsearch
+    path: /home/prisma/offline_deploy/helm_charts/kubernetes-event-exporter 
     wait: true
     timeout: 600
     values:
-      - {{ toYaml .Values.eventexporter | nindent 2 }}
+      - event-exporter/values.yaml
 
   - name: elasticsearch
     namespace: elk
@@ -13,7 +18,7 @@ releases:
     wait: true
     timeout: 600
     values:
-      - {{ toYaml .Values.elasticsearch | nindent 2 }}
+      - elasticsearch/values.yaml
 
   - name: kibana
     namespace: elk
@@ -31,31 +36,29 @@ releases:
         args:
           - "./scripts/update_kibana.sh"
     values:
-      - {{ toYaml .Values.kibana | nindent 2 }}
+      - kibana/values.yaml
 
   - name: logstash
     namespace: elk
     needs: [elasticsearch]
-    path: /home/prisma/offline_deploy/helm_charts/logstash               # Local chart for Logstash
+    path: /home/prisma/offline_deploy/helm_charts/logstash             
     wait: true
     timeout: 600
     values:
-      - {{ toYaml .Values.logstash | nindent 2 }}
+      - logstash/values.yaml
 
   - name: filebeat
     namespace: elk
     needs: [elasticsearch]
-    path: /home/prisma/offline_deploy/helm_charts/filebeat               # Local chart for Filebeat
+    path: /home/prisma/offline_deploy/helm_charts/filebeat               
     wait: true
     timeout: 600
     values:
-      - {{ toYaml .Values.filebeat | nindent 2 }}
+      - filebeat/values.yaml
 
   - name: curator
     namespace: elk
     needs: [elasticsearch]
-    path: /home/prisma/offline_deploy/helm_charts/curator                # Local path to your custom Curator chart
+    path: /home/prisma/offline_deploy/helm_charts/curator               
     wait: true
     timeout: 600
-    values:
-      - {{ toYaml .Values.curator | nindent 2 }}

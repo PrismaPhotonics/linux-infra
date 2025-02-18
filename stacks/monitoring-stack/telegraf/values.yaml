@@ -1,0 +1,46 @@
+replicaCount: 1
+
+image:
+  repo: "localhost:5000/telegraf"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "100m"
+  limits:
+    memory: "500Mi"
+    cpu: "200m"
+
+serviceMonitor:
+  enabled: true
+  interval: "10s"
+
+config:
+  agent:
+    interval: "10s"
+    round_interval: true
+    metric_batch_size: 1000
+    metric_buffer_limit: 10000
+    collection_jitter: "0s"
+    flush_interval: "10s"
+    flush_jitter: "0s"
+    precision: ""
+    debug: true
+    quiet: false
+    logtarget: "stderr"
+    logfile: "/prisma/logs/telegraf/telegraf.log"
+    logfile_rotation_max_size: "10MB"
+    logfile_rotation_max_archives: 7
+    omit_hostname: false
+  outputs:
+    - prometheus_client:
+        listen: ":9273"
+        path: "/metrics"
+        expiration_interval: "60s"
+        string_as_label: true
+    - file:
+        files:
+          - "stdout"
+        data_format: "influx"

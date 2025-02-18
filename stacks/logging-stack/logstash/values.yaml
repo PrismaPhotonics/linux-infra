@@ -1,0 +1,73 @@
+logstashConfig:
+  logstash.yml: |
+    http.host: 0.0.0.0
+    xpack.monitoring.enabled: true
+    xpack.monitoring.elasticsearch.username: elastic
+    xpack.monitoring.elasticsearch.password: prisma
+    xpack.monitoring.elasticsearch.hosts: ["https://elasticsearch-master:9200"]
+    xpack.monitoring.elasticsearch.ssl.certificate_authority: /usr/share/logstash/config/certs/ca.crt
+
+logstashPipeline:
+  logstash.conf: |
+    input {
+      beats {
+        port => 5044
+      }
+
+      http {
+        port => 8080
+        codec => "json"
+        response_headers => {
+          "Access-Control-Allow-Origin" => "*"
+          "Access-Control-Allow-Methods" => "GET, POST, OPTIONS"
+          "Access-Control-Allow-Headers" => "Origin, X-Requested-With, Content-Type, Accept"
+        }
+      }
+    }
+
+    filter {
+      if [host] and ![userAgent] {
+        mutate {
+          add_field => { "source" => "filebeat" }
+        }
+      } else if [userAgent] {
+        mutate {
+          rename => { "host" => "client_host" }
+          add_field => { "source" => "browser" }
+        }
+      }
+    }
+
+    output { elasticsearch {
+      hosts => ["https://elasticsearch-master:9200"]
+      cacert => "/usr/share/logstash/config/certs/ca.crt"
+      user => 'elastic'
+      password => 'prisma'
+      index => "logstash-logs-%{+YYYY.MM.dd}"
+      }
+    }
+
+secretMounts:
+  - name: elasticsearch-master-certs
+    secretName: elasticsearch-master-certs
+    path: /usr/share/logstash/config/certs
+
+service:
+  type: NodePort
+  labels: 
+    app: logstash
+  ports:
+    - name: beats
+      port: 5044
+      protocol: TCP
+      targetPort: 5044
+      nodePort: 30444
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+      nodePort: 30888
+
+image: localhost:5000/docker.elastic.co/logstash/logstash
+imageTag: 8.5.1
+imagePullPolicy: IfNotPresent

@@ -1,35 +1,16 @@
+environments:
+  default:
+    values:
+      - subnetOctet: {{ env "SUBNET_OCTET" | default "70" }}
+
 releases:
-  - name: nginx-controller
-    namespace: kube-system
-    path: /home/prisma/offline_deploy/helm_charts/nginx-controller 
-    wait: true
-    timeout: 600               
-    values:
-      - {{ toYaml .Values.nginx-controller | nindent 2 }}
-
-  - name: metallb
-    namespace: metallb
-    path: /home/prisma/offline_deploy/helm_charts/metallb      # Local chart for Metallb
-    wait: true
-    timeout: 600                # Timeout in seconds
-    values:
-      - {{ toYaml .Values.metallb | nindent 2 }}
-
-  - name: pihole
-    namespace: pihole
-    path: /home/prisma/offline_deploy/helm_charts/pihole       # Local chart for Pi-hole
-    wait: true
-    timeout: 600
-    values:
-      - {{ toYaml .Values.pihole | nindent 2 }}
-
   - name: openebs
     namespace: openebs
     path: /home/prisma/offline_deploy/helm_charts/openebs       # Local chart for OpenEBS
     wait: true
     timeout: 600
     values:
-      - {{ toYaml .Values.openebs | nindent 2 }}
+      - openebs/values.yml
     hooks:
       - events: ["postSync"]
         showlogs: true
@@ -37,5 +18,28 @@ releases:
         args:
           - "apply"
           - "-f"
-          - "openebs-zfspv.yaml"
+          - "openebs/storageclass.yml"
 
+  - name: nginx-controller
+    namespace: kube-system
+    path: /home/prisma/offline_deploy/helm_charts/ingress-nginx
+    wait: true
+    timeout: 600               
+    values:
+      - ingress-nginx/values.yml
+
+  - name: metallb
+    namespace: metallb
+    path: /home/prisma/offline_deploy/helm_charts/metallb      
+    wait: true
+    timeout: 600  
+    values:
+      - metallb/values.yml
+
+  - name: pihole
+    namespace: pihole
+    path: /home/prisma/offline_deploy/helm_charts/pihole      
+    wait: true
+    timeout: 600
+    values:
+      - pihole/values.yml

@@ -1,24 +1,29 @@
+environments:
+  default:
+    values:
+      - subnetOctet: {{ env "SUBNET_OCTET" | default "70" }}
+
 releases:
   - name: kube-prometheus-stack
     namespace: monitoring
     chart: /home/prisma/offline_deploy/helm_charts/kube-prometheus-stack
     values:
-      - {{ toYaml .Values.kube-prometheus-stack | nindent 2 }}
+      - prometheus-stack/values.yaml
 
   - name: telegraf
     namespace: monitoring
     chart: /home/prisma/offline_deploy/helm_charts/telegraf
     values:
-      - {{ toYaml .Values.telegraf | nindent 2 }}
+      - telegraf/values.yaml
 
-  - name: helm-dashboard
-    namespace: kube-system
-    path: /home/prisma/offline_deploy/helm_charts/helm-dashboard
-    values:
-      - {{ toYaml .Values.helm-dashboard | nindent 2 }}
+  # - name: helm-dashboard
+  #   namespace: kube-system
+  #   path: /home/prisma/offline_deploy/helm_charts/helm-dashboard
+  #   values:
+  #     - helm-dashboard/values.yaml
 
-  - name: kubernetes-dashboard
-    namespace: kubernetes-dashboard
-    chart: /home/prisma/offline_deploy/helm_charts/kubernetes-dashboard
-    values:
-      - {{ toYaml .Values.kubernetes-dashboard | nindent 2 }}
+  # - name: kubernetes-dashboard
+  #   namespace: kubernetes-dashboard
+  #   chart: /home/prisma/offline_deploy/helm_charts/kubernetes-dashboard
+  #   values:
+  #     - kubernetes-dashboard/values.yaml

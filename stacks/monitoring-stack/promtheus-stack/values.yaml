@@ -1,0 +1,123 @@
+grafana:
+  enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+    path: /grafana  
+  adminUser: admin
+  image:
+    registry: "localhost:5000"
+    repository: 262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec
+    tag: on-prem2 
+    env:
+      GF_PATHS_PLUGINS: "/data/grafana/plugins"
+  grafana.ini:
+    paths:
+      plugins: /data/grafana/plugins
+    users:
+      allow_sign_up: False
+      auto_assign_org_role: Viewer
+      default_theme: dark
+    emails:
+      welcome_email_on_sign_up: False
+    auth:
+      disable_login_form: false
+      login_cookie_name: grafana_session
+      login_maximum_inactive_lifetime_duration: 6h
+      login_maximum_lifetime_duration: 6h
+      token_rotation_interval_minutes: 10
+    auth.anonymous:
+      enabled: false
+      org_name: "Main Org."
+      org_role: Viewer
+    server:
+      domain: localhost
+      root_url: https://localhost/grafana/
+      serve_from_sub_path: true
+    analytics:
+      reporting_enabled: "True"
+    dashboards:
+      versions_to_keep: 20
+    dashboards.json:
+      enabled: true
+      path: /etc/grafana/provisioning/dashboards
+    alerting:
+      enabled: true
+      execute_alerts: True
+    log:
+      mode: console, file
+      level: info
+  sidecar:
+    image:
+      registry: "localhost:5000"
+      repository: quay.io/kiwigrid/k8s-sidecar
+      tag: 1.25.2
+
+kube-state-metrics:
+  image:
+    registry: "localhost:5000"
+    repository: registry.k8s.io/kube-state-metrics/kube-state-metrics
+    tag: v2.10.1
+
+prometheusOperator:
+  image:
+    registry: "localhost:5000"
+    repository: quay.io/prometheus-operator/prometheus-operator
+    tag: v0.70.0
+
+  prometheusConfigReloader:
+    image:
+      registry: "localhost:5000"
+      repository: quay.io/prometheus-operator/prometheus-config-reloader
+      tag: v0.70.0
+  admissionWebhooks:
+    patch:
+      image:
+        registry: "localhost:5000"
+        repository: registry.k8s.io/ingress-nginx/kube-webhook-certgen
+        tag: v20221220-controller-v1.5.1-58-g787ea74b6
+prometheus:
+  server:
+    persistentVolume:
+      enabled: true
+  prometheusSpec:
+    image:
+      registry: "localhost:5000"
+      repository: quay.io/prometheus/prometheus
+      tag: v2.48.0
+    retentionSize: "149GB"
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    additionalScrapeConfigs: |
+      - job_name: prisma-external
+        scheme: http
+        static_configs:
+          - targets:
+            - 10.10.10.2:9273
+      - job_name: prisma-external-tls
+        scheme: https
+        tls_config:
+          insecure_skip_verify: true
+        static_configs:
+          - targets:
+            - 10.10.10.2:9273
+        basic_auth:
+          username: prisma
+          password: ShowMeWhereItHurts
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: prometheus
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 150Gi
+
+prometheus-node-exporter:
+  image:
+    registry: "localhost:5000"
+    repository: quay.io/prometheus/node-exporter
+    tag: "v1.7.0"
+
+alertmanager:
+  enabled: false

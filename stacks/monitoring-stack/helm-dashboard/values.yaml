@@ -1,0 +1,4 @@
+helm-dashboard:
+  service:
+    type: LoadBalancer
+    loadBalancerIP: 10.10.{{ .Values.subnetOctet }}.106

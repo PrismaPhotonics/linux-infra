@@ -8,7 +8,6 @@ parameters:
   compression: "off"
   dedup: "off"
   fstype: "zfs"
-  poolname: "zfspv-pool"
-  thinprovision: "no"  # Change to "yes" if thin provisioning is preferred
+  poolname: "prismapool/root/k8storage"
 provisioner: zfs.csi.openebs.io
 volumeBindingMode: WaitForFirstConsumer

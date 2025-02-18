@@ -1,0 +1,26 @@
+ingress:
+  enabled: true
+  className: "nginx"
+  pathtype: ImplementationSpecific
+  hosts:
+    - paths:
+        - path: /kibana
+
+kibanaConfig:
+  kibana.yml: |
+    server.port: 5601
+    server.publicBaseUrl: "http://localhost:5601/kibana"
+    server.host: "localhost"
+    server.basePath: "/kibana"
+    server.rewriteBasePath: true
+
+healthCheckPath: "/kibana/app/kibana"
+
+resources:
+  requests:
+    cpu: "300m"
+    memory: "2Gi"
+
+image: localhost:5000/docker.elastic.co/kibana/kibana
+imageTag: 8.5.1
+imagePullPolicy: IfNotPresent

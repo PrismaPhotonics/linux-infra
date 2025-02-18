@@ -1,0 +1,5 @@
+metallb:
+  addresses: 
+  - "10.10.{{ .Values.subnetOctet }}.100-10.10.{{ .Values.subnetOctet }}.120"
+  - "10.10.{{ .Values.subnetOctet }}.50/32"
+

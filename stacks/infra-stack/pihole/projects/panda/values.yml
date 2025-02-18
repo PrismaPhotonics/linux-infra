@@ -1,0 +1,19 @@
+dnsmasq:
+  customDnsEntries:
+    - address=/switch.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.1
+    - address=/pandaserver.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.100
+    - address=/data-rabbitmq.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.101
+    - address=/inner-rabbitmq.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.102
+    - address=/mongo.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.103
+    - address=/postgres.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.104
+    - address=/appserver.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.150
+    - address=/controlserver.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.151
+    - address=/clientui-1.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.200
+    - address=/clientui-2.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.201
+    - address=/clientui-3.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.202
+    - address=/clientui-4.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.203
+    - address=/clientui-5.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.204
+    - address=/manageserver.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.230
+    - address=/bmcapp.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.231
+    - address=/bmcsan.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.232
+    - address=/bmccontrol.prismaphotonics.net/10.10.{{ {{ .Values.subnetOctet }} }}.233

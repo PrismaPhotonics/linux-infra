@@ -1,0 +1,32 @@
+controller:
+  default-ssl-certificate: "default/tls-secret"
+  image:
+    pullPolicy: "IfNotPresent"
+    digest: ""
+  admissionWebhooks:
+    enabled: false
+
+  replicaCount: 1
+
+  service:
+    type: LoadBalancer
+    loadBalancerIP: "10.10.{{ .Values.subnetOctet }}.100"
+
+  config:
+    ssl-redirect: "true"
+    enable-real-ip: "true"
+    use-forwarded-headers: "true"
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "500Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+
+defaultBackend:
+  enabled: true
+
+podSecurityPolicy:
+  enabled: false

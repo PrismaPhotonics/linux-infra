@@ -1,0 +1,31 @@
+config:
+  logLevel: info 
+  logFormat: json 
+  receivers:
+    - name: "dump"
+      file:
+        path: "/dev/stdout"
+        layout: 
+          message: "{{ .Message }}"
+          reason: "{{ .Reason }}"
+          type: "{{ .Type }}"
+          count: "{{ .Count }}"
+          kind: "{{ .InvolvedObject.Kind }}"
+          name: "{{ .InvolvedObject.Name }}"
+          namespace: "{{ .Namespace }}"
+          component: "{{ .Source.Component }}"
+          host: "{{ .Source.Host }}"
+  route:
+    routes:
+      - match:
+          - receiver: "dump"  
+        types: 
+          - Normal
+          - Warning
+          - Error
+
+image:
+  registry: localhost:5000
+  repository: bitnami/kubernetes-event-exporter
+  tag: 1.7.0-debian-12-r12
+  pullPolicy: IfNotPresent

@@ -1,0 +1,5 @@
+openebs:
+  engines:
+    replicated:
+      mayastor:
+        enabled: false

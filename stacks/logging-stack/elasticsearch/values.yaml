@@ -1,0 +1,57 @@
+replicas: 1
+
+lifecycle:
+  postStart:
+    exec:
+      command:
+        - bash
+        - -c
+        - |
+          while [[ "$(curl -k -u 'elastic:prisma' -s -o /dev/null -w '%{http_code}\n' https://localhost:9200)" != "200" ]]; do
+            sleep 1
+          done
+          curl -k -u 'elastic:prisma' -X PUT "https://localhost:9200/logstash-*/_settings?pretty" -H 'Content-Type: application/json' -d'
+          {
+            "index" : {
+              "number_of_replicas" : 0
+            }
+          }
+          '
+
+secret:
+  enabled: true
+  password: "prisma"
+
+volumeClaimTemplate:
+  storageClassName: "openebs-zfspv"
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 60
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: 1Gi
+
+image: localhost:5000/docker.elastic.co/elasticsearch/elasticsearch
+imageTag: 8.5.1
+imagePullPolicy: IfNotPresent
+
+extraVolumes:
+  - name: elasticsearch-snapshots
+    hostPath:
+      path: /prisma/root/backups/elasticsearch_snapshots
+      type: Directory
+
+extraVolumeMounts:
+  - name: elasticsearch-snapshots
+    mountPath: /mnt/snapshots
+
+service:
+  type: LoadBalancer
+  loadBalancerIP: 10.10.{{ .Values.subnetOctet }}.105
+
+extraEnvs:
+  - name: path.repo
+    value: "/mnt/snapshots"
