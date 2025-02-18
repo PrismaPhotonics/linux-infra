@@ -1,0 +1,21 @@
+---
+- name: Define tar file path for {{ image.name }}:{{ image.version }}
+  set_fact:
+    image_tar_path: "../oflline_deploy/docker_images/{{ image.name }}_{{ image.version }}.tar"
+
+- name: Check if tar file exists for {{ image.name }}:{{ image.version }}
+  stat:
+    path: "{{ image_tar_path }}"
+  register: tar_stat
+
+- name: Load Docker image from tar file for {{ image.name }}:{{ image.version }}
+  docker_image:
+    load_path: "{{ image_tar_path }}"
+  when: tar_stat.stat.exists
+
+- name: Pull Docker image {{ image.name }}:{{ image.version }} from Docker Hub
+  docker_image:
+    name: "{{ image.name }}"
+    tag: "{{ image.version }}"
+    source: pull
+  when: not tar_stat.stat.exists
