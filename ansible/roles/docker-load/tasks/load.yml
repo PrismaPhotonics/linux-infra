@@ -1,0 +1,11 @@
+---
+- name: Set tar file path for {{ image.name | replace('/', '_') }}_{{ image.version }}
+  set_fact:
+    image_tar_path: "/home/prisma/clones/linux-infra/offline_deploy/docker-images/imported_images/{{ image.name | replace('/', '_') }}_{{ image.version }}.tar"
+
+- name: Load Docker image from tar file for {{ image.name }}:{{ image.version }}
+  docker_image:
+    name: "{{ image.name }}"
+    tag: "{{ image.version }}"
+    load_path: "{{ image_tar_path }}"
+    source: load

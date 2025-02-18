@@ -11,3 +11,4 @@ enable_netplan_config: false
 
 # Netplan config (if you want to keep it separate)
 netplan_config_file: "panda-dev-netplan.yaml"
+installation_mode: offline  # or online
