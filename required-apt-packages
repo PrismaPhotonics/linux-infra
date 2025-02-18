@@ -4,6 +4,7 @@ BASE_PACKAGES=(
     curl
     docker-ce
     dos2unix
+    dpkg-dev
     gcc
     gdb
     git
