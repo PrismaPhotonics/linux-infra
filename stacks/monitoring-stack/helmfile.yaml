@@ -17,7 +17,7 @@ releases:
 
   - name: helm-dashboard
     namespace: kube-system
-    path: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/helm-dashboard
+    chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/helm-dashboard
     values:
       - helm-dashboard/values.yaml
       - service:

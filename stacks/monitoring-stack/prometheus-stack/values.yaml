@@ -85,7 +85,7 @@ prometheus:
       registry: "localhost:5000"
       repository: quay.io/prometheus/prometheus
       tag: v2.48.0
-    retentionSize: "149GB"
+    retentionSize: "49GB"
     podMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelectorNilUsesHelmValues: false
     additionalScrapeConfigs: |
@@ -107,11 +107,11 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: prometheus
+          storageClassName: openebs-zfspv
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 150Gi
+              storage: 50Gi
 
 prometheus-node-exporter:
   image:
