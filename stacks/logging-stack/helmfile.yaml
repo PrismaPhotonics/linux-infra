@@ -1,10 +1,5 @@
-environments:
-  default:
-    values:
-      - subnetOctet: {{ env "SUBNET_OCTET" | default "70" }}
-
----
 {{- $offlineDeploy := (env "OFFLINE_DEPLOY" | default "offline_deploy") -}}
+{{- $subnetOctet := (env "SUBNET_OCTET" | default "70") -}}
 
 releases:
   - name: event-exporter
@@ -29,6 +24,8 @@ releases:
             kubectl apply -f elasticsearch/snapshots-pvc.yml
     values:
       - elasticsearch/values.yaml
+      - service:
+          loadBalancerIP: 10.10.{{ $subnetOctet }}.106
 
   - name: kibana
     namespace: elk

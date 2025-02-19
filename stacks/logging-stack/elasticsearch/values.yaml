@@ -49,7 +49,6 @@ extraVolumeMounts:
 
 service:
   type: LoadBalancer
-  loadBalancerIP: 10.10.{{ .Values.subnetOctet }}.106
 
 extraEnvs:
   - name: path.repo

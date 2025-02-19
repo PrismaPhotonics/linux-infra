@@ -1,10 +1,5 @@
-environments:
-  default:
-    values:
-      - subnetOctet: {{ env "SUBNET_OCTET" | default "70" }}
-
----
 {{- $offlineDeploy := (env "OFFLINE_DEPLOY" | default "offline_deploy") -}}
+{{- $subnetOctet := (env "SUBNET_OCTET" | default "70") -}}
 
 releases:
   - name: openebs
@@ -29,6 +24,9 @@ releases:
     timeout: 600               
     values:
       - ingress-nginx/values.yml
+      - controller:
+          service:
+            loadBalancerIP: "10.10.{{ $subnetOctet }}.100"
 
   - name: metallb
     namespace: metallb
@@ -36,7 +34,10 @@ releases:
     wait: true
     timeout: 600  
     values:
-      - metallb/values.yml
+      - metallb:
+          addresses: 
+          - "10.10.70.100-10.10.{{ $subnetOctet }}.120"
+          - "10.10.{{ $subnetOctet }}.50/32"
 
   - name: pihole
     namespace: pihole
@@ -45,3 +46,7 @@ releases:
     timeout: 600
     values:
       - pihole/values.yml
+      - serviceDns:
+          loadBalancerIP: "10.10.{{ $subnetOctet }}.50"
+        serviceWeb:
+          loadBalancerIP: "10.10.{{ $subnetOctet }}.50"

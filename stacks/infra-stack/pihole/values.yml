@@ -8,13 +8,11 @@ serviceDhcp:
 
 serviceDns:
   type: LoadBalancer
-  loadBalancerIP: 10.10.{{ .Values.subnetOctet }}.50
   annotations:
     metallb.universe.tf/allow-shared-ip: pihole
 
 serviceWeb:
   type: LoadBalancer
-  loadBalancerIP: 10.10.{{ .Values.subnetOctet }}.50
   annotations:
     metallb.universe.tf/allow-shared-ip: pihole
 
