@@ -20,9 +20,18 @@ releases:
     chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/ingress-nginx
     timeout: 600      
     hooks:
-    - events: [postsync]
-      command: kubectl
-      args: ["wait", "--for=condition=Ready", "pod", "-l", "app.kubernetes.io/name=ingress-nginx", "--timeout=600s"]      
+      - events: ["postsync"]
+        showlogs: true
+        command: "bash"
+        args:
+          - "-c"
+          - |
+              echo "Waiting for ingress pods to appear..."
+              until kubectl get pods -n kube-system -l app.kubernetes.io/name=ingress-nginx --no-headers | grep -q .; do
+                sleep 1
+              done
+              echo "ingress pods detected. Waiting for them to be Ready..."
+              kubectl wait --for=condition=Ready pod -n kube-system -l app.kubernetes.io/name=ingress-nginx --timeout=600s     
     values:
       - ingress-nginx/values.yml
       - controller:
@@ -46,9 +55,18 @@ releases:
     chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/pihole      
     timeout: 600
     hooks:
-    - events: [postsync]
-      command: kubectl
-      args: ["wait", "--for=condition=Ready", "pod", "-l", "release=pihole", "--timeout=600s"]
+      - events: ["postsync"]
+        showlogs: true
+        command: "bash"
+        args:
+          - "-c"
+          - |
+              echo "Waiting for elastipiholecsearch pods to appear..."
+              until kubectl get pods -n pihole -l release=pihole --no-headers | grep -q .; do
+                sleep 1
+              done
+              echo "pihole pods detected. Waiting for them to be Ready..."
+              kubectl wait --for=condition=Ready pod -n pihole -l release=pihole --timeout=600s
     values:
       - pihole/values.yml
       - serviceDns:

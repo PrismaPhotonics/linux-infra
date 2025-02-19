@@ -1,5 +1,5 @@
 log() {
-    sudo echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
 }
 
 # Exit with an error message
