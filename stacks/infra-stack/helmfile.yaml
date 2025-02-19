@@ -9,13 +9,13 @@ environments:
 releases:
   - name: openebs
     namespace: openebs
-    path: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/openebs       # Local chart for OpenEBS
+    chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/openebs       # Local chart for OpenEBS
     wait: true
     timeout: 600
     values:
       - openebs/values.yml
     hooks:
-      - events: ["postSync"]
+      - events: ["postsync"]
         showlogs: true
         command: "kubectl"
         args:
@@ -25,15 +25,14 @@ releases:
 
   - name: nginx-controller
     namespace: kube-system
-    path: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/ingress-nginx
-    wait: true
+    chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/ingress-nginx
     timeout: 600               
     values:
       - ingress-nginx/values.yml
 
   - name: metallb
     namespace: metallb
-    path: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/metallb      
+    chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/metallb      
     wait: true
     timeout: 600  
     values:
@@ -41,7 +40,7 @@ releases:
 
   - name: pihole
     namespace: pihole
-    path: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/pihole      
+    chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/pihole      
     wait: true
     timeout: 600
     values:

@@ -28,6 +28,7 @@ resources:
 
 persistentVolumeClaim:
   enabled: true
+  storageClass: "openebs-zfspv"
 
 image:
   repository: localhost:5000/pihole/pihole
