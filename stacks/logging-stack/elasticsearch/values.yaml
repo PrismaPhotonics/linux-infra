@@ -27,7 +27,7 @@ volumeClaimTemplate:
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:
-      storage: 60
+      storage: 60Gi
 
 resources:
   requests:
@@ -40,9 +40,8 @@ imagePullPolicy: IfNotPresent
 
 extraVolumes:
   - name: elasticsearch-snapshots
-    hostPath:
-      path: /prisma/root/backups/elasticsearch_snapshots
-      type: Directory
+    persistentVolumeClaim:
+      claimName: elasticsearch-snapshots
 
 extraVolumeMounts:
   - name: elasticsearch-snapshots
@@ -50,7 +49,7 @@ extraVolumeMounts:
 
 service:
   type: LoadBalancer
-  loadBalancerIP: 10.10.{{ .Values.subnetOctet }}.105
+  loadBalancerIP: 10.10.{{ .Values.subnetOctet }}.106
 
 extraEnvs:
   - name: path.repo

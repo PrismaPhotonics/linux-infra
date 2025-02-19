@@ -3,10 +3,13 @@ environments:
     values:
       - subnetOctet: {{ env "SUBNET_OCTET" | default "70" }}
 
+---
+{{- $offlineDeploy := (env "OFFLINE_DEPLOY" | default "offline_deploy") -}}
+
 releases:
   - name: openebs
     namespace: openebs
-    path: /home/prisma/offline_deploy/helm_charts/openebs       # Local chart for OpenEBS
+    path: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/openebs       # Local chart for OpenEBS
     wait: true
     timeout: 600
     values:
@@ -22,7 +25,7 @@ releases:
 
   - name: nginx-controller
     namespace: kube-system
-    path: /home/prisma/offline_deploy/helm_charts/ingress-nginx
+    path: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/ingress-nginx
     wait: true
     timeout: 600               
     values:
@@ -30,7 +33,7 @@ releases:
 
   - name: metallb
     namespace: metallb
-    path: /home/prisma/offline_deploy/helm_charts/metallb      
+    path: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/metallb      
     wait: true
     timeout: 600  
     values:
@@ -38,7 +41,7 @@ releases:
 
   - name: pihole
     namespace: pihole
-    path: /home/prisma/offline_deploy/helm_charts/pihole      
+    path: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/pihole      
     wait: true
     timeout: 600
     values:

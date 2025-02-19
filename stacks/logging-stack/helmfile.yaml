@@ -3,10 +3,13 @@ environments:
     values:
       - subnetOctet: {{ env "SUBNET_OCTET" | default "70" }}
 
+---
+{{- $offlineDeploy := (env "OFFLINE_DEPLOY" | default "offline_deploy") -}}
+
 releases:
   - name: event-exporter
     namespace: elk
-    path: /home/prisma/offline_deploy/helm_charts/kubernetes-event-exporter 
+    chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/kubernetes-event-exporter
     wait: true
     timeout: 600
     values:
@@ -14,25 +17,29 @@ releases:
 
   - name: elasticsearch
     namespace: elk
-    path: /home/prisma/offline_deploy/helm_charts/elasticsearch   
-    wait: true
+    chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/elasticsearch
     timeout: 600
+    hooks:
+    - events: ["presync"]
+      showlogs: true
+      command: "bash"
+      args:
+        - "-c"
+        - |
+            kubectl apply -f elasticsearch/snapshots-pvc.yml
     values:
       - elasticsearch/values.yaml
 
   - name: kibana
     namespace: elk
     needs: [elasticsearch]
-    path: /home/prisma/offline_deploy/helm_charts/kibana
+    chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/kibana
     wait: true
     timeout: 600
     hooks:
-      - events: ["postSync"]
+      - events: ["postsync"]
         showlogs: true
         command: "bash"
-        env:
-          - name: SUBNET_OCTET
-            value: "{{ .Values.subnetOctet }}"
         args:
           - "./scripts/update_kibana.sh"
     values:
@@ -41,7 +48,7 @@ releases:
   - name: logstash
     namespace: elk
     needs: [elasticsearch]
-    path: /home/prisma/offline_deploy/helm_charts/logstash             
+    chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/logstash
     wait: true
     timeout: 600
     values:
@@ -50,7 +57,7 @@ releases:
   - name: filebeat
     namespace: elk
     needs: [elasticsearch]
-    path: /home/prisma/offline_deploy/helm_charts/filebeat               
+    chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/filebeat
     wait: true
     timeout: 600
     values:
@@ -59,6 +66,5 @@ releases:
   - name: curator
     namespace: elk
     needs: [elasticsearch]
-    path: /home/prisma/offline_deploy/helm_charts/curator               
+    chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/curator
     wait: true
-    timeout: 600
