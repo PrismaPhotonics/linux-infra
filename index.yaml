@@ -2,22 +2,62 @@ apiVersion: v1
 entries:
   curator:
   - apiVersion: v2
-    created: "2025-02-14T17:00:51.7062056+02:00"
+    created: "2025-02-19T14:00:40.7806461+02:00"
     description: Index rotation of elasticsearch
-    digest: a7d76cfafab0fd925486bf432cfb636fd0bbe17d6f12dca910374480fe2b285c
+    digest: 6e8acd7759dbc8c3a71065f66d9a06a9b44ac021b501d21904d8f5c18394acb4
     name: curator
     type: application
     urls:
     - https://prismaphotonics.github.io/linux-infra/curator-1.0.0.tgz
     version: 1.0.0
+  helm-dashboard:
+  - apiVersion: v2
+    appVersion: 2.0.3
+    created: "2025-02-19T14:00:40.7816977+02:00"
+    description: A GUI Dashboard for Helm by Komodor
+    digest: 4f4fe7ebbb795a6c4a0b37d3ff96cde064ac0d631488c580cafcaadcc8b2bc80
+    icon: https://raw.githubusercontent.com/komodorio/helm-dashboard/refs/heads/main/images/logo.svg
+    name: helm-dashboard
+    type: application
+    urls:
+    - https://prismaphotonics.github.io/linux-infra/helm-dashboard-2.0.3.tgz
+    version: 2.0.3
   metallb:
   - apiVersion: v2
-    created: "2025-02-14T17:00:51.7067365+02:00"
+    created: "2025-02-19T14:00:40.7822235+02:00"
     description: Ip provider
-    digest: 18cde2dccd51232ace13e175fd2e67b34cdd7db91d7e468085c9fb0fae15ce57
+    digest: 1330133b576e5bbfc8d0a1b85221b65522663eb2c38bff6a81249d844d66563f
     name: metallb
     type: application
     urls:
     - https://prismaphotonics.github.io/linux-infra/metallb-1.0.0.tgz
     version: 1.0.0
-generated: "2025-02-14T17:00:51.7056793+02:00"
+  telegraf:
+  - apiVersion: v2
+    appVersion: 1.32.1
+    created: "2025-02-19T14:00:40.7832791+02:00"
+    description: Telegraf is an agent written in Go for collecting, processing, aggregating,
+      and writing metrics.
+    digest: f7e1adbff0abe9bda6c7e3f89fe28beed8b8e558605c47b14ef5f247c3d3d6f9
+    home: https://www.influxdata.com/time-series-platform/telegraf/
+    icon: https://avatars0.githubusercontent.com/u/5713248?s=200&v=4
+    keywords:
+    - telegraf
+    - collector
+    - timeseries
+    - influxdata
+    - influxdb
+    - agent
+    maintainers:
+    - email: rawkode@influxdata.com
+      name: rawkode
+    - email: giacomo@influxdata.com
+      name: gitirabassi
+    name: telegraf
+    sources:
+    - https://github.com/influxdata/helm-charts/tree/master/charts/telegraf
+    - https://github.com/influxdata/helm-charts/
+    urls:
+    - https://prismaphotonics.github.io/linux-infra/telegraf-1.8.55.tgz
+    version: 1.8.55
+generated: "2025-02-19T14:00:40.7801182+02:00"
