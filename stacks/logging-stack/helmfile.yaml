@@ -17,11 +17,11 @@ releases:
     hooks:
     - events: ["presync"]
       showlogs: true
-      command: "bash"
-      args:
-        - "-c"
-        - |
-            kubectl apply -f elasticsearch/snapshots-pvc.yml
+      command: "kubectl"
+      args: ["apply", "-f", "elasticsearch/snapshots-pvc.yml"]
+    - events: [postsync]
+      command: kubectl
+      args: ["wait", "--for=condition=Ready", "pod", "-l", "release=elasticsearch", "--timeout=600s"]
     values:
       - elasticsearch/values.yaml
       - service:
@@ -37,8 +37,7 @@ releases:
       - events: ["postsync"]
         showlogs: true
         command: "bash"
-        args:
-          - "./scripts/update_kibana.sh"
+        args: ["./scripts/update_kibana.sh"]
     values:
       - kibana/values.yaml
 
