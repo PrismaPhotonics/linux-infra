@@ -15,15 +15,16 @@ releases:
     chart: /home/prisma/offline_deploy/helm_charts/telegraf
     values:
       - telegraf/values.yaml
+      # - telegraf/{{ env "PROJECT_NAME" | default "default_project" }}/values.yml
 
-  # - name: helm-dashboard
-  #   namespace: kube-system
-  #   path: /home/prisma/offline_deploy/helm_charts/helm-dashboard
-  #   values:
-  #     - helm-dashboard/values.yaml
+  - name: helm-dashboard
+    namespace: kube-system
+    path: /home/prisma/offline_deploy/helm_charts/helm-dashboard
+    values:
+      - helm-dashboard/values.yaml
 
-  # - name: kubernetes-dashboard
-  #   namespace: kubernetes-dashboard
-  #   chart: /home/prisma/offline_deploy/helm_charts/kubernetes-dashboard
-  #   values:
-  #     - kubernetes-dashboard/values.yaml
+  - name: kubernetes-dashboard
+    namespace: kubernetes-dashboard
+    chart: /home/prisma/offline_deploy/helm_charts/kubernetes-dashboard
+    values:
+      - kubernetes-dashboard/values.yaml
