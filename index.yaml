@@ -2,9 +2,9 @@ apiVersion: v1
 entries:
   curator:
   - apiVersion: v2
-    created: "2025-02-19T14:00:40.7806461+02:00"
+    created: "2025-02-19T19:15:02.0888625+02:00"
     description: Index rotation of elasticsearch
-    digest: 6e8acd7759dbc8c3a71065f66d9a06a9b44ac021b501d21904d8f5c18394acb4
+    digest: bf333341046b4ecb14b61fce36d289922539ce2efac239c0c2f43731234b9685
     name: curator
     type: application
     urls:
@@ -13,9 +13,9 @@ entries:
   helm-dashboard:
   - apiVersion: v2
     appVersion: 2.0.3
-    created: "2025-02-19T14:00:40.7816977+02:00"
+    created: "2025-02-19T19:15:02.0900888+02:00"
     description: A GUI Dashboard for Helm by Komodor
-    digest: 4f4fe7ebbb795a6c4a0b37d3ff96cde064ac0d631488c580cafcaadcc8b2bc80
+    digest: 47f7372aa70df3c3c4a2749f0fb8e8f832b5c8a4c87e45fec58677241ab090b1
     icon: https://raw.githubusercontent.com/komodorio/helm-dashboard/refs/heads/main/images/logo.svg
     name: helm-dashboard
     type: application
@@ -24,9 +24,9 @@ entries:
     version: 2.0.3
   metallb:
   - apiVersion: v2
-    created: "2025-02-19T14:00:40.7822235+02:00"
+    created: "2025-02-19T19:15:02.0906588+02:00"
     description: Ip provider
-    digest: 1330133b576e5bbfc8d0a1b85221b65522663eb2c38bff6a81249d844d66563f
+    digest: 26831c630d9398c6af2384262288d9216aba4175f17e4de007cb8df9e474d5ad
     name: metallb
     type: application
     urls:
@@ -35,10 +35,10 @@ entries:
   telegraf:
   - apiVersion: v2
     appVersion: 1.32.1
-    created: "2025-02-19T14:00:40.7832791+02:00"
+    created: "2025-02-19T19:15:02.091757+02:00"
     description: Telegraf is an agent written in Go for collecting, processing, aggregating,
       and writing metrics.
-    digest: f7e1adbff0abe9bda6c7e3f89fe28beed8b8e558605c47b14ef5f247c3d3d6f9
+    digest: c18ee92fe92fa3d22e48596bf2a6c70a5782ef1214e294f1c5ca071fdd8349f4
     home: https://www.influxdata.com/time-series-platform/telegraf/
     icon: https://avatars0.githubusercontent.com/u/5713248?s=200&v=4
     keywords:
@@ -60,4 +60,4 @@ entries:
     urls:
     - https://prismaphotonics.github.io/linux-infra/telegraf-1.8.55.tgz
     version: 1.8.55
-generated: "2025-02-19T14:00:40.7801182+02:00"
+generated: "2025-02-19T19:15:02.0883162+02:00"
