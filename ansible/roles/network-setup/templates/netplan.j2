@@ -1,0 +1,48 @@
+{% if versions_data.configurations.system_type == 'dev' %}
+# Netplan configuration for panda-dev
+network:
+  version: 2
+  ethernets:
+    eno1np0:
+      dhcp4: true
+      nameservers:
+        addresses: [10.50.0.50, 8.8.8.8]
+      routes:
+        - to: default
+          via: 10.50.0.1
+    eno2np1:
+      dhcp4: false
+      optional: true
+  bridges:
+    br0:
+      interfaces:
+        - vlan1
+      dhcp4: false
+      addresses:
+        - {{ versions_data.configurations.site_ip }}
+  vlans:
+    vlan1:
+      id: 1
+      link: eno1np0
+      accept-ra: false
+
+{% elif versions_data.configurations.system_type == 'prod' %}
+# This is the network config written by 'subiquity' for panda-prod
+network:
+  bonds:
+    LAG1:
+      addresses:
+        - {{ versions_data.configurations.site_ip }}
+      routes:
+        - to: default
+          via: {{ versions_data.configurations.getaway_ip }}
+      interfaces: {{ versions_data.configurations.prod_config.lag1.interfaces | to_nice_yaml(indent=8) | indent(6) }}
+      nameservers:
+        addresses: {{ versions_data.configurations.prod_config.lag1.nameservers | to_nice_yaml(indent=8) | indent(6) }}
+        search: []
+      parameters:
+        lacp-rate: fast
+        mode: 802.3ad
+        transmit-hash-policy: layer2
+  version: 2
+{% endif %}

@@ -14,6 +14,9 @@
   roles:
     - role: offline-apt-repo
       when: enable_offline_apt_repo | default(false)
+
+    - role: network-setup
+      when: enable_network_setup | default(false)
     
     # 3) Always run apt-install (pass apt_packages from versions_data)
     - role: apt-install

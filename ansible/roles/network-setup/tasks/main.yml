@@ -1,0 +1,12 @@
+---
+- name: Deploy netplan configuration file
+  template:
+    src: netplan.j2
+    dest: /etc/netplan/00-installer-config.yaml
+    mode: '0644'
+  notify: Apply netplan
+
+- name: Ensure netplan directory exists
+  file:
+    path: /etc/netplan
+    state: directory
