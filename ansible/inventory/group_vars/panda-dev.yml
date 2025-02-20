@@ -4,6 +4,8 @@
 versions_file: "../sites_versions/panda-dev-versions.yml"
 
 # If you still want to toggle roles here, keep them:
+enable_create_worker_node: true
+enable_create_master_node: true
 enable_apt_install: false
 enable_network_setup: true
 enable_docker_load: false

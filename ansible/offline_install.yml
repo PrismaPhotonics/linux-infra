@@ -10,19 +10,36 @@
       include_vars:
         file: "{{ versions_file }}"
         name: versions_data
+    - name: Debug versions data
+      debug:
+        var: versions_data
 
   roles:
+    - role: create-vm
+      when: enable_create_worker_node | default(false)
+      vars:
+        vm_role: "worker"
+        workernode_ip: "{{ versions_data.configurations }}"
+
+
+    - role: create-vm
+      when: enable_create_worker_node | default(false)
+      vars:
+        vm_role: "master"
+
     - role: offline-apt-repo
       when: enable_offline_apt_repo | default(false)
 
-    - role: network-setup
-      when: enable_network_setup | default(false)
-    
-    # 3) Always run apt-install (pass apt_packages from versions_data)
     - role: apt-install
       when: enable_apt_install | default(false)
       vars:
         apt_packages: "{{ versions_data.apt_packages | default([]) }}"
+
+    - role: network-setup
+      when: enable_network_setup | default(false)
+#
+#    - role: local-registry
+#      when: enable_network_setup | default(false)
 
     # 4) Docker load if enabled (pass docker_images from versions_data)
     - role: docker-load

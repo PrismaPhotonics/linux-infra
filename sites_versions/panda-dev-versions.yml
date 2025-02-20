@@ -5,6 +5,12 @@ apt_packages:
   - name: "unzip"
     version: " 6.0-26ubuntu3.2"
 
+pip_packages:
+  - name: "proxmoxer"
+    version: "7.81.0-1ubuntu1.20"
+  - name: "unzip"
+    version: " 6.0-26ubuntu3.2"
+
 docker_images:
   - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/client-api"
     version: "10.2.1423.4954c"
@@ -44,6 +50,8 @@ os_utils:
     
 configurations:
   site_ip: "10.10.60.150/24"
+  workernode_ip: "10.10.10.152"    # Add this line
+  masternode_ip: "10.10.10.151"
   system_type: 'dev'
   installation_mode: offline  # or online
 
