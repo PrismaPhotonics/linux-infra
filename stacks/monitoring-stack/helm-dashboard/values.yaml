@@ -1,2 +1,6 @@
 service:
   type: LoadBalancer
+
+dashboard:
+  persistence:
+    storageClassName: "openebs-zfspv"

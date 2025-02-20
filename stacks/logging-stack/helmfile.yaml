@@ -34,7 +34,7 @@ releases:
     values:
       - elasticsearch/values.yaml
       - service:
-          loadBalancerIP: 10.10.{{ $subnetOctet }}.106
+          loadBalancerIP: 10.10.{{ $subnetOctet }}.105
 
   - name: kibana
     namespace: elk
