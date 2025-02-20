@@ -1,1 +1,3 @@
-protocolHttp: true
+kong:
+  proxy:
+    type: LoadBalancer

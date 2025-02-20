@@ -26,5 +26,13 @@ releases:
   - name: kubernetes-dashboard
     namespace: kubernetes-dashboard
     chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/kubernetes-dashboard
+    hooks:
+      - events: ["postsync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "kubernetes-dashboard/auth.yaml"]  
     values:
       - kubernetes-dashboard/values.yaml
+      - kong:
+          proxy:
+            LoadBalancerIP: 10.10.{{ $subnetOctet }}.107
