@@ -4,10 +4,6 @@ openebs-crds:
       enabled: true
       keep: true
 
-localpv-provisioner:
-  rbac:
-    create: true
-
 zfs-localpv:
   crds:
     zfsLocalPv:
@@ -19,7 +15,7 @@ zfs-localpv:
 lvm-localpv:
   crds:
     lvmLocalPv:
-      enabled: false   # Disabled LVM CRD
+      enabled: false  
     csi:
       volumeSnapshots:
         enabled: false
@@ -46,9 +42,9 @@ preUpgradeHook:
 engines:
   local:
     lvm:
-      enabled: false    # Disable LVM engine
+      enabled: false   
     zfs:
       enabled: true
   replicated:
     mayastor:
-      enabled: false    # Disable Mayastor engine
+      enabled: false    
