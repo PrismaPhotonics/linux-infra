@@ -41,6 +41,8 @@ releases:
     needs: [elasticsearch]
     chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/kibana
     wait: true
+    helmOpts:
+      - --no-hooks
     timeout: 600
     hooks:
       - events: ["postsync"]
