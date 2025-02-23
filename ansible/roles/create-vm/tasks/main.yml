@@ -1,16 +1,33 @@
-- name: Debug api_host value
-  debug:
-    var: "{{ (vm_role == 'master') | ternary(versions_data.configurations.masternode_ip, versions_data.configurations.workernode_ip) }}"
-- name: Create Virtual Machine on Proxmox
-  proxmox_kvm:
-    api_host: "{{ (vm_role == 'master') | ternary(versions_data.configurations.masternode_ip, versions_data.configurations.workernode_ip) }}"
-    api_user: root@pam
-    api_token_id: TOKEN_ID
-    api_token_secret: TOKEN_SECRET
-    validate_certs: no
-    name: mc-serv
-    node: pve6
-    newid: 800
-    clone: MC-server
-    storage: VM-Storage
+- name: Copy Ubuntu ISO to Proxmox host
+  copy:
+    src: "../offline_deploy/custom-ubuntu.iso"
+    dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
+    mode: '0644'
+
+- name: Create a new VM on Proxmox from Ubuntu ISO
+  community.general.proxmox_kvm:
+    api_host: "10.50.1.101"
+    api_user: "root@pam"
+    api_password: "PASSW0RD"
+    node: "shakedonprem"
+    vmid: 103
+    name: "ubuntu-vm"
+    cores: 2
+    memory: 2048
+    storage: vmpool
+    ide:
+      ide2: "local:iso/custom-ubuntu.iso,media=cdrom"
+    net:
+      net0: "virtio,bridge=vmbr0"
     state: present
+  delegate_to: localhost
+
+- name: Start the created VM
+  community.general.proxmox_kvm:
+    api_host: "10.50.1.101"
+    api_user: "root@pam"
+    api_password: "PASSW0RD"
+    node: "shakedonprem"
+    vmid: 103
+    state: started
+  delegate_to: localhost

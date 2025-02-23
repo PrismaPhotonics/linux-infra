@@ -10,9 +10,6 @@
       include_vars:
         file: "{{ versions_file }}"
         name: versions_data
-    - name: Debug versions data
-      debug:
-        var: versions_data
 
   roles:
     - role: create-vm
