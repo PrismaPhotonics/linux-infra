@@ -1,5 +1,6 @@
 {{- $offlineDeploy := (env "OFFLINE_DEPLOY" | default "offline_deploy") -}}
-{{- $subnetOctet := (env "SUBNET_OCTET" | default "70") -}}
+{{- $third_subnetOctet := (env "THIRD_SUBNET_OCTET" | default "70") -}}
+{{- $second_subnetOctet := (env "SECOND_SUBNET_OCTET" | default "10") -}}
 
 releases:
   - name: kube-prometheus-stack
@@ -21,7 +22,7 @@ releases:
     values:
       - helm-dashboard/values.yaml
       - service:
-          loadBalancerIP: 10.10.{{ $subnetOctet }}.106
+          loadBalancerIP: 10.{{ $second_subnetOctet }}.{{ $third_subnetOctet }}.106
 
   - name: kubernetes-dashboard
     namespace: kubernetes-dashboard
@@ -35,4 +36,4 @@ releases:
       - kubernetes-dashboard/values.yaml
       - kong:
           proxy:
-            LoadBalancerIP: 10.10.{{ $subnetOctet }}.107
+            LoadBalancerIP: 10.{{ $second_subnetOctet }}.{{ $third_subnetOctet }}.107
