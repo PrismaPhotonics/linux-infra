@@ -33,29 +33,29 @@
         proxmox_node: "{{ merged_configurations.proxmox_node }}"
         vms: "{{ merged_configurations.vms }}"
 
-    # - role: offline-apt-repo
-    #   when: enable_offline_apt_repo | default(false)
+    - role: offline-apt-repo
+      when: enable_offline_apt_repo | default(false)
 
-    # - role: apt-install
-    #   when: enable_apt_install | default(false)
-    #   vars:
-    #     apt_packages: "{{ versions_data.apt_packages | default([]) }}"
+    - role: apt-install
+      when: enable_apt_install | default(false)
+      vars:
+       apt_packages: "{{ merged_configurations.components.apt_packages | default([]) }}"
 
-    # - role: network-setup
-    #   when: enable_network_setup | default(false)
+#    - role: network-setup
+#      when: enable_network_setup | default(false)
 
-    # - role: local-registry
-    #   when: enable_network_setup | default(false)
+#    - role: local-registry
+#      when: enable_network_setup | default(false)
 
-    # # 4) Docker load if enabled (pass docker_images from versions_data)
-    # - role: docker-load
-    #   when: enable_docker_load | default(false)
-    #   vars:
-    #     docker_images: "{{ versions_data.docker_images | default([]) }}"
+    # 4) Docker load if enabled (pass docker_images from versions_data)
+    - role: docker-load
+      when: enable_docker_load | default(false)
+      vars:
+       docker_images: "{{ merged_configurations.components.docker_images | default([]) }}"
 
-    # # 5) Helm install if enabled (pass helm_charts from versions_data)
-    # - role: helm-install
-    #   when: enable_helm_install | default(false)
-    #   vars:
-    #     helm_charts: "{{ versions_data.helm_charts | default([]) }}"
+#    # 5) Helm install if enabled (pass helm_charts from versions_data)
+#    - role: helm-install
+#      when: enable_helm_install | default(false)
+#      vars:
+#       helm_charts: "{{ versions_data.helm_charts | default([]) }}"
 
