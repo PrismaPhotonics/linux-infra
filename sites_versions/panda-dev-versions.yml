@@ -48,7 +48,7 @@ components:
     - name: "k3s"
       version: "1.18.6"
 
-  configurations:
-    vms:
-      workernode-panda:
-        vmid: 108
+configurations:
+  vms:
+    workernode-panda:
+      vmid: 108
