@@ -12,7 +12,7 @@
 
 - name: Copy Ubuntu ISO to Proxmox host
   copy:
-   src: "../offline_deploy/custom-ubuntu.iso"
+   src: "../../offline_deploy/custom-ubuntu.iso"
    dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
    mode: '0644'
 

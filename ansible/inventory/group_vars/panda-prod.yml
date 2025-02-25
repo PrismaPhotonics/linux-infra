@@ -1,8 +1,5 @@
 # ansible/inventory/group_vars/panda-dev.yml
 
-# Path to offline artifacts
-offline_artifact_path: ../offline_deploy/
-
 # Where we store the versions
 # versions_file: "../sites_versions/panda-prod-versions.yml"
 versions_file: "../sites_versions/panda-dev-versions.yml"

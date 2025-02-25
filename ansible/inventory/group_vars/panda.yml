@@ -1,4 +1,4 @@
 # group_vars/panda.yml
 enable_offline_apt_repo: false
 
-offline_artifact_path: ../offline_deploy
+offline_artifact_path: ../../offline_deploy
