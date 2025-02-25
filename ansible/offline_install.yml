@@ -6,7 +6,6 @@
 
   # 1) First, load the site’s versions.yml
   pre_tasks:
-    
     - name: Show filepath
       debug:
         msg: "{{ versions_file }}"
@@ -15,20 +14,24 @@
       include_vars:
         file: "{{ versions_file }}"
         name: versions_data
-#
-#    - name: Debug versions data
-#      debug:
-#        var: versions_data
 
+    - name: Merge default configurations with overrides
+      set_fact:
+        merged_configurations: "{{ configurations | combine(versions_data.configurations, recursive=True) }}"
+
+    - name: Debug versions data
+      debug:
+        var: merged_configurations
+    
+        
   roles:
     - role: create-vms
-      when: enable_create_worker_node | default(false)
       vars:
-        proxmox_host_ip: "{{ configurations.proxmox_host_ip }}"
-        proxmox_user: "{{ configurations.proxmox_user }}"
-        proxmox_user_password: "{{ configurations.proxmox_user_password }}"
-        proxmox_node: "{{ configurations.proxmox_node }}"
-        vms: "{{ configurations.vms }}"
+        proxmox_host_ip: "{{ merged_configurations.proxmox_host_ip }}"
+        proxmox_user: "{{ merged_configurations.proxmox_user }}"
+        proxmox_user_password: "{{ merged_configurations.proxmox_user_password }}"
+        proxmox_node: "{{ merged_configurations.proxmox_node }}"
+        vms: "{{ merged_configurations.vms }}"
 
     # - role: offline-apt-repo
     #   when: enable_offline_apt_repo | default(false)

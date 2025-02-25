@@ -1,6 +1,6 @@
 - name: Debug proxmox_host_ip
   debug:
-    var: proxmox_node
+    var: proxmox_host_ip
 
 #
 #- name: Create all the virtual machines
@@ -10,43 +10,47 @@
 
 
 
-- name: Copy Ubuntu ISO to Proxmox host
-  copy:
-   src: "../../offline_deploy/custom-ubuntu.iso"
-   dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
-   mode: '0644'
+# - name: Copy Ubuntu ISO to Proxmox host
+#   copy:
+#    src: "../../offline_deploy/custom-ubuntu.iso"
+#    dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
+#    mode: '0644'
+- name: Transform VM dictionary into key/value items
+  set_fact:
+    vm_list: "{{ vms | dict2items }}"
 
 
-- name: Create a new VM on Proxmox from Ubuntu ISO
+- name: Create VMs on Proxmox
   community.general.proxmox_kvm:
-     # PROXMOX CONNECTION PARAMS #
-     api_host: proxmox_host_ip
-     api_user: proxmox_user
-     api_password: proxmox_user_password
-     node: proxmox_node
-
-     # PROXMOX CONNECTION PARAMS #
-     vmid: 103
-     name: "ubuntu-vm"
-     cores: 2
-     memory: 2048
-     scsi:
-       scsi0: 'vmpool:20'
-     ide:
-       ide2: "local:iso/custom-ubuntu.iso,media=cdrom"
-     net:
-       net0: "virtio,bridge=vmbr0"
-     state: present
+    api_host: "{{ proxmox_host_ip }}"
+    api_user: "{{ proxmox_user }}"
+    api_password: "{{ proxmox_user_password }}"
+    node: "{{ proxmox_node }}"
+    vmid: "{{ item.value.vmid }}"
+    name: "{{ item.value.name | default(item.key) }}"
+    cores: "{{ item.value.cores | default(2) }}"
+    memory: "{{ item.value.memory | default(2048) }}"
+    scsi:
+      scsi0: "{{ item.value.scsi | default('local-lvm:20') }}"
+    ide:
+      ide2: "{{ item.value.ide | default('local:iso/custom-ubuntu.iso,media=cdrom') }}"
+    net:
+      net0: "{{ item.value.net | default('virtio,bridge=vmbr0') }}"
+    state: present
   delegate_to: localhost
+  loop: "{{ vm_list }}"
+  loop_control:
+    label: "{{ item.key }}"
 
-- name: Start the created VM
+- name: Start the created VMs on Proxmox
   community.general.proxmox_kvm:
-   api_host: proxmox_host_ip
-   api_user: proxmox_user
-   api_password: proxmox_user_password
-   node: proxmox_node
-   vmid: 103
-   state: started
+    api_host: "{{ proxmox_host_ip }}"
+    api_user: "{{ proxmox_user }}"
+    api_password: "{{ proxmox_user_password }}"
+    node: "{{ proxmox_node }}"
+    vmid: "{{ item.value.vmid }}"
+    state: started
   delegate_to: localhost
-
-
+  loop: "{{ vm_list }}"
+  loop_control:
+    label: "{{ item.key }}"

@@ -47,13 +47,7 @@ os_utils:
   - name: "k3s"
     version: "1.18.6"
     
-    
-# configurations:
-
-#   # PROXMOX CONNECTION PARAMS #
-#   system_type: 'dev'
-#   proxmox_host_ip: "10.50.1.101"
-#   proxmox_user: "root@pam"
-#   proxmpx_user_password: "PASSW0RD"
-#   installation_mode: offline  # or online
-#   # PROXMOX CONNECTION PARAMS #
+configurations:
+  vms:
+    workernode-panda:
+      vmid: 108

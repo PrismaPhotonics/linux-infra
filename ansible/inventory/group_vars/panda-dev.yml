@@ -16,39 +16,37 @@ enable_netplan_config: false
 configurations:
   # PROXMOX CONNECTION PARAMS #
   system_type: 'dev'
-  proxmox_host_ip: "10.50.1.101"
+  proxmox_host_ip: "10.50.0.24"
   proxmox_user: "root@pam"
-  proxmpx_user_password: "PASSW0RD"
-  proxmox_node: "shakedonprem"
+  proxmox_user_password: "Pa$$w0rd!"
+  proxmox_node: "vm1"
   installation_mode: offline  # or online
-  # PROXMOX CONNECTION PARAMS #
-
-  # Communication #
-  getaway_ip: "10.50.1.1"
-  # Communication #
 
   # vms configuration #
   vms:
-    - workernode-panda-west:
-        ip: "10.50.1.152"
-        dev: true
-        type: workernode
-        gpu: true
+    workernode-panda:
+      name: "worker-node-panda"
+      ip: "10.50.0.152"
+      vmid: 106
+      dev: true
+      type: workernode
+      gpu: true
 
-    - masternode-panda-west:
-        name: "masternode-panda-west"
-        ip: "10.50.1.151"
-        dev: true
-        type: workernode
-        gpu: false
-  # vms configuration #
+    masternode-panda:
+      name: "masternode-panda"
+      ip: "10.50.0.151"
+      vmid: 107
+      dev: true
+      type: workernode
+      gpu: false
+  # # vms configuration #
 
-  machines:
-    interrogator:
-      # PROXMOX CONNECTION PARAMS #
-      system_type: 'prod'
-      proxmox_host_ip: "10.50.2.101"
-      proxmox_user: "root@pam"
-      proxmpx_user_password: "PASSW0RD"
-      installation_mode: offline  # or online
-      # PROXMOX CONNECTION PARAMS #
+  # machines:
+  #   interrogator:
+  #     # PROXMOX CONNECTION PARAMS #
+  #     system_type: 'prod'
+  #     proxmox_host_ip: "10.50.2.101"
+  #     proxmox_user: "root@pam"
+  #     proxmpx_user_password: "PASSW0RD"
+  #     installation_mode: offline  # or online
+  #     # PROXMOX CONNECTION PARAMS #

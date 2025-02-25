@@ -4,11 +4,11 @@ panda-cloud
 panda-prod
 
 [panda-dev]
-127.0.0.1 ansible_connection=local ansible_user=prisma
+127.0.0.1 ansible_connection=local ansible_user=root
 
 [panda-cloud]
-127.0.0.1 ansible_connection=local ansible_user=prisma
+127.0.0.1 ansible_connection=local ansible_user=root
 
 [panda-prod]
-127.0.0.1 ansible_connection=local ansible_user=prisma
+127.0.0.1 ansible_connection=local ansible_user=root
 

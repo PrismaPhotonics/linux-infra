@@ -4,9 +4,9 @@
 #     dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
 #     mode: '0644'
 
-- name: Debug versions data
-  debug:
-    var: "{{ vm_params }}"
+# - name: Debug versions data
+#   debug:
+#     var: "{{ vm_params }}"
 
 # - name: Create a new VM on Proxmox from Ubuntu ISO
 #   community.general.proxmox_kvm:
