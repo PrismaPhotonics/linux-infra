@@ -48,7 +48,7 @@ releases:
     values:
       - metallb:
           addresses: 
-          - "10.{{ $second_subnetOctet }}.70.100-10.{{ $second_subnetOctet }}.{{ $third_subnetOctet }}.120"
+          - "10.{{ $second_subnetOctet }}.{{ $third_subnetOctet }}.100-10.{{ $second_subnetOctet }}.{{ $third_subnetOctet }}.120"
           - "10.{{ $second_subnetOctet }}.{{ $third_subnetOctet }}.50/32"
 
   - name: pihole
