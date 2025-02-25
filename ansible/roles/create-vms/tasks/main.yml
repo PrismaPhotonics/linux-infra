@@ -1,20 +1,10 @@
-- name: Debug proxmox_host_ip
-  debug:
-    var: proxmox_host_ip
+---
+- name: Copy Ubuntu ISO to Proxmox host
+  copy:
+   src: "../../offline_deploy/custom-ubuntu.iso"
+   dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
+   mode: '0644'
 
-#
-#- name: Create all the virtual machines
-#  include_task: create-vm.yml
-#  vars:
-#    vm_params: "{{ item }}"
-
-
-
-# - name: Copy Ubuntu ISO to Proxmox host
-#   copy:
-#    src: "../../offline_deploy/custom-ubuntu.iso"
-#    dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
-#    mode: '0644'
 - name: Transform VM dictionary into key/value items
   set_fact:
     vm_list: "{{ vms | dict2items }}"
@@ -36,6 +26,8 @@
       ide2: "{{ item.value.ide | default('local:iso/custom-ubuntu.iso,media=cdrom') }}"
     net:
       net0: "{{ item.value.net | default('virtio,bridge=vmbr0') }}"
+    ipconfig:
+      ipconfig0: "ip={{ item.value.ip }}/24"  # Adjust the netmask as necessary
     state: present
   delegate_to: localhost
   loop: "{{ vm_list }}"
