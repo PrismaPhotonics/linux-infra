@@ -1,58 +1,52 @@
+- name: Debug proxmox_host_ip
+  debug:
+    var: proxmox_node
 
-- name: Create all the virtual machines
-  include_task: create-vm.yml
-  vars:
-    vm_params: "{{ item }}"
-  loop: "{{ vms }}"
-
-
-# - name: Copy Ubuntu ISO to Proxmox host
-#   copy:
-#     src: "../offline_deploy/custom-ubuntu.iso"
-#     dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
-#     mode: '0644'
-
-# - name: Debug versions data
-#   debug:
-#     var: "{{ item }}"
-#   loop: "{{ vms }}"
+#
+#- name: Create all the virtual machines
+#  include_task: create-vm.yml
+#  vars:
+#    vm_params: "{{ item }}"
 
 
-# - name: Create a new VM on Proxmox from Ubuntu ISO
-#   community.general.proxmox_kvm:
-#     # api_host: "10.50.1.101"
-#     # api_user: "root@pam"
-#     # api_password: "PASSW0RD"
-#     # node: "shakedonprem"
 
-#     # PROXMOX CONNECTION PARAMS #
-#     api_host: "{{ proxmox_host_ip }}"
-#     api_user: "{{ proxmox_user }}"
-#     api_password: "{{ proxmox_user_password }}"
-#     node: "{{ proxmox_node }}"
-#     # PROXMOX CONNECTION PARAMS #
+- name: Copy Ubuntu ISO to Proxmox host
+  copy:
+   src: "../offline_deploy/custom-ubuntu.iso"
+   dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
+   mode: '0644'
 
-#     vmid: 103
-#     name: "ubuntu-vm"
-#     cores: 2
-#     memory: 2048
-#     scsi:
-#       scsi0: 'vmpool:20'
-#     ide:
-#       ide2: "local:iso/custom-ubuntu.iso,media=cdrom"
-#     net:
-#       net0: "virtio,bridge=vmbr0"
-#     state: present
-#   delegate_to: localhost
 
-# - name: Start the created VM
-#   community.general.proxmox_kvm:
-#     api_host: "10.50.1.101"
-#     api_user: "root@pam"
-#     api_password: "PASSW0RD"
-#     node: "shakedonprem"
-#     vmid: 103
-#     state: started
-#   delegate_to: localhost
+- name: Create a new VM on Proxmox from Ubuntu ISO
+  community.general.proxmox_kvm:
+     # PROXMOX CONNECTION PARAMS #
+     api_host: proxmox_host_ip
+     api_user: proxmox_user
+     api_password: proxmox_user_password
+     node: proxmox_node
+
+     # PROXMOX CONNECTION PARAMS #
+     vmid: 103
+     name: "ubuntu-vm"
+     cores: 2
+     memory: 2048
+     scsi:
+       scsi0: 'vmpool:20'
+     ide:
+       ide2: "local:iso/custom-ubuntu.iso,media=cdrom"
+     net:
+       net0: "virtio,bridge=vmbr0"
+     state: present
+  delegate_to: localhost
+
+- name: Start the created VM
+  community.general.proxmox_kvm:
+   api_host: proxmox_host_ip
+   api_user: proxmox_user
+   api_password: proxmox_user_password
+   node: proxmox_node
+   vmid: 103
+   state: started
+  delegate_to: localhost
 
 

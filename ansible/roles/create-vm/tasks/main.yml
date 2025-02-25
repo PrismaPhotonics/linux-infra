@@ -3,7 +3,6 @@
 #     src: "../offline_deploy/custom-ubuntu.iso"
 #     dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
 #     mode: '0644'
-
 - name: Debug versions data
   debug:
     var: "{{ vm_params }}"
