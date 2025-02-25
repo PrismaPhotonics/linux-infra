@@ -1,12 +1,22 @@
+
+- name: Create all the virtual machines
+  include_task: create-vm.yml
+  vars:
+    vm_params: "{{ item }}"
+  loop: "{{ vms }}"
+
+
 # - name: Copy Ubuntu ISO to Proxmox host
 #   copy:
 #     src: "../offline_deploy/custom-ubuntu.iso"
 #     dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
 #     mode: '0644'
 
-- name: Debug versions data
-  debug:
-    var: "{{ vm_params }}"
+# - name: Debug versions data
+#   debug:
+#     var: "{{ item }}"
+#   loop: "{{ vms }}"
+
 
 # - name: Create a new VM on Proxmox from Ubuntu ISO
 #   community.general.proxmox_kvm:

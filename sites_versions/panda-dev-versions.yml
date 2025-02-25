@@ -48,10 +48,54 @@ os_utils:
     version: "1.18.6"
     
     
-configurations:
-  site_ip: "10.10.60.150/24"
-  workernode_ip: "10.10.10.152"    # Add this line
-  masternode_ip: "10.10.10.151"
-  system_type: 'dev'
-  installation_mode: offline  # or online
+# configurations:
 
+#   # PROXMOX CONNECTION PARAMS #
+#   system_type: 'dev'
+#   proxmox_host_ip: "10.50.1.101"
+#   proxmox_user: "root@pam"
+#   proxmpx_user_password: "PASSW0RD"
+#   installation_mode: offline  # or online
+#   # PROXMOX CONNECTION PARAMS #
+
+
+configurations:
+
+
+  # PROXMOX CONNECTION PARAMS #
+  system_type: 'dev'
+  proxmox_host_ip: "10.50.1.101"
+  proxmox_user: "root@pam"
+  proxmpx_user_password: "PASSW0RD"
+  installation_mode: offline  # or online
+  # PROXMOX CONNECTION PARAMS #
+
+  # Communication #
+  getaway_ip: "10.50.1.1"
+  # Communication # 
+
+  # vms configuration #
+  vms:
+    - workernode-panda-west:
+        ip: "10.50.1.152"
+        dev: true
+        type: workernode
+        gpu: true
+    
+    - masternode-panda-west:
+        name: "masternode-panda-west"
+        ip: "10.50.1.151"
+        dev: true
+        type: workernode
+        gpu: false
+  # vms configuration #
+
+  machines:
+    interrogator:
+      # PROXMOX CONNECTION PARAMS #
+      system_type: 'prod'
+      proxmox_host_ip: "10.50.2.101"
+      proxmox_user: "root@pam"
+      proxmpx_user_password: "PASSW0RD"  
+      installation_mode: offline  # or online
+      # PROXMOX CONNECTION PARAMS #
