@@ -12,7 +12,7 @@ update_kibana_and_searches() {
     log "Updating Kibana theme and uploading saved searches..."
 
     # Define the Kibana URL
-    local kibana_url="https://10.10.$SUBNET_OCTET.100/kibana"
+    local kibana_url="https://10.$SECOND_SUBNET_OCTET.$THIRD_SUBNET_OCTET.100/kibana"
     log "Kibana URL: $kibana_url"
 
     log "Uploading Kibana dataview..."
@@ -31,19 +31,6 @@ update_kibana_and_searches() {
         log "Kibana dataview uploaded successfully."
     else
         error_exit "Failed to upload Kibana dataview."
-    fi
-
-    # Upload saved searches
-    log "Uploading Kibana saved searches..."
-    if curl -X POST "${kibana_url}/api/saved_objects/_import?overwrite=true" \
-        -k \
-        -H "kbn-xsrf: true" \
-        -F file=@/home/prisma/UI-deploy/elk/kibana/searches.ndjson \
-        -u elastic:prisma \
-        -m 15; then
-        log "Kibana saved searches uploaded successfully."
-    else
-        error_exit "Failed to upload Kibana saved searches."
     fi
 
     # Update Kibana theme to dark mode

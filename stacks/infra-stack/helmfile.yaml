@@ -21,6 +21,10 @@ releases:
     chart: /home/prisma/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/ingress-nginx
     timeout: 600      
     hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "bash"
+        args: ["./create_tls.sh"]
       - events: ["postsync"]
         showlogs: true
         command: "bash"
