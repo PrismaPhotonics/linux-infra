@@ -1,7 +1,7 @@
 # ansible/inventory/group_vars/panda-dev.yml
 
 # Where we store the versions
-versions_file: "../sites_versions/panda-dev-versions.yml"
+versions_file: "../sites_manifests/panda-dev-versions.yml"
 
 # If you still want to toggle roles here, keep them:
 enable_apt_install: true
