@@ -1,6 +1,6 @@
 - name: Find all tar files in offline deploy artifcats
   find:
-    paths: "/home/{{ versions_data.linuxUser}}/{{ versions_data.offlineDeploy }}/local_registry/selected_images"
+    paths: "/home/{{ versions_data.linuxUser}}/{{ versions_data.offlineDeploy }}/local_registry/imported_images"
     patterns: "*.tar"
   register: tar_files
 
@@ -8,6 +8,7 @@
   command: docker load -i "{{ item.path }}"
   loop: "{{ tar_files.files }}"
   become: yes
+  when: tar_files.files | length > 0
   register: load_results
 
 - name: Parse loaded image names from docker load output and set docker_images_list

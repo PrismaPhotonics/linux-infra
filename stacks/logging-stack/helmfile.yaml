@@ -57,6 +57,10 @@ releases:
     wait: true
     timeout: 600
     hooks:
+      - events: ["presync"]
+      showlogs: true
+      command: "kubectl"
+      args: ["delete", "secret", "kibana-kibana-es-token", "-n", "elk", "--ignore-not-found"]
       - events: ["postsync"]
         showlogs: true
         command: "bash"
