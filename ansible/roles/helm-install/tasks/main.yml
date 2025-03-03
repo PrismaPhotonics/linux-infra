@@ -22,7 +22,25 @@
     THREE_FIRST_OCTETS: "{{ versions_data.threeFirstOctets }}"
     KUBECONFIG: "/home/{{ versions_data.linuxUser }}/.kube/config"
   register: helmfile_output
+  ignore_errors: yes
+
+- name: Ensure output directory exists on the controller
+  file:
+    path: "/home/{{ versions_data.linuxUser }}/helmfile_outputs"
+    state: directory
+    mode: '0755'
 
 - name: Display helmfile command output
   debug:
-    msg: "{{ helmfile_output.stdout }}"
+    msg: "To debug check helmfile output go to /home/{{ versions_data.linuxUser }}/helmfile_outputs/helmfile_output.txt"
+
+- name: Write helmfile command output 
+  copy:
+    dest: "/home/{{ versions_data.linuxUser }}/helmfile_outputs/helmfile_output.txt"
+    content: "{{ helmfile_output.stderr }}"
+
+- name: Fail the playbook if helmfile sync encountered an error
+  fail:
+    msg: "helmfile sync failed with exit code {{ helmfile_output.rc }}. Check the output file for details."
+  when: helmfile_output.rc != 0
+  
