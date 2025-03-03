@@ -1,7 +1,6 @@
 enable_create_vms: false
 enable_apt_install: false
 enable_network_setup: false
-enable_docker_load: false
 enable_docker_registry: true
 enable_helm_install: true
 enable_netplan_config: false

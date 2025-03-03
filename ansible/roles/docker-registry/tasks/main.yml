@@ -11,6 +11,9 @@
 - import_tasks: docker_config.yml
   when: node == "worker_node" and not docker_daemon_config.stat.exists 
 
+- import_tasks: load.yml
+  when: node == "worker_node"
+  
 - import_tasks: registry_container.yml
   when: node == "worker_node"
 

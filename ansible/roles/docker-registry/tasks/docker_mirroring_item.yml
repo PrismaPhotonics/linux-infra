@@ -1,16 +1,12 @@
 ---
-- name: log
-  debug: 
-    msg: "{{ current_image.split(':')[0] }} {{ current_image.split(':')[1] }} {{ (current_image.split(':')[0]).split('/') }}"
-
-- name: dsdfsdf
+- name: Compute varibles for new image tag for local registry
   set_fact:
     original_image: "{{ current_image }}"
     image_repo: "{{ current_image.split(':')[0] }}"
     image_tag: "{{ current_image.split(':')[1] }}"
     parts: "{{ (current_image.split(':')[0]).split('/') }}"
 
-- name: Compute new image tag for local registry
+- name: Compute new repo variable for the new image tag for local registry
   set_fact:
     new_repo: >-
       {%- if parts | length == 1 -%}
@@ -39,7 +35,7 @@
 
 - name: Log manifest response for image
   debug:
-    msg: "Manifest check for image {{ new_image }} returned status: {{ manifest_response }}."
+    msg: "Manifest check for image {{ new_image }} returned status: {{ manifest_response.status }}."
 
 - name: Tag and push image to local registry (if not already present)
   community.docker.docker_image:

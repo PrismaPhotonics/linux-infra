@@ -1,5 +1,5 @@
 project: shaked
 threeFirstOctets: 10.10.70
 linuxUser: prisma
-offlineDeploy: offlineDeploy
+offlineDeploy: offline_deploy
 dockerRegistryAddress: 10.10.70.150:5000

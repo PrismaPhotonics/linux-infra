@@ -1,4 +1,3 @@
----
 - name: Configure registry mirrors for k3s worker
   template:
     src: registries.yaml.j2
@@ -6,4 +5,11 @@
     owner: root
     group: root
     mode: '0644'
-  notify: Restart k3s worker
+  become: yes
+
+- name: Restart k3s worker
+  systemd:
+    name: k3s-agent
+    state: restarted
+    enabled: yes
+  become: yes
