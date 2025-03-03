@@ -39,6 +39,10 @@
     dest: "/home/{{ versions_data.linuxUser }}/helmfile_outputs/helmfile_output.txt"
     content: "{{ helmfile_output.stderr }}"
 
+- name: Display helmfile command output
+  debug:
+    msg: "Output not formatted {{ helmfile_output.stderr }}"
+
 - name: Fail the playbook if helmfile sync encountered an error
   fail:
     msg: "helmfile sync failed with exit code {{ helmfile_output.rc }}. Check the output file for details."
