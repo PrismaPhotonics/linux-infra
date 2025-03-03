@@ -1,0 +1,62 @@
+---
+- name: Offline Installation Playbook
+  hosts: all
+  become: true
+  gather_facts: true
+
+  # 1) First, load the site’s versions.yml
+  pre_tasks:
+    - name: Show filepath
+      debug:
+        msg: "{{ versions_file }}"
+
+    - name: Load versions file
+      include_vars:
+        file: "{{ versions_file }}"
+        name: versions_data
+
+    - name: Debug versions data
+      debug:
+        var: versions_data
+
+    - name: Merge default configurations with overrides
+      set_fact:
+        merged_configurations: "{{ configurations | combine(versions_data.configurations, recursive=True) }}"
+
+    - name: Debug versions data
+      debug:
+        var: merged_configurations
+
+
+  roles:
+    - role: offline-apt-repo
+      when: enable_offline_apt_repo | default(false)
+
+    - role: apt-install
+      when: enable_apt_install | default(false)
+      vars:
+       apt_packages: "{{ merged_configurations.components.apt_packages | default([]) }}"
+
+    - role: gpu-driver-install
+      when: enable_gpu_driver_install | default(false)
+      vars:
+       gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
+
+#    - role: network-setup
+#      when: enable_network_setup | default(false)
+
+#    - role: local-registry
+#      when: enable_network_setup | default(false)
+
+    # 4) Docker load if enabled (pass docker_images from versions_data)
+    - role: docker-load
+      when: enable_docker_load | default(false)
+      vars:
+       docker_images: "{{ merged_configurations.components.docker_images | default([]) }}"
+
+#    # 5) Helm install if enabled (pass helm_charts from versions_data)
+#    - role: helm-install
+#      when: enable_helm_install | default(false)
+#      vars:
+#       helm_charts: "{{ versions_data.helm_charts | default([]) }}"
+

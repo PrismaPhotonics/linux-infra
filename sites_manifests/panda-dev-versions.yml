@@ -1,54 +1,63 @@
 ---
-components:
-  apt_packages:
-    - name: "curl"
-      version: "7.81.0-1ubuntu1.20"
-    - name: "unzip"
-      version: " 6.0-26ubuntu3.2"
+kind: PrismaPandaDevDeployment
+metadata:
+  name: site_name
+  timezone: timezone
+spec:
+  components:
+    apt_packages:
+      - name: "curl"
+        version: "7.81.0-1ubuntu1.20"
+      - name: "unzip"
+        version: " 6.0-26ubuntu3.2"
 
-  pip_packages:
-    - name: "proxmoxer"
-      version: "7.81.0-1ubuntu1.20"
-    - name: "unzip"
-      version: " 6.0-26ubuntu3.2"
+    pip_packages:
+      - name: "proxmoxer"
+        version: "7.81.0-1ubuntu1.20"
+      - name: "unzip"
+        version: " 6.0-26ubuntu3.2"
 
-  docker_images:
-    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/client-api"
-      version: "10.2.1423.4954c"
-    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/nginx-ui"
-      version: "10.2.1423.4954c"
-    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/socket-manager"
-      version: "10.2.1423.4954c"
-    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/utilities"
-      version: "10.2.1423.4954c"
-    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux"
-      version: "10.7.101"
-    - name: "registry.k8s.io/nfd/node-feature-discovery"
-      version: "v0.15.4"
-    - name: "registry.k8s.io/ingress-nginx/kube-webhook-certgen"
-      version: "v20221220-controller-v1.5.1-58-g787ea74b6"
-    - name: "nvcr.io/nvidia/cloud-native/k8s-driver-manager"
-      version: "v0.6.8"
-    - name: "quay.io/kiwigrid/k8s-sidecar"
-      version: "1.25.2"
-    - name: "rancher/klipper-helm"
-      version: "v0.8.0-build20230510"
-    - name: "rancher/mirrored-pause"
-      version: "3.6"
+    docker_images:
+      - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/client-api"
+        version: "10.2.1423.4954c"
+      - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/nginx-ui"
+        version: "10.2.1423.4954c"
+      - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/socket-manager"
+        version: "10.2.1423.4954c"
+      - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/utilities"
+        version: "10.2.1423.4954c"
+      - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux"
+        version: "10.7.101"
+      - name: "registry.k8s.io/nfd/node-feature-discovery"
+        version: "v0.15.4"
+      - name: "registry.k8s.io/ingress-nginx/kube-webhook-certgen"
+        version: "v20221220-controller-v1.5.1-58-g787ea74b6"
+      - name: "nvcr.io/nvidia/cloud-native/k8s-driver-manager"
+        version: "v0.6.8"
+      - name: "quay.io/kiwigrid/k8s-sidecar"
+        version: "1.25.2"
+      - name: "rancher/klipper-helm"
+        version: "v0.8.0-build20230510"
+      - name: "rancher/mirrored-pause"
+        version: "3.6"
 
-  helm_charts:
-    - name: "my-helm-chart"
-      version: "0.5.0"
+    helm_charts:
+      - name: "my-helm-chart"
+        version: "0.5.0"
 
-  gpu_drivers:
-    - name: "nvidia-driver"
-      version: "460.39"
+    gpu_drivers:
+      cuda_installer_file: "cuda_installer.run"
+      cuda_install_flags: "--silent --toolkit"
+      cuda_version: "12.2"
+      cuda_repo_url: "http://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64"
+      cuda_repo_key: "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/7fa2af80.pub"
+      cuda_repo_distribution: "ubuntu2404"
 
-  os_utils:
-    - name: "k3s"
-      version: "1.18.6"
+    os_utils:
+      - name: "k3s"
+        version: "1.18.6"
 
-configurations:
-  vms:
-    workernode-panda:
-      vmid: 108
+  configurations:
+    vms:
+      workernode-panda:
+        vmid: 108

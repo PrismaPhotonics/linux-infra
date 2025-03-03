@@ -4,9 +4,10 @@
 versions_file: "../sites_manifests/panda-dev-versions.yml"
 
 # If you still want to toggle roles here, keep them:
-enable_apt_install: true
-enable_network_setup: true
-enable_docker_load: true
+enable_apt_install: false
+enable_gpu_driver_install: true
+enable_network_setup: false
+enable_docker_load: false
 enable_helm_install: false
 enable_netplan_config: false
 
