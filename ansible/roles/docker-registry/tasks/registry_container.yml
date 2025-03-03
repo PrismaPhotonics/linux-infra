@@ -1,4 +1,15 @@
 ---
+---
+- name: Check if /var/lib/registry directory exists
+  stat:
+    path: /var/lib/registry
+  register: registry_dir
+
+- name: Fail if /var/lib/registry does not exist
+  fail:
+    msg: "/var/lib/registry does not exist, aborting the playbook."
+  when: not registry_dir.stat.exists
+  
 - name: Check if Docker registry container exists and is running
   docker_container_info:
     name: registry

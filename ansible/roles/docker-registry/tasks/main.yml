@@ -1,7 +1,4 @@
 ---
-- import_tasks: directory.yml
-  when: node == "worker_node"
-
 - name: Check if /etc/docker/daemon.json exists
   stat:
     path: /etc/docker/daemon.json
