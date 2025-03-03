@@ -1,0 +1,70 @@
+---
+- name: log
+  debug: 
+    msg: "{{ current_image.split(':')[0] }} {{ current_image.split(':')[1] }} {{ (current_image.split(':')[0]).split('/') }}"
+
+- name: dsdfsdf
+  set_fact:
+    original_image: "{{ current_image }}"
+    image_repo: "{{ current_image.split(':')[0] }}"
+    image_tag: "{{ current_image.split(':')[1] }}"
+    parts: "{{ (current_image.split(':')[0]).split('/') }}"
+
+- name: Compute new image tag for local registry
+  set_fact:
+    new_repo: >-
+      {%- if parts | length == 1 -%}
+        library/{{ image_repo }}
+      {%- elif parts[0] is regex('.*[.:].*') -%}
+        {{ parts[1:] | join('/') }}
+      {%- else -%}
+        {{ image_repo }}
+      {%- endif -%}
+
+- name: Compute new image tag for local registry
+  set_fact:
+    new_image: "{{ versions_data.dockerRegistryAddress }}/{{ new_repo }}:{{ image_tag }}"
+
+- name: Log computed new image tag
+  debug:
+    msg: "Processing image {{ original_image }}. Computed new tag: {{ new_image }}."
+
+- name: Check if image exists in local registry via API
+  uri:
+    url: "http://{{ versions_data.dockerRegistryAddress }}/v2/{{ new_repo }}/manifests/{{ image_tag }}"
+    method: HEAD
+    status_code: [200, 404]
+  register: manifest_response
+  failed_when: false
+
+- name: Log manifest response for image
+  debug:
+    msg: "Manifest check for image {{ new_image }} returned status: {{ manifest_response }}."
+
+- name: Tag and push image to local registry (if not already present)
+  community.docker.docker_image:
+    name: "{{ original_image }}"
+    tag: "{{ image_tag }}"
+    repository: "{{ versions_data.dockerRegistryAddress }}/{{ new_repo }}"
+    push: yes
+    source: local
+  when: manifest_response.status == 404
+  register: push_result
+
+- name: Log push result (if image was pushed)
+  debug:
+    msg: "Pushed image {{ original_image }} to registry as {{ versions_data.dockerRegistryAddress }}/{{ new_repo }}:{{ image_tag }}. Push result: {{ push_result }}."
+  when: manifest_response.status == 404
+
+- name: Remove the newly created local tag after push
+  community.docker.docker_image:
+    name: "{{ versions_data.dockerRegistryAddress }}/{{ new_repo }}"
+    tag: "{{ image_tag }}"
+    state: absent
+    source: local
+  when: manifest_response.status == 404
+
+- name: Log removal of local tag
+  debug:
+    msg: "Removed local tag {{ versions_data.dockerRegistryAddress }}/{{ new_repo }}:{{ image_tag }}."
+  when: manifest_response.status == 404

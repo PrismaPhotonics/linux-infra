@@ -5,10 +5,10 @@ THREE_FIRST_OCTETS=$(yq -r .firstThreeOctets "$FILE")
 PROJECT_NAME=$(yq -r .projectName "$FILE")
 LINUX_USER=$(yq -r .linuxUser "$FILE")
 
-export OFFLINE_DEPLOY="offline_deploy_656_10_7_100"
-export THREE_FIRST_OCTETS="10.10.70"
-export PROJECT_NAME="shaked"
-export LINUX_USER="prisma"
+export OFFLINE_DEPLOY
+export THREE_FIRST_OCTETS
+export PROJECT_NAM
+export LINUX_USER
 
 echo "Exported environment variables:"
 echo "OFFLINE_DEPLOY=${OFFLINE_DEPLOY}"

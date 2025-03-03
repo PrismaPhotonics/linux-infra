@@ -1,0 +1,20 @@
+---
+- import_tasks: directory.yml
+  when: node == "worker_node"
+
+- name: Check if /etc/docker/daemon.json exists
+  stat:
+    path: /etc/docker/daemon.json
+  register: docker_daemon_config
+  become: yes
+
+- import_tasks: docker_config.yml
+  when: node == "worker_node" and not docker_daemon_config.stat.exists 
+
+- import_tasks: registry_container.yml
+  when: node == "worker_node"
+
+- import_tasks: k3s_config.yml
+
+- import_tasks: docker_mirroring.yml
+  when: node == "worker_node"

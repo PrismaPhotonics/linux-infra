@@ -1,0 +1,20 @@
+---
+- name: Check if Docker registry container exists and is running
+  docker_container_info:
+    name: registry
+  register: registry_container_info
+  ignore_errors: yes
+
+- name: Start Docker registry container if not running
+  docker_container:
+    name: registry
+    image: registry:2
+    state: started
+    restart_policy: always
+    published_ports:
+      - "5000:5000"
+    volumes:
+      - /var/lib/registry:/var/lib/registry
+  when: not registry_container_info.exists
+  register: registry_result
+  ignore_errors: yes

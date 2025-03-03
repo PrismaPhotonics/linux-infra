@@ -1,0 +1,6 @@
+---
+- name: Restart k3s worker
+  systemd:
+    name: k3s-agent
+    state: restarted
+    enabled: yes
