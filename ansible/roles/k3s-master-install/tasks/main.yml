@@ -1,5 +1,12 @@
 ---
 
+- name: Copy k3s binary to /usr/local/bin
+  copy:
+    src: "/root/offline_deploy/k3s"
+    dest: /usr/local/bin/k3s
+    mode: '0755'
+  become: yes
+
 - name: Copy the local k3s installer script to the remote host
   copy:
     src: "/root/offline_deploy/k3s_install.sh"
@@ -14,7 +21,6 @@
   environment:
     INSTALL_K3S_SKIP_DOWNLOAD: "true"
   become: yes
-
 
 - name: Ensure k3s service is enabled and running
   systemd:
