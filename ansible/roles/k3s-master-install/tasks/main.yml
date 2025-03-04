@@ -15,10 +15,12 @@
   become: yes
 
 - name: Install k3s using the local installer script
-  shell: "/tmp/k3s_install.sh"
+  shell: "/tmp/k3s_install.sh {{ k3s_install_options | default('--service-node-port-range 5671-32767 --disable traefik --disable servicelb --disable local-path') }}"
   environment:
     INSTALL_K3S_SKIP_DOWNLOAD: "true"
   become: yes
+  notify:
+    - restart k3s
 
 - name: Ensure k3s service is enabled and running
   systemd:
@@ -26,20 +28,6 @@
     state: started
     enabled: yes
   become: yes
-
-- name: Update K3s service configuration (modify ExecStart line)
-  become: yes
-  shell: >
-    sed -i '/ExecStart=\/usr\/local\/bin\/k3s \\/{N;s|server \\|server --service-node-port-range 5671-32767 --disable traefik --disable servicelb --disable local-path \\|}' /etc/systemd/system/k3s.service
-  register: update_k3s_service
-  failed_when: update_k3s_service.rc != 0
-
-- name: Add ExecStartPost command to set permissions after service start
-  become: yes
-  shell: >
-    sed -i '/\[Service\]/a ExecStartPost=/bin/chmod 755 /etc/rancher/k3s/k3s.yaml /var/lib/rancher/k3s/server/node-token' /etc/systemd/system/k3s.service
-  register: add_execstartpost
-  failed_when: add_execstartpost.rc != 0
 
 - name: Reload systemd daemon
   become: yes

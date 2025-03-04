@@ -1,8 +1,14 @@
 ---
 # handlers file for k3s-install
 
-- name: restart k3s
-  systemd:
-    name: k3s
-    state: restarted
+- name: reload systemd daemon and restart k3s
   become: yes
+  block:
+    - name: Reload systemd daemon
+      systemd:
+        daemon_reload: yes
+
+    - name: Restart k3s service
+      systemd:
+        name: k3s
+        state: restarted
