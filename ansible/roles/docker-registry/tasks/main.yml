@@ -1,12 +1,6 @@
 ---
-- name: Check if /etc/docker/daemon.json exists
-  stat:
-    path: /etc/docker/daemon.json
-  register: docker_daemon_config
-  become: yes
-
 - import_tasks: docker_config.yml
-  when: node == "worker_node" and not docker_daemon_config.stat.exists 
+  when: node == "worker_node"
 
 - import_tasks: list_from_docker_service.yml
   when: node == "worker_node"
