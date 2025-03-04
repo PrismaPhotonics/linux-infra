@@ -1,0 +1,8 @@
+---
+# handlers file for k3s-install
+
+- name: restart k3s
+  systemd:
+    name: k3s
+    state: restarted
+  become: yes

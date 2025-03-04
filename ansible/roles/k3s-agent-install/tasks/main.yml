@@ -1,0 +1,8 @@
+# on all nodes
+# k3s
+
+
+# on worker nodes
+# k9s
+# helm
+# helmfile
