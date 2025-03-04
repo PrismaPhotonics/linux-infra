@@ -20,7 +20,7 @@ vms:
     gpu: true
 
   masternode-panda:
-    name: "masternode-panda"
+    name: "master-node-panda"
     ip: "10.50.0.151"
     vmid: 107
     dev: true
