@@ -2,6 +2,9 @@
 - import_tasks: docker_config.yml
   when: node == "worker_node"
 
+- import_tasks: load_from_tar.yml
+  when: node == "worker_node"
+
 - import_tasks: list_from_docker_service.yml
   when: node == "worker_node"
 
