@@ -1,0 +1,14 @@
+- name: Gather Docker images info
+  community.docker.docker_image_info:
+  register: docker_info
+
+- name: Build list of Docker images (repository:tag)
+  set_fact:
+    docker_images_list: >
+      {{
+        docker_info.images
+        | map(attribute='RepoTags')
+        | flatten
+        | select('defined')
+        | list
+      }}
