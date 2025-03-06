@@ -1,8 +1,44 @@
-# on all nodes
-# k3s
+---
+# tasks/main.yml for k3s-agent role
 
+- name: Retrieve k3s node token from the server
+  slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  delegate_to: "{{ hostvars[groups['all_vms'][0]].ansible_host }}"
+  run_once: true
+  register: k3s_token_raw
 
-# on worker nodes
-# k9s
-# helm
-# helmfile
+- name: Set k3s token fact
+  set_fact:
+    k3s_token: "{{ k3s_token_raw.content | b64decode | trim }}"
+
+- name: Copy k3s binary to /usr/local/bin
+  copy:
+    src: "/root/offline_deploy/k3s"
+    dest: /usr/local/bin/k3s
+    mode: '0755'
+  become: yes
+
+- name: Copy the local k3s installer script to the remote host
+  copy:
+    src: "/root/offline_deploy/k3s_install.sh"
+    dest: /tmp/k3s_install.sh
+    mode: '0755'
+  become: yes
+
+- name: Install k3s agent using the local installer script
+  shell: >
+    /tmp/k3s_install.sh agent --server https://{{ hostvars[groups['all_vms'][0]].ansible_host }}:6443 --token {{ k3s_token }} --kubelet-arg=max-pods=400
+  environment:
+    INSTALL_K3S_SKIP_DOWNLOAD: "true"
+  become: yes
+  notify:
+    - reload systemd daemon
+    - restart k3s-agent service
+
+- name: Ensure k3s-agent service is enabled and running
+  systemd:
+    name: k3s-agent
+    state: started
+    enabled: yes
+  become: yes
