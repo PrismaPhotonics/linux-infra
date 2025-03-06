@@ -32,7 +32,7 @@
       when: enable_k3s_master_install | default(false)
 
     - role: k3s-agent-install
-      when: enable_k3s_worker_install | default(false)
+      when: enable_k3s_agent_install | default(false)
 
 #    - role: network-setup
 #      when: enable_network_setup | default(false)
