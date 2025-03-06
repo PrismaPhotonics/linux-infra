@@ -1,0 +1,22 @@
+---
+- name: Offline Installation Playbook
+  hosts: all
+  become: true
+  gather_facts: true
+
+  pre_tasks:
+    - name: Debug Proxmox API User
+      debug:
+        msg: "Proxmox API User is: {{ proxmox_host_ip }}"
+
+        
+  roles:
+    - role: create-vms
+      vars:
+        proxmox_host_ip: "{{ merged_configurations.proxmox_host_ip }}"
+        proxmox_user: "{{ merged_configurations.proxmox_user }}"
+        proxmox_user_password: "{{ merged_configurations.proxmox_user_password }}"
+        proxmox_node: "{{ merged_configurations.proxmox_node }}"
+        vms: "{{ merged_configurations.vms }}"
+      tags: vm_creation
+

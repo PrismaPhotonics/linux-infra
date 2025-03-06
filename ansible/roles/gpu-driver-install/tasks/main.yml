@@ -1,4 +1,9 @@
 ---
+- name: Copy run file from host to user
+  copy:
+    src: /root/offline_deploy/NVIDIA-Linux-x86_64-570.124.04.run
+    dest: /home/prisma/NVIDIA-Linux-x86_64-570.124.04.run
+    mode: '0755'
 - name: Install gcc-9
   apt:
     name: gcc-9
@@ -26,7 +31,7 @@
   # when: true
 
 - name: Install CUDA driver from runfile
-  command: "sh /home/prisma/NVIDIA-Linux-x86_64-570.124.04.run --silent --accept-license --disable-nouveau"
+  command: "sh /home/prisma/NVIDIA-Linux-x86_64-570.124.04.run --dkms --silent"
   args:
     # Using 'creates' ensures idempotency by skipping the install if nvidia-smi already exists.
     creates: "/usr/bin/nvidia-smi"

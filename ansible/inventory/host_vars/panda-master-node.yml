@@ -1,0 +1,3 @@
+enable_apt_install: true
+enable_network_setup: true
+enable_gpu_driver_install: false

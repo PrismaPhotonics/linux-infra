@@ -1,0 +1,28 @@
+
+# PROXMOX CONNECTION PARAMS #
+create-vms: true
+
+system_type: 'dev'
+proxmox_host_ip: "10.50.0.24"
+proxmox_user: "root@pam"
+proxmox_user_password: "Pa$$w0rd!"
+proxmox_node: "vm1"
+installation_mode: offline  # or online
+
+# vms configuration #
+vms:
+  workernode-panda:
+    name: "worker-node-panda"
+    ip: "10.50.0.152"
+    vmid: 106
+    dev: true
+    type: workernode
+    gpu: true
+
+  masternode-panda:
+    name: "masternode-panda"
+    ip: "10.50.0.151"
+    vmid: 107
+    dev: true
+    type: workernode
+    gpu: false
