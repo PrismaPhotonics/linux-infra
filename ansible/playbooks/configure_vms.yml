@@ -34,6 +34,9 @@
     - role: k3s-agent-install
       when: enable_k3s_agent_install | default(false)
 
+    - role: k8s-tools-install
+      when: enable_k8s_tools_install | default(false)
+
 #    - role: network-setup
 #      when: enable_network_setup | default(false)
 

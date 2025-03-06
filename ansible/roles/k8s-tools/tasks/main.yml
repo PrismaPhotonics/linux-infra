@@ -1,0 +1,87 @@
+---
+# tasks/main.yml
+
+- name: Ensure prerequisites are installed
+  apt:
+    name:
+      - curl
+      - tar
+      - wget
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Create temporary directory for offline tools
+  file:
+    path: /tmp/k8s-tools
+    state: directory
+    mode: '0755'
+  become: yes
+
+#########################################
+# Install Helm Offline
+#########################################
+
+- name: Copy Helm tarball to temporary directory
+  copy:
+    src: '/root/offline_deploy/k8s-utils/helm-v3.12.0-linux-amd64.tar.gz'
+    dest: /tmp/k8s-tools/helm-v3.12.0-linux-amd64.tar.gz
+    mode: '0644'
+  become: yes
+
+- name: Extract Helm tarball
+  unarchive:
+    src: /tmp/k8s-tools/helm-v3.12.0-linux-amd64.tar.gz
+    dest: /tmp/k8s-tools/
+    remote_src: yes
+  become: yes
+
+- name: Install Helm binary
+  copy:
+    src: /tmp/k8s-tools/linux-amd64/helm
+    dest: /usr/local/bin/helm
+    mode: '0755'
+  become: yes
+
+#########################################
+# Install k9s Offline
+#########################################
+
+- name: Copy k9s tarball to temporary directory
+  copy:
+    src: '/root/offline_deploy/k8s-utils/k9s_Linux_amd64.tar.gz'
+    dest: /tmp/k8s-tools/k9s_Linux_amd64.tar.gz
+    mode: '0644'
+  become: yes
+
+- name: Extract k9s tarball
+  unarchive:
+    src: /tmp/k8s-tools/k9s_Linux_amd64.tar.gz
+    dest: /tmp/k8s-tools/
+    remote_src: yes
+  become: yes
+
+- name: Install k9s binary
+  copy:
+    src: /tmp/k8s-tools/k9s
+    dest: /usr/local/bin/k9s
+    mode: '0755'
+  become: yes
+
+#########################################
+# Install Helmfile Offline
+#########################################
+
+- name: Copy Helmfile binary to /usr/local/bin
+  copy:
+    src: '/root/offline_deploy/k8s-utils/helmfile_linux_amd64'
+    dest: /usr/local/bin/helmfile
+    mode: '0755'
+  become: yes
+
+# Optional: Clean up temporary directory
+- name: Remove temporary directory
+  file:
+    path: /tmp/k8s-tools
+    state: absent
+  become: yes

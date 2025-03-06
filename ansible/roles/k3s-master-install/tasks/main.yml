@@ -3,14 +3,14 @@
 
 - name: Copy k3s binary to /usr/local/bin
   copy:
-    src: "/root/offline_deploy/k3s"
+    src: "/root/offline_deploy/k8s-utils/k3s"
     dest: /usr/local/bin/k3s
     mode: '0755'
   become: yes
 
 - name: Copy the local k3s installer script to the remote host
   copy:
-    src: "/root/offline_deploy/k3s_install.sh"
+    src: "/root/offline_deploy/k8s-utils/k3s_install.sh"
     dest: /tmp/k3s_install.sh
     mode: '0755'
   become: yes
