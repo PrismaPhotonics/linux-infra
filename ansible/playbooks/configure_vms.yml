@@ -31,6 +31,9 @@
     - role: k3s-master-install
       when: enable_k3s_master_install | default(false)
 
+    - role: k3s-worker-install
+      when: enable_k3s_worker_install | default(false)
+
 #    - role: network-setup
 #      when: enable_network_setup | default(false)
 
