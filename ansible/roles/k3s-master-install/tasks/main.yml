@@ -21,7 +21,8 @@
     INSTALL_K3S_SKIP_DOWNLOAD: "true"
   become: yes
   notify:
-    - reload systemd daemon and restart k3s
+    - reload systemd daemon
+    - restart k3s service
 
 - name: Ensure k3s service is enabled and running
   systemd:

@@ -1,14 +1,13 @@
 ---
 # handlers/main.yml
 
-- name: reload systemd daemon and restart k3s
+- name: reload systemd daemon
   become: yes
-  block:
-    - name: Reload systemd daemon
-      systemd:
-        daemon_reload: yes
+  systemd:
+    daemon_reload: yes
 
-    - name: Restart k3s service
-      systemd:
-        name: k3s
-        state: restarted
+- name: restart k3s service
+  become: yes
+  systemd:
+    name: k3s
+    state: restarted
