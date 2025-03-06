@@ -1,5 +1,5 @@
 ---
-# handlers file for k3s-install
+# handlers/main.yml
 
 - name: reload systemd daemon and restart k3s
   become: yes

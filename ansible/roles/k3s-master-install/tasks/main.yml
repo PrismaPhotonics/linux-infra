@@ -1,4 +1,5 @@
 ---
+# tasks/main.yml
 
 - name: Copy k3s binary to /usr/local/bin
   copy:
@@ -15,12 +16,12 @@
   become: yes
 
 - name: Install k3s using the local installer script
-  shell: "/tmp/k3s_install.sh {{ k3s_install_options | default('--service-node-port-range 5671-32767 --disable traefik --disable servicelb --disable local-path') }}"
+  shell: "/tmp/k3s_install.sh --service-node-port-range 5671-32767 --disable traefik --disable servicelb --disable local-path"
   environment:
     INSTALL_K3S_SKIP_DOWNLOAD: "true"
   become: yes
   notify:
-    - restart k3s
+    - reload systemd daemon and restart k3s
 
 - name: Ensure k3s service is enabled and running
   systemd:
@@ -28,14 +29,3 @@
     state: started
     enabled: yes
   become: yes
-
-- name: Reload systemd daemon
-  become: yes
-  systemd:
-    daemon_reload: yes
-
-- name: Restart k3s service
-  become: yes
-  systemd:
-    name: k3s
-    state: restarted
