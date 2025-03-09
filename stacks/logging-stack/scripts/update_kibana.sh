@@ -42,7 +42,8 @@ update_kibana_and_searches() {
         -d '{
           "data_view": {
             "title": "logs*",
-            "name": "logs"
+            "name": "logs",
+            "timeFieldName": "@timestamp"
           }
         }' \
         -u elastic:prisma \
