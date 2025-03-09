@@ -1,31 +1,14 @@
 ---
 - name: Offline Installation Playbook
-  hosts: all
+  hosts: all_vms
   become: true
   gather_facts: true
 
   # 1) First, load the site’s versions.yml
   pre_tasks:
-    - name: Show filepath
+    - name: Debug gpu_driver_version
       debug:
-        msg: "{{ versions_file }}"
-
-    - name: Load versions file
-      include_vars:
-        file: "{{ versions_file }}"
-        name: versions_data
-
-    - name: Debug versions data
-      debug:
-        var: versions_data
-
-    - name: Merge default configurations with overrides
-      set_fact:
-        merged_configurations: "{{ configurations | combine(versions_data.configurations, recursive=True) }}"
-
-    - name: Debug versions data
-      debug:
-        var: merged_configurations
+        msg: "gpu_driver_version is: {{ gpu_driver_version }}"
 
 
   roles:
@@ -39,6 +22,11 @@
 
     - role: gpu-driver-install
       when: enable_gpu_driver_install | default(false)
+      vars:
+       gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
+
+    - role: gpu-driver-uninstall
+      when: enable_gpu_driver_uninstall | default(false)
       vars:
        gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
 

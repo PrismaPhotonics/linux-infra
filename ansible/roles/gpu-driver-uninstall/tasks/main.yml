@@ -1,0 +1,19 @@
+- name: Check if NVIDIA uninstaller script exists
+  stat:
+    path: /usr/bin/nvidia-uninstall
+  register: nvidia_uninstall_script
+
+- name: Uninstall NVIDIA GPU driver
+  command: /usr/bin/nvidia-uninstall --silent
+  when: nvidia_uninstall_script.stat.exists
+  register: uninstall_result
+  become: true
+
+- name: Display uninstallation result
+  debug:
+    var: uninstall_result
+
+- name: Reboot the system after GPU driver uninstallation
+  reboot:
+    reboot_timeout: 600
+  when: do_reboot | default(true)

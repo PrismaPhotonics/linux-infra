@@ -1,4 +1,6 @@
 ---
+gpu_driver_version: '11.11.11'
+proxmox_host_ip: '10.10.10.10'
 kind: PrismaPandaDevDeployment
 metadata:
   name: site_name
