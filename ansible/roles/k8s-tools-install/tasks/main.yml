@@ -1,16 +1,5 @@
 ---
 # tasks/main.yml
-
-#- name: Ensure prerequisites are installed
-#  apt:
-#    name:
-#      - curl
-#      - tar
-#      - wget
-#    state: present
-#    update_cache: yes
-#  become: yes
-
 - name: Create temporary directory for offline tools
   file:
     path: /tmp/k8s-tools
