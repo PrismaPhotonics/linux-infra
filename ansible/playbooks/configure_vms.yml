@@ -37,6 +37,10 @@
     - role: k8s-tools-install
       when: enable_k8s_tools_install | default(false)
 
+    - role: helm-install
+      when: enable_helm_install | default(false)
+
+
 #    - role: network-setup
 #      when: enable_network_setup | default(false)
 
