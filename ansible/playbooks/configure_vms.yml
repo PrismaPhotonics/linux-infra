@@ -14,19 +14,23 @@
   roles:
     - role: offline-apt-repo
       when: enable_offline_apt_repo | default(false)
+      tags: apt
 
     - role: apt-install
       when: enable_apt_install | default(false)
       vars:
        apt_packages: "{{ merged_configurations.components.apt_packages | default([]) }}"
+      tags: apt
 
     - role: gpu-driver-install
       when: enable_gpu_driver_install | default(false)
       vars:
        gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
+      tags: install-gpu
 
     - role: gpu-driver-uninstall
       when: enable_gpu_driver_uninstall | default(false)
+      tags: uninstall-gpu
 
     - role: k3s-master-install
       when: enable_k3s_master_install | default(false)

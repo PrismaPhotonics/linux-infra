@@ -1,15 +1,15 @@
 ---
 # tasks/main.yml
 
-- name: Ensure prerequisites are installed
-  apt:
-    name:
-      - curl
-      - tar
-      - wget
-    state: present
-    update_cache: yes
-  become: yes
+#- name: Ensure prerequisites are installed
+#  apt:
+#    name:
+#      - curl
+#      - tar
+#      - wget
+#    state: present
+#    update_cache: yes
+#  become: yes
 
 - name: Create temporary directory for offline tools
   file:
@@ -41,6 +41,7 @@
     src: /tmp/k8s-tools/linux-amd64/helm
     dest: /usr/local/bin/helm
     mode: '0755'
+    remote_src: yes
   become: yes
 
 #########################################
@@ -66,6 +67,7 @@
     src: /tmp/k8s-tools/k9s
     dest: /usr/local/bin/k9s
     mode: '0755'
+    remote_src: yes
   become: yes
 
 #########################################
