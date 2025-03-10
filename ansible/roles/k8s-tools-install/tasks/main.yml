@@ -25,25 +25,24 @@
 #########################################
 # 2. Download Tools (if not already present)
 #########################################
-- name: Check if each tool file exists locally
-  stat:
-    path: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-  register: tool_stat
-  loop: "{{ k8s_tools }}"
-  loop_control:
-    label: "{{ item.name }}"
-  become: yes
-
 - name: Download missing tool files
-  get_url:
-    url: "{{ item.version }}"
-    dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-    mode: "{{ (item.version | basename) is match('.*\\.tar\\.gz') | ternary('0644','0755') }}"
-  when: not tool_stat.results[loop.index0].stat.exists
+  block:
+    - name: "Check if file exists for {{ item.name }}"
+      stat:
+        path: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
+      register: file_check
+      become: yes
+
+    - name: "Download file for {{ item.name }}"
+      get_url:
+        url: "{{ item.version }}"
+        dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
+        mode: "{{ (item.version | basename) is match('.*\\.tar\\.gz') | ternary('0644','0755') }}"
+      when: not file_check.stat.exists
+      become: yes
   loop: "{{ k8s_tools }}"
   loop_control:
     label: "{{ item.name }}"
-  become: yes
 
 #########################################
 # 3. Install Tools by including per-tool tasks
