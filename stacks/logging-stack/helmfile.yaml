@@ -26,20 +26,6 @@ releases:
     values:
       - elasticsearch/values.yaml.gotmpl
 
-  - name: kibana
-    namespace: elk
-    needs: [elasticsearch]
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/kibana
-    wait: true
-    timeout: 600
-    hooks:
-      - events: ["postsync"]
-        showlogs: true
-        command: "bash"
-        args: ["./scripts/update_kibana.sh"]
-    values:
-      - kibana/values.yaml
-
   - name: logstash
     namespace: elk
     needs: [elasticsearch]
@@ -63,3 +49,21 @@ releases:
     needs: [elasticsearch]
     chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/curator
     wait: true
+  
+  - name: kibana
+    namespace: elk
+    needs: [elasticsearch]
+    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/kibana
+    wait: true
+    timeout: 600
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["delete", "secret", "kibana-kibana-es-token", "-n", "elk", "--ignore-not-found"]
+      - events: ["postsync"]
+        showlogs: true
+        command: "bash"
+        args: ["./scripts/update_kibana.sh"]
+    values:
+      - kibana/values.yaml

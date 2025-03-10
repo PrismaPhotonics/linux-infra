@@ -3,7 +3,7 @@ curator:
     schedule: "0 * * * *"
     restartPolicy: "OnFailure"
 
-  image: "localhost:5000/untergeek/curator:8.0.17"
+  image: "untergeek/curator:8.0.17"
   imagePullPolicy: "IfNotPresent"
 
   storage:

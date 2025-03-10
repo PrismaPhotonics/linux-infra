@@ -36,10 +36,6 @@ resources:
     cpu: "500m"
     memory: 1Gi
 
-image: localhost:5000/docker.elastic.co/elasticsearch/elasticsearch
-imageTag: 8.5.1
-imagePullPolicy: IfNotPresent
-
 extraVolumes:
   - name: elasticsearch-snapshots
     persistentVolumeClaim:

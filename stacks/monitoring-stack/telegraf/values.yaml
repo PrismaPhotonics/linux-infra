@@ -1,10 +1,5 @@
 replicaCount: 1
 
-image:
-  repo: "localhost:5000/telegraf"
-  tag: "latest"
-  pullPolicy: IfNotPresent
-
 resources:
   requests:
     memory: "64Mi"

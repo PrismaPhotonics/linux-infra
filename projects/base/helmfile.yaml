@@ -1,4 +1,4 @@
 helmfiles:
   - path: ../../stacks/infra-stack/helmfile.yaml
-  - path: ../../stacks/logging-stack/helmfile.yaml
   - path: ../../stacks/monitoring-stack/helmfile.yaml
+  - path: ../../stacks/logging-stack/helmfile.yaml

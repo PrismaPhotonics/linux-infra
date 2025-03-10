@@ -4,7 +4,7 @@
 set -euo pipefail
 
 log() {
-    sudo echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" 
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" 
 }
 
 error_exit() {
@@ -16,7 +16,7 @@ ensure_directory() {
     local dir="$1"
     if [[ ! -d "$dir" ]]; then
         log "Creating directory: $dir"
-        sudo mkdir -p "$dir"
+        mkdir -p "$dir"
     fi
 }
 
@@ -38,15 +38,15 @@ generate_tls_keys() {
 
     # Generate new TLS certificate and key
     log "Generating new TLS certificate and key..."
-    sudo openssl req -x509 -nodes -days 867 -newkey rsa:2048 -keyout "$tls_key_file" -out "$tls_crt_file" \
+    openssl req -x509 -nodes -days 867 -newkey rsa:2048 -keyout "$tls_key_file" -out "$tls_crt_file" \
         -subj "/CN=local.prismaphotonics.net/O=local.prismaphotonics.net" || error_exit "Failed to generate TLS certificate and key."
     log "TLS certificate and key generated successfully."
 
     # Set appropriate permissions
     log "Setting permissions for TLS folder and files..."
-    sudo chown -R prisma:prisma "$tls_folder" || error_exit "Failed to chown on TLS folder."
-    sudo chmod -R 700 "$tls_folder" || error_exit "Failed to set permissions on TLS folder."
-    sudo chmod -R 600 "$tls_crt_file" "$tls_key_file" || error_exit "Failed to set permissions on TLS files."
+    chown -R prisma:prisma "$tls_folder" || error_exit "Failed to chown on TLS folder."
+    chmod -R 700 "$tls_folder" || error_exit "Failed to set permissions on TLS folder."
+    chmod -R 600 "$tls_crt_file" "$tls_key_file" || error_exit "Failed to set permissions on TLS files."
 
     log "TLS keys generated and configured successfully."
 }
