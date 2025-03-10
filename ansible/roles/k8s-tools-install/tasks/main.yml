@@ -39,12 +39,12 @@
     url: "{{ item.version }}"
     dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
     mode: "{{ (item.version | basename) is match('.*\\.tar\\.gz') | ternary('0644','0755') }}"
+    validate_certs: no
   when: not tool_file.results[tool_index].stat.exists
   loop: "{{ k8s_tools }}"
   loop_control:
     label: "{{ item.name }}"
     index_var: tool_index
-
 
 
 #########################################
