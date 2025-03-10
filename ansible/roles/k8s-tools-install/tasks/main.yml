@@ -6,7 +6,7 @@
     mode: '0755'
 
 - name: Install each k8s tool
-  import_tasks: install_tool.yml
+  include_tasks: install_tool.yml
   loop: "{{ k8s_tools }}"
   loop_control:
     loop_var: item
