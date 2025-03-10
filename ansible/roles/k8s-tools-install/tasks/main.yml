@@ -1,55 +1,67 @@
 ---
-# tasks/main.yml
-
-#########################################
-# 1. Ensure directories exist and debug input
-#########################################
-- name: Debug k8s_tools variable
-  debug:
-    var: k8s_tools
-
 - name: Ensure offline deploy directory exists
   file:
     path: /root/offline_deploy/k8s-utils
     state: directory
     mode: '0755'
-  become: yes
 
-- name: Create temporary directory for tool installation
-  file:
-    path: /tmp/k8s-tools
-    state: directory
-    mode: '0755'
-  become: yes
+- name: Install k8s tools
+  block:
+    - name: Set tool filename for {{ item.name }}
+      set_fact:
+        tool_filename: "{{ item.version | basename }}"
 
-#########################################
-# 2. Download Tools (if not already present)
-#########################################
-#- name: Download k8s tools if not already present
-#  get_url:
-#    url: "{{ item.version }}"
-#    dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-#    mode: '0755'
-#    force: no
-#  loop: "{{ k8s_tools }}"
-#  loop_control:
-#    label: "{{ item.name }}"
+    - name: Check if {{ tool_filename }} exists in offline deploy directory
+      stat:
+        path: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+      register: tool_file
 
+    - name: Download {{ tool_filename }} if not exists
+      get_url:
+        url: "{{ item.version }}"
+        dest: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+        mode: '0755'
+      when: not tool_file.stat.exists
 
-#########################################
-# 3. Install Tools by including per-tool tasks
-#########################################
-- name: Install each k8s tool offline
-  include_tasks: install_tool.yml
+    - name: Install {{ item.name }} from archive file
+      block:
+        - name: Create temporary directory for extracting {{ item.name }}
+          tempfile:
+            state: directory
+            suffix: "{{ item.name }}"
+          register: temp_extract_dir
+
+        - name: Unarchive {{ tool_filename }}
+          unarchive:
+            src: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+            dest: "{{ temp_extract_dir.path }}"
+            remote_src: yes
+
+        - name: Set binary source path for {{ item.name }}
+          set_fact:
+            binary_src: >-
+              {% if item.name == 'helm' %}
+                {{ temp_extract_dir.path }}/linux-amd64/helm
+              {% else %}
+                {{ temp_extract_dir.path }}/{{ item.name }}
+              {% endif %}
+
+        - name: Copy binary for {{ item.name }} to /usr/local/bin
+          copy:
+            src: "{{ binary_src }}"
+            dest: "/usr/local/bin/{{ item.name }}"
+            mode: '0755'
+            remote_src: yes
+      when: tool_filename.endswith('tar.gz')
+
+    - name: Install {{ item.name }} from binary file
+      copy:
+        src: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+        dest: "/usr/local/bin/{{ item.name }}"
+        mode: '0755'
+        remote_src: yes
+      when: not tool_filename.endswith('tar.gz')
+
   loop: "{{ k8s_tools }}"
   loop_control:
     label: "{{ item.name }}"
-
-#########################################
-# 4. Cleanup temporary directory
-#########################################
-- name: Remove temporary directory
-  file:
-    path: /tmp/k8s-tools
-    state: absent
-  become: yes
