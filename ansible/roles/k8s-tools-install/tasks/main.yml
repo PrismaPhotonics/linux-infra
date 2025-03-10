@@ -46,59 +46,14 @@
   become: yes
 
 #########################################
-# 3. Install Tools
+# 3. Install Tools by including per-tool tasks
 #########################################
 - name: Install each k8s tool offline
-  block:
-
-    #######################################
-    # 3a. Install tarball-based tools
-    #######################################
-    - name: "Install tarball tool: {{ item.name }}"
-      block:
-        - name: "Copy tarball for {{ item.name }} to temporary directory"
-          copy:
-            src: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-            dest: "/tmp/k8s-tools/{{ item.version | basename }}"
-            mode: '0644'
-          become: yes
-
-        - name: "Extract tarball for {{ item.name }}"
-          unarchive:
-            src: "/tmp/k8s-tools/{{ item.version | basename }}"
-            dest: /tmp/k8s-tools/
-            remote_src: yes
-          become: yes
-
-        - name: "Install binary for {{ item.name }}"
-          copy:
-            # Special case for Helm as the binary is inside a subdirectory.
-            src: >-
-              {% if item.name == 'helm' %}
-                /tmp/k8s-tools/linux-amd64/helm
-              {% else %}
-                /tmp/k8s-tools/{{ item.name }}
-              {% endif %}
-            dest: "/usr/local/bin/{{ item.name }}"
-            mode: '0755'
-            remote_src: yes
-          become: yes
-      when: (item.version | basename) is match('.*\\.tar\\.gz')
-
-    #######################################
-    # 3b. Install binary-based tools
-    #######################################
-    - name: "Install binary tool: {{ item.name }}"
-      copy:
-        src: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-        dest: "/usr/local/bin/{{ item.name }}"
-        mode: '0755'
-      become: yes
-      when: not ((item.version | basename) is match('.*\\.tar\\.gz'))
-
+  include_tasks: install_tool.yml
   loop: "{{ k8s_tools }}"
   loop_control:
     label: "{{ item.name }}"
+  become: yes
 
 #########################################
 # 4. Cleanup temporary directory
