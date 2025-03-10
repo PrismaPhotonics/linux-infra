@@ -1,5 +1,59 @@
 ---
 # tasks/main.yml
+
+#########################################
+# Ensure necessary files are available
+#########################################
+- name: Debug versions data
+  debug:
+    var: k8s_tools
+
+- name: Check if Helm tarball exists locally
+  stat:
+    path: '/root/offline_deploy/k8s-utils/helm-v3.12.0-linux-amd64.tar.gz'
+  register: helm_tarball_stat
+  become: yes
+
+- name: Download Helm tarball if not present
+  get_url:
+    url: 'https://get.helm.sh/helm-v3.12.0-linux-amd64.tar.gz'
+    dest: '/root/offline_deploy/k8s-utils/helm-v3.12.0-linux-amd64.tar.gz'
+    mode: '0644'
+  when: not helm_tarball_stat.stat.exists
+  become: yes
+
+- name: Check if k9s tarball exists locally
+  stat:
+    path: '/root/offline_deploy/k8s-utils/k9s_Linux_amd64.tar.gz'
+  register: k9s_tarball_stat
+  become: yes
+
+- name: Download k9s tarball if not present
+  get_url:
+    url: 'https://github.com/derailed/k9s/releases/download/v0.27.3/k9s_Linux_amd64.tar.gz'
+    dest: '/root/offline_deploy/k8s-utils/k9s_Linux_amd64.tar.gz'
+    mode: '0644'
+  when: not k9s_tarball_stat.stat.exists
+  become: yes
+
+- name: Check if Helmfile binary exists locally
+  stat:
+    path: '/root/offline_deploy/k8s-utils/helmfile_linux_amd64'
+  register: helmfile_binary_stat
+  become: yes
+
+- name: Download Helmfile binary if not present
+  get_url:
+    url: 'https://github.com/roboll/helmfile/releases/download/v0.145.0/helmfile_linux_amd64'
+    dest: '/root/offline_deploy/k8s-utils/helmfile_linux_amd64'
+    mode: '0755'
+  when: not helmfile_binary_stat.stat.exists
+  become: yes
+
+#########################################
+# Create temporary directory for offline tools
+#########################################
+
 - name: Create temporary directory for offline tools
   file:
     path: /tmp/k8s-tools
@@ -70,7 +124,10 @@
     mode: '0755'
   become: yes
 
+#########################################
 # Optional: Clean up temporary directory
+#########################################
+
 - name: Remove temporary directory
   file:
     path: /tmp/k8s-tools

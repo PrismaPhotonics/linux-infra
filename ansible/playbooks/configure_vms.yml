@@ -5,10 +5,11 @@
   gather_facts: true
 
   # 1) First, load the site’s versions.yml
+  # 1) First, load the site’s versions.yml
   pre_tasks:
-    - name: Debug gpu_driver_version
+    - name: Debug versions data
       debug:
-        msg: "gpu_driver_version is: {{ gpu_driver_version }}"
+        var: configuration
 
 
   roles:
@@ -40,6 +41,8 @@
 
     - role: k8s-tools-install
       when: enable_k8s_tools_install | default(false)
+      vars:
+        k8s_tools: "{{ configuration.k8s_tools }}"
 
     - role: helm-install
       when: enable_helm_install | default(false)
