@@ -1,0 +1,59 @@
+---
+- name: Set tool filename for {{ item.name }}
+  set_fact:
+    tool_filename: "{{ item.version | basename }}"
+
+- name: Check if {{ tool_filename }} exists on local deploy directory
+  stat:
+    path: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+  register: local_tool_file
+  delegate_to: localhost
+
+- name: Download {{ tool_filename }} on local host if not exists
+  delegate_to: localhost
+  get_url:
+    url: "{{ item.version }}"
+    dest: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+    mode: '0755'
+    validate_certs: no
+  when: not local_tool_file.stat.exists
+
+- name: Ensure remote directory /tmp/k8s-utils exists
+  file:
+    path: "/tmp/k8s-utils"
+    state: directory
+    mode: '0755'
+
+- name: Copy {{ tool_filename }} from local deploy to remote /tmp/k8s-utils
+  copy:
+    src: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+    dest: "/tmp/k8s-utils/{{ tool_filename }}"
+    mode: '0755'
+
+- name: Install {{ item.name }} from archive file
+  block:
+    - name: Unarchive {{ tool_filename }}
+      unarchive:
+        src: "/tmp/k8s-utils/{{ tool_filename }}"
+        dest: "/tmp/k8s-utils/"
+        remote_src: yes
+
+    - name: Set binary source path for {{ item.name }}
+      set_fact:
+        binary_src: "{{ '/tmp/k8s-utils/' ~ ( 'linux-amd64/helm' if item.name == 'helm' else item.name ) | trim }}"
+
+    - name: Copy binary for {{ item.name }} to /usr/local/bin
+      copy:
+        src: "{{ binary_src }}"
+        dest: "/usr/local/bin/{{ item.name }}"
+        mode: '0755'
+        remote_src: yes
+  when: tool_filename.endswith('tar.gz')
+
+- name: Install {{ item.name }} from binary file
+  copy:
+    src: "/tmp/k8s-utils/{{ tool_filename }}"
+    dest: "/usr/local/bin/{{ item.name }}"
+    mode: '0755'
+    remote_src: yes
+  when: not tool_filename.endswith('tar.gz')

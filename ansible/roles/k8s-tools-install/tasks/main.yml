@@ -1,0 +1,12 @@
+---
+- name: Ensure offline deploy directory exists
+  file:
+    path: /root/offline_deploy/k8s-utils
+    state: directory
+    mode: '0755'
+
+- name: Install each k8s tool
+  include_tasks: install_tool.yml
+  loop: "{{ k8s_tools }}"
+  loop_control:
+    loop_var: item
