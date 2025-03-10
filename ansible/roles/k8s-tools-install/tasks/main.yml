@@ -32,16 +32,19 @@
   loop: "{{ k8s_tools }}"
   loop_control:
     label: "{{ item.name }}"
+    index_var: tool_index
 
 - name: Download missing tool files
   get_url:
     url: "{{ item.version }}"
     dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
     mode: "{{ (item.version | basename) is match('.*\\.tar\\.gz') | ternary('0644','0755') }}"
-  when: not tool_file.results[loop.index0].stat.exists
+  when: not tool_file.results[tool_index].stat.exists
   loop: "{{ k8s_tools }}"
   loop_control:
     label: "{{ item.name }}"
+    index_var: tool_index
+
 
 
 #########################################
