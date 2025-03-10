@@ -19,12 +19,7 @@
 
     - name: "Install binary for {{ item.name }}"
       copy:
-        src: >-
-          {% if item.name == 'helm' %}
-            /tmp/k8s-tools/linux-amd64/helm
-          {% else %}
-            /tmp/k8s-tools/{{ item.name }}
-          {% endif %} | trim
+        src: "{{ '/tmp/k8s-tools/linux-amd64/helm' if item.name == 'helm' else '/tmp/k8s-tools/' ~ item.name }}"
         dest: "/usr/local/bin/{{ item.name }}"
         mode: '0755'
         remote_src: yes
