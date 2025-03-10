@@ -13,6 +13,7 @@
     url: "{{ item.version }}"
     dest: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
     mode: '0755'
+    validate_certs: no
   when: not tool_file.stat.exists
 
 - name: Install {{ item.name }} from archive file
