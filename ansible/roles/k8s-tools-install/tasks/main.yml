@@ -25,17 +25,22 @@
 #########################################
 # 2. Download Tools (if not already present)
 #########################################
-- name: Download k8s tools if not already present
-  get_url:
-    url: "{{ item.version }}"
-    dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-    mode: '0755'
-    force: no
-    validate_certs: yes
+- name: Check if k8s tool file exists
+  stat:
+    path: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
+  register: tool_file
   loop: "{{ k8s_tools }}"
   loop_control:
     label: "{{ item.name }}"
 
+- name: Download k8s tool with curl if not present
+  shell: "curl -fLO {{ item.item.version }}"
+  args:
+    chdir: /root/offline_deploy/k8s-utils
+  when: not item.stat.exists
+  loop: "{{ tool_file.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
 
 #########################################
 # 3. Install Tools by including per-tool tasks
