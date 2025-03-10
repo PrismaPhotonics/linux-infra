@@ -42,7 +42,7 @@
     - role: k8s-tools-install
       when: enable_k8s_tools_install | default(false)
       vars:
-        k8s_tools: spec.components.k8s_tools
+        k8s_tools: "{{ spec.components.k8s_tools }}"
 
     - role: helm-install
       when: enable_helm_install | default(false)
