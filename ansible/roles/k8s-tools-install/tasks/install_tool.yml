@@ -29,7 +29,7 @@
     src: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
     dest: "/tmp/k8s-utils/{{ tool_filename }}"
     mode: '0755'
-    local_src: yes
+    remote_src: no
   delegate_to: localhost
 
 - name: Install {{ item.name }} from archive file
