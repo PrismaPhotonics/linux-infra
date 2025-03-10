@@ -25,15 +25,6 @@
 #########################################
 # 2. Download Tools (if not already present)
 #########################################
-- name: Check if each tool file exists locally
-  stat:
-    path: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-  register: tool_stat
-  loop: "{{ k8s_tools }}"
-  loop_control:
-    label: "{{ item.name }}"
-  become: yes
-
 - name: Download missing tool files
   get_url:
     url: "{{ item.version }}"
@@ -44,9 +35,6 @@
   loop_control:
     label: "{{ item.name }}"
   become: yes
-
-
-
 
 #########################################
 # 3. Install Tools by including per-tool tasks
