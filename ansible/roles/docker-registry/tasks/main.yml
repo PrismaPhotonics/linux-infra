@@ -1,17 +1,17 @@
 ---
 - import_tasks: docker_config.yml
-  when: node == "worker_node"
+  when: enable_build_registry_on_node
 
 - import_tasks: load_from_tar.yml
-  when: node == "worker_node"
+  when: enable_build_registry_on_node
 
 - import_tasks: list_from_docker_service.yml
-  when: node == "worker_node"
+  when: enable_build_registry_on_node
 
 - import_tasks: registry_container.yml
-  when: node == "worker_node"
+  when: enable_build_registry_on_node
 
 - import_tasks: k3s_config.yml
 
 - import_tasks: docker_mirroring.yml
-  when: node == "worker_node"
+  when: enable_build_registry_on_node
