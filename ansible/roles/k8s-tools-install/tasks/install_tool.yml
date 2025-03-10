@@ -32,25 +32,25 @@
 
 - name: Install {{ item.name }} from archive file
   block:
-    - name: Create temporary directory for extracting {{ item.name }}
-      tempfile:
-        state: directory
-        suffix: "{{ item.name }}"
-      register: temp_extract_dir
+#    - name: Create temporary directory for extracting {{ item.name }}
+#      tempfile:
+#        state: directory
+#        suffix: "{{ item.name }}"
+#      register: temp_extract_dir
 
     - name: Unarchive {{ tool_filename }}
       unarchive:
         src: "/tmp/k8s-utils/{{ tool_filename }}"
-        dest: "{{ temp_extract_dir.path }}"
+        dest: "/tmp/k8s-utils/"
         remote_src: yes
 
     - name: Set binary source path for {{ item.name }}
       set_fact:
         binary_src: >-
           {% if item.name == 'helm' %}
-            {{ temp_extract_dir.path }}/linux-amd64/helm
+            /tmp/k8s-utils/linux-amd64/helm
           {% else %}
-            {{ temp_extract_dir.path }}/{{ item.name }}
+            /tmp/k8s-utils/{{ item.name }}
           {% endif %}
 
     - name: Copy binary for {{ item.name }} to /usr/local/bin
