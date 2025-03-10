@@ -9,6 +9,7 @@
   register: tool_file
 
 - name: Download {{ tool_filename }} if not exists
+  delegate_to: localhost
   get_url:
     url: "{{ item.version }}"
     dest: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
