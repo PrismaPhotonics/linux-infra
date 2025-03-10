@@ -19,7 +19,6 @@
 
     - name: "Install binary for {{ item.name }}"
       copy:
-        # Special case for Helm: its binary is inside a subdirectory.
         src: >-
           {% if item.name == 'helm' %}
             /tmp/k8s-tools/linux-amd64/helm
