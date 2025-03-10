@@ -36,15 +36,15 @@
 
 - name: Download missing tool files
   get_url:
-    url: "{{ item.item.version }}"
-    dest: "/root/offline_deploy/k8s-utils/{{ item.item.version | basename }}"
-    mode: "{{ (item.item.version | basename) is match('.*\\.tar\\.gz') | ternary('0644','0755') }}"
-    validate_certs: no
-  when: not item.stat.exists
-  loop: "{{ tool_stat.results }}"
+    url: "{{ item.version }}"
+    dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
+    mode: "{{ (item.version | basename) is match('.*\\.tar\\.gz') | ternary('0644','0755') }}"
+    creates: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
+  loop: "{{ k8s_tools }}"
   loop_control:
-    label: "{{ item.item.name }}"
+    label: "{{ item.name }}"
   become: yes
+
 
 
 
