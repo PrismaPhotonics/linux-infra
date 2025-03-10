@@ -56,21 +56,21 @@
     #######################################
     - name: "Install tarball tool: {{ item.name }}"
       block:
-        - name: Copy tarball for {{ item.name }} to temporary directory
+        - name: "Copy tarball for {{ item.name }} to temporary directory"
           copy:
             src: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
             dest: "/tmp/k8s-tools/{{ item.version | basename }}"
             mode: '0644'
           become: yes
 
-        - name: Extract tarball for {{ item.name }}
+        - name: "Extract tarball for {{ item.name }}"
           unarchive:
             src: "/tmp/k8s-tools/{{ item.version | basename }}"
             dest: /tmp/k8s-tools/
             remote_src: yes
           become: yes
 
-        - name: Install binary for {{ item.name }}
+        - name: "Install binary for {{ item.name }}"
           copy:
             # Special case for Helm as the binary is inside a subdirectory.
             src: >-
