@@ -25,15 +25,15 @@
 #########################################
 # 2. Download Tools (if not already present)
 #########################################
-- name: Download k8s tools if not already present
-  get_url:
-    url: "{{ item.version }}"
-    dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-    mode: '0755'
-    force: no
-  loop: "{{ k8s_tools }}"
-  loop_control:
-    label: "{{ item.name }}"
+#- name: Download k8s tools if not already present
+#  get_url:
+#    url: "{{ item.version }}"
+#    dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
+#    mode: '0755'
+#    force: no
+#  loop: "{{ k8s_tools }}"
+#  loop_control:
+#    label: "{{ item.name }}"
 
 
 #########################################
