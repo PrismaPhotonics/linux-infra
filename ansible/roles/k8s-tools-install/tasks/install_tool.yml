@@ -24,7 +24,7 @@
             /tmp/k8s-tools/linux-amd64/helm
           {% else %}
             /tmp/k8s-tools/{{ item.name }}
-          {% endif %}
+          {% endif %} | trim
         dest: "/usr/local/bin/{{ item.name }}"
         mode: '0755'
         remote_src: yes
