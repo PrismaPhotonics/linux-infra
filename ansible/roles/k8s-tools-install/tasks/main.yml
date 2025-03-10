@@ -2,59 +2,20 @@
 # tasks/main.yml
 
 #########################################
-# Ensure necessary files are available
+# 1. Ensure directories exist and debug input
 #########################################
-- name: Debug versions data
+- name: Debug k8s_tools variable
   debug:
     var: k8s_tools
 
-- name: Check if Helm tarball exists locally
-  stat:
-    path: '/root/offline_deploy/k8s-utils/helm-v3.12.0-linux-amd64.tar.gz'
-  register: helm_tarball_stat
-  become: yes
-
-- name: Download Helm tarball if not present
-  get_url:
-    url: 'https://get.helm.sh/helm-v3.12.0-linux-amd64.tar.gz'
-    dest: '/root/offline_deploy/k8s-utils/helm-v3.12.0-linux-amd64.tar.gz'
-    mode: '0644'
-  when: not helm_tarball_stat.stat.exists
-  become: yes
-
-- name: Check if k9s tarball exists locally
-  stat:
-    path: '/root/offline_deploy/k8s-utils/k9s_Linux_amd64.tar.gz'
-  register: k9s_tarball_stat
-  become: yes
-
-- name: Download k9s tarball if not present
-  get_url:
-    url: 'https://github.com/derailed/k9s/releases/download/v0.27.3/k9s_Linux_amd64.tar.gz'
-    dest: '/root/offline_deploy/k8s-utils/k9s_Linux_amd64.tar.gz'
-    mode: '0644'
-  when: not k9s_tarball_stat.stat.exists
-  become: yes
-
-- name: Check if Helmfile binary exists locally
-  stat:
-    path: '/root/offline_deploy/k8s-utils/helmfile_linux_amd64'
-  register: helmfile_binary_stat
-  become: yes
-
-- name: Download Helmfile binary if not present
-  get_url:
-    url: 'https://github.com/roboll/helmfile/releases/download/v0.145.0/helmfile_linux_amd64'
-    dest: '/root/offline_deploy/k8s-utils/helmfile_linux_amd64'
+- name: Ensure offline deploy directory exists
+  file:
+    path: /root/offline_deploy/k8s-utils
+    state: directory
     mode: '0755'
-  when: not helmfile_binary_stat.stat.exists
   become: yes
 
-#########################################
-# Create temporary directory for offline tools
-#########################################
-
-- name: Create temporary directory for offline tools
+- name: Create temporary directory for tool installation
   file:
     path: /tmp/k8s-tools
     state: directory
@@ -62,72 +23,86 @@
   become: yes
 
 #########################################
-# Install Helm Offline
+# 2. Download Tools (if not already present)
 #########################################
-
-- name: Copy Helm tarball to temporary directory
-  copy:
-    src: '/root/offline_deploy/k8s-utils/helm-v3.12.0-linux-amd64.tar.gz'
-    dest: /tmp/k8s-tools/helm-v3.12.0-linux-amd64.tar.gz
-    mode: '0644'
+- name: Check if each tool file exists locally
+  stat:
+    path: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
+  register: tool_stat
+  loop: "{{ k8s_tools }}"
+  loop_control:
+    label: "{{ item.name }}"
   become: yes
 
-- name: Extract Helm tarball
-  unarchive:
-    src: /tmp/k8s-tools/helm-v3.12.0-linux-amd64.tar.gz
-    dest: /tmp/k8s-tools/
-    remote_src: yes
-  become: yes
-
-- name: Install Helm binary
-  copy:
-    src: /tmp/k8s-tools/linux-amd64/helm
-    dest: /usr/local/bin/helm
-    mode: '0755'
-    remote_src: yes
+- name: Download missing tool files
+  get_url:
+    url: "{{ item.version }}"
+    dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
+    mode: "{{ (item.version | basename) is match('.*\\.tar\\.gz') | ternary('0644','0755') }}"
+  when: not tool_stat.results[loop.index0].stat.exists
+  loop: "{{ k8s_tools }}"
+  loop_control:
+    label: "{{ item.name }}"
   become: yes
 
 #########################################
-# Install k9s Offline
+# 3. Install Tools
 #########################################
+- name: Install each k8s tool offline
+  block:
 
-- name: Copy k9s tarball to temporary directory
-  copy:
-    src: '/root/offline_deploy/k8s-utils/k9s_Linux_amd64.tar.gz'
-    dest: /tmp/k8s-tools/k9s_Linux_amd64.tar.gz
-    mode: '0644'
-  become: yes
+    #######################################
+    # 3a. Install tarball-based tools
+    #######################################
+    - name: "Install tarball tool: {{ item.name }}"
+      block:
+        - name: Copy tarball for {{ item.name }} to temporary directory
+          copy:
+            src: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
+            dest: "/tmp/k8s-tools/{{ item.version | basename }}"
+            mode: '0644'
+          become: yes
 
-- name: Extract k9s tarball
-  unarchive:
-    src: /tmp/k8s-tools/k9s_Linux_amd64.tar.gz
-    dest: /tmp/k8s-tools/
-    remote_src: yes
-  become: yes
+        - name: Extract tarball for {{ item.name }}
+          unarchive:
+            src: "/tmp/k8s-tools/{{ item.version | basename }}"
+            dest: /tmp/k8s-tools/
+            remote_src: yes
+          become: yes
 
-- name: Install k9s binary
-  copy:
-    src: /tmp/k8s-tools/k9s
-    dest: /usr/local/bin/k9s
-    mode: '0755'
-    remote_src: yes
-  become: yes
+        - name: Install binary for {{ item.name }}
+          copy:
+            # Special case for Helm as the binary is inside a subdirectory.
+            src: >-
+              {% if item.name == 'helm' %}
+                /tmp/k8s-tools/linux-amd64/helm
+              {% else %}
+                /tmp/k8s-tools/{{ item.name }}
+              {% endif %}
+            dest: "/usr/local/bin/{{ item.name }}"
+            mode: '0755'
+            remote_src: yes
+          become: yes
+      when: (item.version | basename) is match('.*\\.tar\\.gz')
+
+    #######################################
+    # 3b. Install binary-based tools
+    #######################################
+    - name: "Install binary tool: {{ item.name }}"
+      copy:
+        src: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
+        dest: "/usr/local/bin/{{ item.name }}"
+        mode: '0755'
+      become: yes
+      when: not ((item.version | basename) is match('.*\\.tar\\.gz'))
+
+  loop: "{{ k8s_tools }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 #########################################
-# Install Helmfile Offline
+# 4. Cleanup temporary directory
 #########################################
-
-- name: Copy Helmfile binary to /usr/local/bin
-  copy:
-    src: '/root/offline_deploy/k8s-utils/helmfile_linux_amd64'
-    dest: /usr/local/bin/helmfile
-    mode: '0755'
-  become: yes
-
-#########################################
-# Optional: Clean up temporary directory
-#########################################
-
 - name: Remove temporary directory
   file:
     path: /tmp/k8s-tools
