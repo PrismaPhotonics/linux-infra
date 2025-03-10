@@ -1,113 +1,55 @@
 ---
-# tasks/main.yml
+- name: Set tool filename for {{ item.name }}
+  set_fact:
+    tool_filename: "{{ item.version | basename }}"
 
-- name: Load versions file
-  include_vars:
-    file: /path/to/versions.yml
-    name: spec
+- name: Check if {{ tool_filename }} exists in offline deploy directory
+  stat:
+    path: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+  register: tool_file
 
-- name: Debug versions data
-  debug:
-    var: spec.k8s_tools | default([])
-
-#########################################
-# Pre-requisites: Ensure offline directory exists
-#########################################
-- name: Ensure offline directory exists
-  file:
-    path: /root/offline_deploy/k8s-utils
-    state: directory
+- name: Download {{ tool_filename }} if not exists
+  get_url:
+    url: "{{ item.version }}"
+    dest: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
     mode: '0755'
-  become: yes
+  when: not tool_file.stat.exists
 
-#########################################
-# Check and download missing offline files for each tool
-#########################################
-- name: Check and download offline file for each tool
+- name: Install {{ item.name }} from archive file
   block:
-    - name: Check if {{ item.name }} file exists locally
-      stat:
-        path: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-      register: file_stat
-      become: yes
+    - name: Create temporary directory for extracting {{ item.name }}
+      tempfile:
+        state: directory
+        suffix: "{{ item.name }}"
+      register: temp_extract_dir
 
-    - name: Download {{ item.name }} if not present
-      get_url:
-        url: "{{ item.version }}"
-        dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-        mode: '0644'
-      when: not file_stat.stat.exists
-      become: yes
-  loop: "{{ spec.k8s_tools | default([]) }}"
-
-#########################################
-# Create temporary directory for processing tarballs
-#########################################
-- name: Create temporary directory for offline tools
-  file:
-    path: /tmp/k8s-tools
-    state: directory
-    mode: '0755'
-  become: yes
-
-#########################################
-# Install tarball-based tools (helm and k9s)
-#########################################
-- name: Install tarball-based tool
-  block:
-    - name: Copy {{ item.name }} tarball to temporary directory
-      copy:
-        src: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-        dest: "/tmp/k8s-tools/{{ item.version | basename }}"
-        mode: '0644'
-      become: yes
-
-    - name: Extract {{ item.name }} tarball
+    - name: Unarchive {{ tool_filename }}
       unarchive:
-        src: "/tmp/k8s-tools/{{ item.version | basename }}"
-        dest: /tmp/k8s-tools/
+        src: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+        dest: "{{ temp_extract_dir.path }}"
         remote_src: yes
-      become: yes
 
-    - name: Install {{ item.name }} binary
+    - name: Set binary source path for {{ item.name }}
+      set_fact:
+        binary_src: >-
+          {% if item.name == 'helm' %}
+            {{ temp_extract_dir.path }}/linux-amd64/helm
+          {% else %}
+            {{ temp_extract_dir.path }}/{{ item.name }}
+          {% endif %}
+
+    - name: Copy binary for {{ item.name }} to /usr/local/bin
       copy:
-        src: >-
-          {% if item.name == 'helm' %}
-            /tmp/k8s-tools/linux-amd64/helm
-          {% elif item.name == 'k9s' %}
-            /tmp/k8s-tools/k9s
-          {% endif %}
-        dest: >-
-          {% if item.name == 'helm' %}
-            /usr/local/bin/helm
-          {% elif item.name == 'k9s' %}
-            /usr/local/bin/k9s
-          {% endif %}
+        src: "{{ binary_src }}"
+        dest: "/usr/local/bin/{{ item.name }}"
         mode: '0755'
         remote_src: yes
-      become: yes
-  when: item.name in ['helm', 'k9s']
-  loop: "{{ spec.k8s_tools | default([]) }}"
+  when: tool_filename.endswith('tar.gz')
 
-#########################################
-# Install Helmfile (standalone binary)
-#########################################
-- name: Install helmfile binary
-  block:
-    - name: Copy helmfile binary to /usr/local/bin
-      copy:
-        src: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
-        dest: /usr/local/bin/helmfile
-        mode: '0755'
-      become: yes
-  when: item.name == 'helmfile'
-  loop: "{{ spec.k8s_tools | default([]) }}"
-
-#########################################
-# Optional: Clean up temporary directory
-#########################################
-- name: Remove temporary directory
-  file:
-    path: /tmp/k8s-tools
-    state: absent
-  become: yes
+- name: Install {{ item.name }} from binary file
+  copy:
+    src: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+    dest: "/usr/local/bin/{{ item.name }}"
+    mode: '0755'
+    remote_src: yes
+  when: not tool_filename.endswith('tar.gz')
