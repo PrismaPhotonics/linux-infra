@@ -29,7 +29,6 @@
       unarchive:
         src: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
         dest: "{{ temp_extract_dir.path }}"
-        remote_src: yes
 
     - name: Set binary source path for {{ item.name }}
       set_fact:
