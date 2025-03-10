@@ -3,19 +3,33 @@
   set_fact:
     tool_filename: "{{ item.version | basename }}"
 
-- name: Check if {{ tool_filename }} exists in offline deploy directory
+- name: Check if {{ tool_filename }} exists on local deploy directory
   stat:
     path: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
-  register: tool_file
+  register: local_tool_file
+  delegate_to: localhost
 
-- name: Download {{ tool_filename }} if not exists
+- name: Download {{ tool_filename }} on local host if not exists
   delegate_to: localhost
   get_url:
     url: "{{ item.version }}"
     dest: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
     mode: '0755'
     validate_certs: no
-  when: not tool_file.stat.exists
+  when: not local_tool_file.stat.exists
+
+- name: Ensure remote directory /tmp/k8s-utils exists
+  file:
+    path: "/tmp/k8s-utils"
+    state: directory
+    mode: '0755'
+
+- name: Copy {{ tool_filename }} from local deploy to remote /tmp/k8s-utils
+  copy:
+    src: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+    dest: "/tmp/k8s-utils/{{ tool_filename }}"
+    mode: '0755'
+  delegate_to: localhost
 
 - name: Install {{ item.name }} from archive file
   block:
@@ -27,8 +41,9 @@
 
     - name: Unarchive {{ tool_filename }}
       unarchive:
-        src: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+        src: "/tmp/k8s-utils/{{ tool_filename }}"
         dest: "{{ temp_extract_dir.path }}"
+        remote_src: yes
 
     - name: Set binary source path for {{ item.name }}
       set_fact:
@@ -49,7 +64,7 @@
 
 - name: Install {{ item.name }} from binary file
   copy:
-    src: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+    src: "/tmp/k8s-utils/{{ tool_filename }}"
     dest: "/usr/local/bin/{{ item.name }}"
     mode: '0755'
     remote_src: yes
