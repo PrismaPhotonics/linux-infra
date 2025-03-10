@@ -31,6 +31,7 @@
     dest: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
     mode: '0755'
     force: no
+    validate_certs: yes
   loop: "{{ k8s_tools }}"
   loop_control:
     label: "{{ item.name }}"
