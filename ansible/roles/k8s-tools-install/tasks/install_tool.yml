@@ -34,8 +34,9 @@
 
 - name: "Install binary tool: {{ item.name }}"
   copy:
-    src: "/root/offline_deploy/k8s-utils/{{ item.version | basename }}"
+    src: "/tmp/{{ item.version | basename }}"
     dest: "/usr/local/bin/{{ item.name }}"
     mode: '0755'
+    remote_src: yes
   become: yes
   when: not ((item.version | basename) is match('.*\\.tar\\.gz'))
