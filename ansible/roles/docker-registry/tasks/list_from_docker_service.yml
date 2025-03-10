@@ -12,3 +12,7 @@
         | select('defined')
         | list
       }}
+      
+- name: Debug loaded images array
+  debug:
+    var: docker_images_list

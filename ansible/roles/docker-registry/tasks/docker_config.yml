@@ -1,12 +1,12 @@
-
-- name: Backup existing Docker daemon.json (if exists)
-  copy:
-    src: /etc/docker/daemon.json
-    dest: /etc/docker/daemon.json.bak
-    remote_src: yes
-  ignore_errors: yes
+- name: Ensure /etc/docker directory exists
+  file:
+    path: /etc/docker
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
   become: yes
-
+  
 - name: Configure Docker daemon storage driver and insecure registries
   copy:
     dest: /etc/docker/daemon.json
