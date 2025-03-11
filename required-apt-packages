@@ -1,11 +1,13 @@
 BASE_PACKAGES=(
     autofs
+    build-essential
     containerd.io
     curl
     docker-ce
     dos2unix
     dpkg-dev
     gcc
+    gcc-9
     gdb
     git
     google-chrome-stable
