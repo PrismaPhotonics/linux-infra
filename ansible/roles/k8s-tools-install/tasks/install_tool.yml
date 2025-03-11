@@ -1,19 +1,19 @@
 ---
 - name: Set tool filename for {{ item.name }}
   set_fact:
-    tool_filename: "{{ item.version | basename }}"
+    tool_filename: "{{ item.url | basename }}"
 
 - name: Check if {{ tool_filename }} exists on local deploy directory
   stat:
-    path: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+    path: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
   register: local_tool_file
   delegate_to: localhost
 
 - name: Download {{ tool_filename }} on local host if not exists
   delegate_to: localhost
   get_url:
-    url: "{{ item.version }}"
-    dest: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+    url: "{{ item.url }}"
+    dest: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
     mode: '0755'
     validate_certs: no
   when: not local_tool_file.stat.exists
@@ -26,7 +26,7 @@
 
 - name: Copy {{ tool_filename }} from local deploy to remote /tmp/k8s-utils
   copy:
-    src: "/root/offline_deploy/k8s-utils/{{ tool_filename }}"
+    src: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
     dest: "/tmp/k8s-utils/{{ tool_filename }}"
     mode: '0755'
 
@@ -38,9 +38,21 @@
         dest: "/tmp/k8s-utils/"
         remote_src: yes
 
+    - name: Find extracted binary for {{ item.name }}
+      find:
+        paths: "/tmp/k8s-utils"
+        file_type: file
+        patterns: "{{ item.name }}"
+      register: found_bin
+
+    - name: Fail if binary for {{ item.name }} not found
+      fail:
+        msg: "Could not find binary for {{ item.name }} in /tmp/k8s-utils"
+      when: found_bin.matched == 0
+
     - name: Set binary source path for {{ item.name }}
       set_fact:
-        binary_src: "{{ '/tmp/k8s-utils/' ~ ( 'linux-amd64/helm' if item.name == 'helm' else item.name ) | trim }}"
+        binary_src: "{{ found_bin.files[0].path }}"
 
     - name: Copy binary for {{ item.name }} to /usr/local/bin
       copy:
@@ -48,12 +60,3 @@
         dest: "/usr/local/bin/{{ item.name }}"
         mode: '0755'
         remote_src: yes
-  when: tool_filename.endswith('tar.gz')
-
-- name: Install {{ item.name }} from binary file
-  copy:
-    src: "/tmp/k8s-utils/{{ tool_filename }}"
-    dest: "/usr/local/bin/{{ item.name }}"
-    mode: '0755'
-    remote_src: yes
-  when: not tool_filename.endswith('tar.gz')

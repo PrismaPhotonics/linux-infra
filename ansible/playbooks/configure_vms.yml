@@ -9,7 +9,7 @@
   pre_tasks:
     - name: Debug versions data
       debug:
-        var: spec.components.k8s_tools
+        var: spec
 
 
   roles:
@@ -43,6 +43,7 @@
       when: enable_k8s_tools_install | default(false)
       vars:
         k8s_tools: "{{ spec.components.k8s_tools }}"
+        offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
 
     - role: helm-install
       when: enable_helm_install | default(false)

@@ -1,7 +1,7 @@
 ---
 - name: Ensure offline deploy directory exists
   file:
-    path: /root/offline_deploy/k8s-utils
+    path: "{{ offline_deploy_path }}/k8s-utils/"
     state: directory
     mode: '0755'
 
