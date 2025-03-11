@@ -38,6 +38,7 @@
       vars:
         master_node_ip: "{{ spec.configurations.master_node_ip }}"
         k3s_mode: "{{ spec.configurations.k3s_mode }}"
+        k3s_tools: "{{ spec.components.k3s_tools }}"
 
     - role: k8s-tools-install
       when: enable_k8s_tools_install | default(false)
