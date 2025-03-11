@@ -24,6 +24,7 @@
       when: enable_drivers_install | default(false)
       vars:
        drivers: "{{ spec.components.drivers | default([]) }}"
+       offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
       tags: install-drivers
 
     - role: k3s-install
