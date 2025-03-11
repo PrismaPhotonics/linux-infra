@@ -5,10 +5,14 @@
     state: directory
     mode: '0755'
 
+- name: Set driver filename for {{ driver.name }}
+  set_fact:
+    driver_filename: "{{ driver.url | basename }}"
+
 - name: Download drivers if not exists
   get_url:
     url: "{{ driver.url }}"
-    dest: "{{ offline_deploy_path }}/drivers/{{ driver.name }}.run"
+    dest: "{{ offline_deploy_path }}/drivers/{{ driver_filename }}"
     mode: '0755'
     force: no
   loop: "{{ drivers }}"
