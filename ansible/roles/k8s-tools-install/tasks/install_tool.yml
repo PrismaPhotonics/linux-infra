@@ -41,6 +41,7 @@
     - name: Find extracted binary for {{ item.name }}
       find:
         paths: "/tmp/k8s-utils"
+        recurse: yes
         file_type: file
         patterns: "{{ item.name }}"
       register: found_bin
