@@ -10,6 +10,7 @@
     url: "{{ item.url }}"
     dest: "{{ offline_deploy_path }}/drivers/{{ item.name }}.run"
     mode: '0755'
+    force: no
   loop: "{{ drivers }}"
   register: downloaded_drivers
 
