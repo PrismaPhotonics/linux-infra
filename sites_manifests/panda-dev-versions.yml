@@ -46,10 +46,8 @@ spec:
         version: "0.5.0"
 
     drivers:
-      - name: "NVIDIA-Linux-x86_64-570.124.04"
-        url: " https://us.download.nvidia.com/XFree86/Linux-x86_64/570.124.04/NVIDIA-Linux-x86_64-570.124.04.run"
-      - name: "awg"
-        url: " https://us.download.nvidia.com/XFree86/Linux-x86_64/1.2.3/awg"
+      - name: "gpu-driver"
+        url: "https://us.download.nvidia.com/XFree86/Linux-x86_64/570.124.04/NVIDIA-Linux-x86_64-570.124.04.run"
 
     k3s_tools:
       - name: "k3s"
