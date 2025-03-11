@@ -9,7 +9,7 @@
   set_fact:
     driver_filename: "{{ driver.url | basename }}"
 
-- name: Debug: List contents of drivers directory
+- name: List contents of drivers directory
   command: ls -l "{{ offline_deploy_path }}/drivers"
   register: drivers_dir_listing
 
