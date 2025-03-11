@@ -14,7 +14,7 @@
 - name: Ensure repository is present and up-to-date
   git:
     repo: "https://{{ git_username | urlencode }}:{{ git_password | urlencode }}@github.com/PrismaPhotonics/linux-infra.git"
-    dest: /home/prisma/linux-infra
+    dest: "/home/{{ artifact_path.linux_user }}/{{ artifact_path.offline_deploy }}/linux-infra/"
     version: main
   when: not linux_infra.stat.exists
 
