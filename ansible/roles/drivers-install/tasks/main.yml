@@ -13,8 +13,8 @@
 
 - name: Download driver if not present
   get_url:
-    url: "{{ item.0.url }}"
-    dest: "{{ offline_deploy_path }}/drivers/{{ item.0.name }}.run"
+    url: "{{ item.1.url }}"
+    dest: "{{ offline_deploy_path }}/drivers/{{ item.1.name }}.run"
     mode: '0755'
   loop: "{{ driver_files.results | zip(drivers) | list }}"
   when: not item.0.stat.exists
