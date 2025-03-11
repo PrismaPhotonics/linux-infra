@@ -9,14 +9,12 @@
   set_fact:
     driver_filename: "{{ driver.url | basename }}"
 
-- name: Download drivers if not exists
+- name: Download {{ driver.name }} driver
   get_url:
     url: "{{ driver.url }}"
     dest: "{{ offline_deploy_path }}/drivers/{{ driver_filename }}"
     mode: '0755'
     force: no
-  loop: "{{ drivers }}"
-  register: downloaded_drivers
 
 - name: Install gcc-9
   apt:
