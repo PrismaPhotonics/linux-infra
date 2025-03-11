@@ -25,10 +25,10 @@
     mode: '0755'
   when: not driver_file.stat.exists
 
-- name: Install gcc-9
-  apt:
-    name: gcc-9
-    state: present
+#- name: Install gcc-9
+#  apt:
+#    name: gcc-9
+#    state: present
 
 - name: Disable Nouveau driver by blacklisting it
   copy:
