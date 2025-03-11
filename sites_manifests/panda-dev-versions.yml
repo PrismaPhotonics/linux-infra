@@ -74,7 +74,7 @@ spec:
 
 
   configurations:
-    offline_deploy_path: '/root/offline_deploy/'
+    offline_deploy_path: '/root/offline_deploy'
     vms:
       workernode-panda:
         vmid: 108
