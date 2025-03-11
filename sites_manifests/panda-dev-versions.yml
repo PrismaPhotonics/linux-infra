@@ -60,7 +60,7 @@ spec:
         url: "https://github.com/k3s-io/k3s/releases/download/v1.25.12%2Bk3s1/k3s"
 
       - name: "k3s_install.sh"
-        url: "https://get.k3s.io/install.sh"
+        url: "https://get.k3s.io/k3s_install.sh"
 
     k8s_tools:
       - name: "k9s"
