@@ -34,7 +34,7 @@
       tags: uninstall-gpu
 
     - role: k3s-install
-      when: enable_k3s_master_install | default(false)
+      when: enable_k3s_install | default(false)
       vars:
         master_node_ip: "{{ spec.configurations.master_node_ip }}"
         k3s_mode: "{{ spec.configurations.k3s_mode }}"
