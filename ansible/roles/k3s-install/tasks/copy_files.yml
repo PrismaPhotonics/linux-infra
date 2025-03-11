@@ -1,13 +1,13 @@
 ---
 # tasks/00_copy_files.yml
 
-- name: 'Ensure local deploy directory exists'
+- name: Ensure local deploy directory exists
   delegate_to: localhost
   file:
     path: "{{ offline_deploy_path }}/k8s-utils"
     state: directory
 
-- name: 'Ensure k3s tool "{{ item.name }}" exists on local deploy directory'
+- name: Ensure k3s tool {{ item.name }} exists on local deploy directory
   block:
     - name: Check if {{ item.name }} exists on local deploy directory
       stat:
@@ -15,7 +15,7 @@
       register: local_tool_file
       delegate_to: localhost
 
-    - name: 'Download {{ item.name }} on local host if not exists'
+    - name: Download {{ item.name }} on local host if not exists
       delegate_to: localhost
       get_url:
         url: "{{ item.url }}"
@@ -27,14 +27,14 @@
   loop_control:
     loop_var: item
 
-- name: 'Copy k3s binary to /usr/local/bin'
+- name: Copy k3s binary to /usr/local/bin
   copy:
     src: "{{ offline_deploy_path }}/k8s-utils/k3s"
     dest: /usr/local/bin/k3s
     mode: '0755'
   become: yes
 
-- name: 'Copy the local k3s installer script to the remote host'
+- name: Copy the local k3s installer script to the remote host
   copy:
     src: "{{ offline_deploy_path }}/k8s-utils/k3s_install.sh"
     dest: /tmp/k3s_install.sh
