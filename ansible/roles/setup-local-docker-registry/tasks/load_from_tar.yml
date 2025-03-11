@@ -1,6 +1,6 @@
 - name: Find all tar files in offline deploy artifcats
   find:
-    paths: "/home/{{ versions_data.linuxUser}}/{{ versions_data.offlineDeploy }}/local_registry/imported_images"
+    paths: "/home/{{ artifact_path.linux_user}}/{{ artifact_path.offline_deploy }}/local_registry/imported_images"
     patterns: "*.tar"
   register: tar_files
 
@@ -26,3 +26,4 @@
 - name: Debug loaded images array
   debug:
     var: docker_images_list
+

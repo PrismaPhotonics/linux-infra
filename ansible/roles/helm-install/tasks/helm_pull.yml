@@ -1,0 +1,19 @@
+- name: Add Helm repositories using community.kubernetes.helm_repository
+  community.kubernetes.helm_repository:
+    name: "{{ item.key }}"
+    repo_url: "{{ item.value }}"
+  loop: "{{ helm_spec.helm_repos | dict2items }}"
+
+- name: Create directory for downloaded Helm charts
+  file:
+    path: "/home/{{ artifact_path.linux_user }}/{{ artifact_path.offline_deploy }}/helm_charts/downloaded_helm_charts/"
+    state: directory
+    owner: "{{ artifact_path.linux_user }}"
+    group: "{{ artifact_path.linux_user }}"
+    mode: '0755'
+
+- name: Pull and untar Helm charts using helm CLI
+  command: >
+    helm pull {{ item.key }} --version {{ item.value }}
+    --untar --untardir "/home/{{ artifact_path.linux_user }}/{{ artifact_path.offline_deploy }}/helm_charts/downloaded_helm_charts/"
+  loop: "{{ helm_spec.helm_charts | dict2items }}"
