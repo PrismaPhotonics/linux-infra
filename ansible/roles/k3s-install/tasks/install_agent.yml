@@ -3,6 +3,7 @@
   slurp:
     src: /var/lib/rancher/k3s/server/node-token
   delegate_to: "{{ master_node_ip }}"
+  remote_user: prisma
   register: k3s_token_raw
 
 - name: Set k3s token fact

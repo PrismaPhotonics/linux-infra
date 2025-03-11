@@ -11,7 +11,6 @@
       debug:
         var: spec
 
-
   roles:
     - role: offline-apt-repo
       when: enable_offline_apt_repo | default(false)
