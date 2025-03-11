@@ -2,7 +2,7 @@
 - name: Retrieve k3s node token from the server
   slurp:
     src: /var/lib/rancher/k3s/server/node-token
-  delegate_to: "{{ groups['all_vms'][0] }}"
+  delegate_to: "{{ master_node_ip }}"
   register: k3s_token_raw
 
 - name: Set k3s token fact
@@ -28,7 +28,7 @@
   become: yes
 
 - name: Retrieve kubeconfig from k3s server
-  delegate_to: "{{ groups['all_vms'][0] }}"
+  delegate_to: "{{ master_node_ip }}"
   slurp:
     src: /etc/rancher/k3s/k3s.yaml
   register: k3s_kubeconfig_raw
