@@ -70,7 +70,7 @@ spec:
 
 
   configurations:
-    offline_deploy_path: '/root/offline_deploy'
+    offline_deploy_path: '/offline_deploy'
     master_node_ip: '20.0.0.210'
     vms:
       workernode-panda:
