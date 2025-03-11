@@ -1,5 +1,5 @@
-enable_k3s_agent_install: false
-enable_k8s_tools_install: true
+enable_k3s_install: true
+enable_k8s_tools_install: false
 enable_apt_install: false
 enable_gpu_driver_install: false
 enable_gpu_driver_uninstall: false

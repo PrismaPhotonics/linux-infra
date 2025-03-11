@@ -57,10 +57,10 @@ spec:
 
     k3s_tools:
       - name: "k3s"
-        version: "https://github.com/k3s-io/k3s/releases/download/v1.25.12%2Bk3s1/k3s"
+        url: "https://github.com/k3s-io/k3s/releases/download/v1.25.12%2Bk3s1/k3s"
 
-      - name: "k3s_install"
-        version: "https://get.k3s.io/install.sh"
+      - name: "k3s_install.sh"
+        url: "https://get.k3s.io/install.sh"
 
     k8s_tools:
       - name: "k9s"
@@ -75,6 +75,8 @@ spec:
 
   configurations:
     offline_deploy_path: '/root/offline_deploy'
+    master_node_ip: '20.0.0.210'
     vms:
       workernode-panda:
         vmid: 108
+        k3s_mode: 'agent'
