@@ -1,4 +1,8 @@
 ---
+- name: Debug versions data
+  debug:
+    var: k3s_tools
+
 - name: Process copy_files tasks for each item
   include_tasks: copy_files.yml
   loop: "{{ k3s_tools }}"
