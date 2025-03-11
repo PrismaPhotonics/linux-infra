@@ -4,8 +4,6 @@
   become: true
   gather_facts: true
 
-  # 1) First, load the site’s versions.yml
-  # 1) First, load the site’s versions.yml
   pre_tasks:
     - name: Debug versions data
       debug:
