@@ -3,6 +3,12 @@
   debug:
     var: k3s_tools
 
+- name: Process Download files for each item if not exist
+  include_tasks: download_files.yml
+  loop: "{{ k3s_tools }}"
+  loop_control:
+    loop_var: item
+
 - name: Process copy_files tasks for each item
   include_tasks: copy_files.yml
   loop: "{{ k3s_tools }}"
