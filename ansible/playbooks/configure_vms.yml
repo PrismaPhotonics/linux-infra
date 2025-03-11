@@ -28,10 +28,6 @@
        gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
       tags: install-gpu
 
-    - role: gpu-driver-uninstall
-      when: enable_gpu_driver_uninstall | default(false)
-      tags: uninstall-gpu
-
     - role: k3s-install
       when: enable_k3s_install | default(false)
       vars:
@@ -47,6 +43,10 @@
 
     - role: helm-install
       when: enable_helm_install | default(false)
+
+    - role: gpu-driver-uninstall
+      when: enable_gpu_driver_uninstall | default(false)
+      tags: uninstall-gpu
 
 
 #    - role: network-setup
