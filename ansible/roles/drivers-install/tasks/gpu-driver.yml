@@ -51,7 +51,7 @@
 
 
 - name: Install CUDA driver from runfile
-  command: "sh {{ offline_deploy_path }}/drivers/{{ driver_filename }}.run --dkms --silent"
+  command: "sh {{ offline_deploy_path }}/drivers/{{ driver_filename }} --dkms --silent"
   args:
     creates: "/usr/bin/nvidia-smi"
   register: runfile_install
