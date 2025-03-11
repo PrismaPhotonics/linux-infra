@@ -5,6 +5,7 @@ artifact_path:
 helm_spec:
   project: shaked
   threeFirstOctets: 10.10.70
+  branch: main
 
   helm_repos:
     prometheus-community: https://prometheus-community.github.io/helm-charts
