@@ -1,7 +1,7 @@
-enable_k3s_install: true
+enable_k3s_install: false
 enable_k8s_tools_install: false
 enable_apt_install: false
-enable_gpu_driver_install: false
+enable_drivers_install: true
 enable_gpu_driver_uninstall: false
 enable_network_setup: false
 enable_docker_load: false

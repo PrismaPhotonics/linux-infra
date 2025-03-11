@@ -20,11 +20,11 @@
        apt_packages: "{{ merged_configurations.components.apt_packages | default([]) }}"
       tags: apt
 
-    - role: gpu-driver-install
-      when: enable_gpu_driver_install | default(false)
+    - role: drivers-install
+      when: enable_drivers_install | default(false)
       vars:
-       gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
-      tags: install-gpu
+       drivers: "{{ spec.components.drivers | default([]) }}"
+      tags: install-drivers
 
     - role: k3s-install
       when: enable_k3s_install | default(false)
