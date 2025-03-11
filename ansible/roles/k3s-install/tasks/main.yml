@@ -1,5 +1,9 @@
 ---
-- import_tasks: copy_files.yml
+- name: Process copy_files tasks for each item
+  include_tasks: copy_files.yml
+  loop: "{{ k3s_tools }}"
+  loop_control:
+    loop_var: item
 
 - name: Install k3s server if required
   import_tasks: install_server.yml
