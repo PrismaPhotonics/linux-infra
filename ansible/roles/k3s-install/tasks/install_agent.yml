@@ -30,6 +30,7 @@
 
 - name: Retrieve kubeconfig from k3s server
   delegate_to: "{{ master_node_ip }}"
+  remote_user: prisma
   slurp:
     src: /etc/rancher/k3s/k3s.yaml
   register: k3s_kubeconfig_raw
