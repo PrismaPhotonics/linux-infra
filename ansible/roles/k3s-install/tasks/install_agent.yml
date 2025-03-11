@@ -28,7 +28,7 @@
   become: yes
 
 - name: Retrieve kubeconfig from k3s server
-  delegate_to: "{{ master_node_ip }}"
+  delegate_to: "{{ groups['all_vms'][0] }}"
   slurp:
     src: /etc/rancher/k3s/k3s.yaml
   register: k3s_kubeconfig_raw
