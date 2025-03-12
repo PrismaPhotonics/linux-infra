@@ -44,5 +44,6 @@
       when: enable_helm_install | default(false)
 
     - role: gpu-driver-uninstall
+      when: enable_gpu_driver_uninstall | default(false)
       tags: uninstall-gpu
 
