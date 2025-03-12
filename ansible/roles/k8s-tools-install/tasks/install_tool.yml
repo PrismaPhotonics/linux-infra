@@ -1,0 +1,63 @@
+---
+- name: Set tool filename for {{ item.name }}
+  set_fact:
+    tool_filename: "{{ item.url | basename }}"
+
+- name: Check if {{ tool_filename }} exists on local deploy directory
+  stat:
+    path: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
+  register: local_tool_file
+  delegate_to: localhost
+
+- name: Download {{ tool_filename }} on local host if not exists
+  delegate_to: localhost
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
+    mode: '0755'
+    validate_certs: no
+  when: not local_tool_file.stat.exists
+
+- name: Ensure remote directory /tmp/k8s-utils exists
+  file:
+    path: "/tmp/k8s-utils"
+    state: directory
+    mode: '0755'
+
+- name: Copy {{ tool_filename }} from local deploy to remote /tmp/k8s-utils
+  copy:
+    src: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
+    dest: "/tmp/k8s-utils/{{ tool_filename }}"
+    mode: '0755'
+
+- name: Install {{ item.name }} from archive file
+  block:
+    - name: Unarchive {{ tool_filename }}
+      unarchive:
+        src: "/tmp/k8s-utils/{{ tool_filename }}"
+        dest: "/tmp/k8s-utils/"
+        remote_src: yes
+
+    - name: Find extracted binary for {{ item.name }}
+      find:
+        paths: "/tmp/k8s-utils"
+        recurse: yes
+        file_type: file
+        patterns: "{{ item.name }}"
+      register: found_bin
+
+    - name: Fail if binary for {{ item.name }} not found
+      fail:
+        msg: "Could not find binary for {{ item.name }} in /tmp/k8s-utils"
+      when: found_bin.matched == 0
+
+    - name: Set binary source path for {{ item.name }}
+      set_fact:
+        binary_src: "{{ found_bin.files[0].path }}"
+
+    - name: Copy binary for {{ item.name }} to /usr/local/bin
+      copy:
+        src: "{{ binary_src }}"
+        dest: "/usr/local/bin/{{ item.name }}"
+        mode: '0755'
+        remote_src: yes

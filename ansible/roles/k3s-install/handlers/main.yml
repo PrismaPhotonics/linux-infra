@@ -1,0 +1,19 @@
+---
+# handlers/main.yml
+
+- name: reload systemd daemon
+  become: yes
+  systemd:
+    daemon_reload: yes
+
+- name: restart k3s-agent service
+  become: yes
+  systemd:
+    name: k3s-agent
+    state: restarted
+
+- name: restart k3s service
+  become: yes
+  systemd:
+    name: k3s
+    state: restarted

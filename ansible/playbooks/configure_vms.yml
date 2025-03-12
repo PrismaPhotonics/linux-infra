@@ -7,21 +7,40 @@
   roles:
     - role: offline-apt-repo
       when: enable_offline_apt_repo | default(false)
+      tags: apt
 
     - role: apt-install
       when: enable_apt_install | default(false)
       vars:
        apt_packages: "{{ merged_configurations.components.apt_packages | default([]) }}"
+      tags: apt
 
     - role: gpu-driver-install
       when: enable_gpu_driver_install | default(false)
       vars:
        gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
+      tags: install-gpu
+
+    - role: k3s-install
+      when: enable_k3s_install | default(false)
+      vars:
+        master_node_ip: "{{ spec.configurations.master_node_ip }}"
+        k3s_tools: "{{ spec.components.k3s_tools }}"
+        offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
+
+    - role: k8s-tools-install
+      when: enable_k8s_tools_install | default(false)
+      vars:
+        k8s_tools: "{{ spec.components.k8s_tools }}"
+        offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
+
+    - role: helm-install
+      when: enable_helm_install | default(false)
 
     - role: gpu-driver-uninstall
       when: enable_gpu_driver_uninstall | default(false)
-      vars:
-       gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
+      tags: uninstall-gpu
+
 
 #    - role: network-setup
 #      when: enable_network_setup | default(false)

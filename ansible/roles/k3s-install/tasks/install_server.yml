@@ -1,0 +1,16 @@
+---
+- name: Install k3s server using the local installer script
+  shell: "/tmp/k3s_install.sh --service-node-port-range 5671-32767 --disable traefik --disable servicelb --disable local-path --node-taint node-role.kubernetes.io/master:NoSchedule"
+  environment:
+    INSTALL_K3S_SKIP_DOWNLOAD: "true"
+  become: yes
+  notify:
+    - reload systemd daemon
+    - restart k3s service
+
+- name: Ensure k3s server service is enabled and running
+  systemd:
+    name: k3s
+    state: started
+    enabled: yes
+  become: yes

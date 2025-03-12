@@ -1,0 +1,54 @@
+---
+- name: Retrieve k3s node token from the server
+  slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  delegate_to: "{{ master_node_ip }}"
+  remote_user: prisma
+  register: k3s_token_raw
+
+- name: Set k3s token fact
+  set_fact:
+    k3s_token: "{{ k3s_token_raw.content | b64decode | trim }}"
+
+- name: Install k3s agent using the local installer script
+  shell: "/tmp/k3s_install.sh --kubelet-arg=max-pods=400"
+  environment:
+    K3S_URL: "https://{{ master_node_ip }}:6443"
+    K3S_TOKEN: "{{ k3s_token }}"
+    INSTALL_K3S_SKIP_DOWNLOAD: "true"
+  become: yes
+  notify:
+    - reload systemd daemon
+    - restart k3s-agent service
+
+- name: Ensure k3s-agent service is enabled and running
+  systemd:
+    name: k3s-agent
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Retrieve kubeconfig from k3s server
+  delegate_to: "{{ master_node_ip }}"
+  remote_user: prisma
+  slurp:
+    src: /etc/rancher/k3s/k3s.yaml
+  register: k3s_kubeconfig_raw
+
+- name: Set kubeconfig fact for agent
+  set_fact:
+    k3s_kubeconfig: "{{ k3s_kubeconfig_raw.content | b64decode }}"
+
+- name: Ensure /etc/rancher/k3s directory exists on agent
+  file:
+    path: /etc/rancher/k3s
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Write kubeconfig file on agent
+  copy:
+    content: "{{ k3s_kubeconfig | regex_replace('127.0.0.1', master_node_ip) }}"
+    dest: /etc/rancher/k3s/k3s.yaml
+    mode: '0644'
+  become: yes

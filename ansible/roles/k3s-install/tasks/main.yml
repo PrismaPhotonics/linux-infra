@@ -1,0 +1,24 @@
+---
+- name: Debug versions data
+  debug:
+    var: k3s_tools
+
+- name: Process Download files for each item if not exist
+  include_tasks: download_files.yml
+  loop: "{{ k3s_tools }}"
+  loop_control:
+    loop_var: item
+
+- name: Process copy_files tasks for each item
+  include_tasks: copy_files.yml
+  loop: "{{ k3s_tools }}"
+  loop_control:
+    loop_var: item
+
+- name: Install k3s server if required
+  import_tasks: install_server.yml
+  when: k3s_mode == 'server'
+
+- name: Install k3s agent if required
+  import_tasks: install_agent.yml
+  when: k3s_mode == 'agent'
