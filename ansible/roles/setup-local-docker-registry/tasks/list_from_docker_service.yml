@@ -25,7 +25,7 @@
   set_fact:
     missing_images: "{{ expected_images | difference(docker_images_list) }}"
 
-- name: Fail if any expected images are missing
+- name: Log if any expected images are missing
   debug:
     msg: "The following expected Docker images are missing: {{ missing_images }}"
   when: missing_images | length > 0

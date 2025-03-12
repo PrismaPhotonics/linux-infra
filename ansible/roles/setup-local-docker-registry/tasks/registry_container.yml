@@ -26,4 +26,3 @@
       - /var/lib/registry:/var/lib/registry
   when: not registry_container_info.exists
   register: registry_result
-  ignore_errors: yes

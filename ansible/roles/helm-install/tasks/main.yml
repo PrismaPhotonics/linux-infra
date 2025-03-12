@@ -1,4 +1,4 @@
-- name: Check if imported images directory exists
+- name: Check if helm chart directory exists
   stat:
     path: "/home/{{ artifact_path.linux_user }}/{{ artifact_path.offline_deploy }}/helm_charts/downloaded_helm_charts/"
   register: imported_charts
@@ -6,7 +6,7 @@
 - import_tasks: helm_pull.yml
   when: not imported_charts.stat.exists
 
-- name: Check if imported images directory exists
+- name: Check if linux infra artifact directory exists
   stat:
     path: "/home/{{ artifact_path.linux_user }}/{{ artifact_path.offline_deploy }}/linux-infra/"
   register: linux_infra
