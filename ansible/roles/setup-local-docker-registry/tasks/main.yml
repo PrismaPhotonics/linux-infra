@@ -8,6 +8,9 @@
 - import_tasks: load_from_tar.yml
   when: imported_images_dir.stat.exists
 
+- import_tasks: ecr_login.yml
+  when: not imported_images_dir.stat.exists
+
 - import_tasks: pull_images.yml
   when: not imported_images_dir.stat.exists
 
