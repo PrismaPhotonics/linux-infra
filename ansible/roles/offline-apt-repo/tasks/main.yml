@@ -1,66 +1,50 @@
 ---
 - name: Ensure local repo directory exists
   file:
-    path: "/repo/apt"
+    path: "{{ offline_deploy_path }}/apt/deb_packages/"
     state: directory
     owner: root
     group: root
     mode: '0755'
 
-- name: Copy .deb packages to local repo
-  vars:
-    apt_packages_dir: "{{ offline_artifact_path }}/apt_packages"
-  copy:
-    src: "{{ item }}"
-    dest: "/repo/apt/"
-    remote_src: true  # If the .deb files are already on the target machine
-  loop: "{{ lookup('fileglob', apt_packages_dir ~ '/*.deb', wantlist=True) }}"
-  when: apt_packages_dir is defined
-
-# - name: Ensure dpkg-dev is installed (needed for dpkg-scanpackages)
-#   package:
-#     name: dpkg-dev
-#     state: present
-
-- name: Generate Packages.gz file for local repo
-  shell: >
-    dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
-  args:
-    chdir: "/repo/apt"        # Important: run dpkg-scanpackages INSIDE /repo/apt
-    creates: "/repo/apt/Packages.gz"
-  register: scanpackages_result
-
-- name: Debug dpkg-scanpackages results
-  debug:
-    var: scanpackages_result
-  when: scanpackages_result.changed
-
 - name: Fix permissions so '_apt' user can read repo files
   file:
-    path: "/repo/apt"
+    path: "{{ offline_deploy_path }}/apt/deb_packages/"
     recurse: yes
     owner: root
     group: root
     mode: '0755'
 
-- name: Ensure local repo is the first source in sources.list
+- name: Configure local repository as the only active source
   block:
-    - name: Remove existing local repo entry (if exists)
-      lineinfile:
-        path: /etc/apt/sources.list
-        line: "deb [trusted=yes] file:///repo/apt ./"
-        state: absent
+    - name: Backup current sources.list
+      copy:
+        src: /etc/apt/sources.list
+        dest: /etc/apt/sources.list.bak
 
-    - name: Prepend local repo entry to sources.list
-      lineinfile:
-        path: /etc/apt/sources.list
-        line: "deb [trusted=yes] file:///repo/apt ./"
-        insertbefore: BOF
-        state: present
+    - name: Write new sources.list with local repo and commented original content
+      shell: |
+        {
+          echo 'deb [trusted=yes] file://{{ offline_deploy_path }}/apt/deb_packages ./';
+          echo "";
+          echo "# ----- Original sources.list (commented) -----";
+          sed 's/^/# /' /etc/apt/sources.list.bak;
+        } > /etc/apt/sources.list
+      args:
+        executable: /bin/bash
 
-    - name: apt-get update
+    - name: Comment out all active lines in each file under /etc/apt/sources.list.d/
+      shell: |
+        for file in /etc/apt/sources.list.d/*; do
+          if [ -f "$file" ]; then
+            sed -i 's/^\([^#]\)/#\1/' "$file"
+          fi
+        done
+      args:
+        executable: /bin/bash
+
+    - name: Run apt-get update to refresh package lists
       apt:
         update_cache: yes
 
   when: enable_local_repo | default(true)
-

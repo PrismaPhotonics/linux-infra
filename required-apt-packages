@@ -8,16 +8,12 @@ BASE_PACKAGES=(
     gcc
     gdb
     git
-    google-chrome-stable
     jq
-    kubectl
-    libvirt-daemon-system
     make
     net-tools
     nfs-common
     nfs-kernel-server
     psutils
-    qemu-kvm
     rar
     samba
     samba-common
@@ -25,9 +21,46 @@ BASE_PACKAGES=(
     sshpass
     traceroute
     unzip
-    virt-manager
-    virtinst
     zfs-zed
     zfsutils-linux
     zip
 )
+
+
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+=== Checking candidate versions for base packages ===
+Found candidate version for autofs -> 5.1.9-1ubuntu4.1
+Collecting dependencies (apt-rdepends) for autofs ...
+WARNING: No candidate version found for 'containerd.io'. Skipping.
+Found candidate version for curl -> 8.5.0-2ubuntu10.6
+Collecting dependencies (apt-rdepends) for curl ...
+WARNING: No candidate version found for 'docker-ce'. Skipping.
+Found candidate version for dos2unix -> 7.5.1-1
+Collecting dependencies (apt-rdepends) for dos2unix ...
+Found candidate version for dpkg-dev -> 1.22.6ubuntu6.1
+Collecting dependencies (apt-rdepends) for dpkg-dev ...
+Found candidate version for gcc -> 4:13.2.0-7ubuntu1
+Collecting dependencies (apt-rdepends) for gcc ...
+Found candidate version for gdb -> 15.0.50.20240403-0ubuntu1
+Collecting dependencies (apt-rdepends) for gdb ...
+Found candidate version for git -> 1:2.43.0-1ubuntu7.2
+Collecting dependencies (apt-rdepends) for git ...
+WARNING: No candidate version found for 'google-chrome-stable'. Skipping.
+Found candidate version for jq -> 1.7.1-3build1
+Collecting dependencies (apt-rdepends) for jq ...
+WARNING: No candidate version found for 'kubectl'. Skipping.
+Found candidate version for libvirt-daemon-system -> 10.0.0-2ubuntu8.6
+Collecting dependencies (apt-rdepends) for libvirt-daemon-system ...
+Found candidate version for make -> 4.3-4.1build2
+Collecting dependencies (apt-rdepends) for make ...
+Found candidate version for net-tools -> 2.10-0.1ubuntu4
+Collecting dependencies (apt-rdepends) for net-tools ...
+Found candidate version for nfs-common -> 1:2.6.4-3ubuntu5.1
+Collecting dependencies (apt-rdepends) for nfs-common ...
+Found candidate version for nfs-kernel-server -> 1:2.6.4-3ubuntu5.1
+Collecting dependencies (apt-rdepends) for nfs-kernel-server ...
+Found candidate version for psutils -> 1.17.dfsg-4build1
+Collecting dependencies (apt-rdepends) for psutils ...
+WARNING: No candidate version found for 'qemu-kvm'. Skipping.
+Found candidate version for rar -> 2:7.00-1build1

@@ -13,6 +13,8 @@
     - role: offline-apt-repo
       when: enable_offline_apt_repo | default(false)
       tags: apt
+      vars:
+        offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
 
     - role: apt-install
       when: enable_apt_install | default(false)
