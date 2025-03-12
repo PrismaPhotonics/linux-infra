@@ -2,7 +2,7 @@
 
 - name: Check if imported images directory exists
   stat:
-    path: "/home/{{ artifact_path.linux_user }}/{{ artifact_path.offline_deploy }}/imported_images"
+    path: "{{ artifact.path }}/imported_images"
   register: imported_images_dir
 
 - import_tasks: load_from_tar.yml

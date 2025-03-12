@@ -1,28 +1,27 @@
-{{- $offlineDeploy := (env "OFFLINE_DEPLOY" | default "offline_deploy") -}}
-{{- $linuxUser := (env "LINUX_USER" | default "prisma") -}}
+{{- $artifactPath := (env "ARTIFACT_PATH" | default "prisma") -}}
 
 releases:
   - name: kube-prometheus-stack
     namespace: monitoring
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/kube-prometheus-stack
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/kube-prometheus-stack
     values:
       - prometheus-stack/values.yaml
 
   - name: telegraf
     namespace: monitoring
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/telegraf
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/telegraf
     values:
       - telegraf/values.yaml
 
   - name: helm-dashboard
     namespace: kube-system
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/helm-dashboard
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/helm-dashboard
     values:
       - helm-dashboard/values.yaml.gotmpl
 
   - name: kubernetes-dashboard
     namespace: kubernetes-dashboard
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/kubernetes-dashboard
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/kubernetes-dashboard
     hooks:
       - events: ["postsync"]
         showlogs: true

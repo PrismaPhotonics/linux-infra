@@ -1,6 +1,8 @@
-artifact_path:
-  linux_user: prisma
-  offline_deploy: offline_deploy
+linux_user:
+  linux_user.user_name: prisma
+
+artifact:
+  path: /home/prisma/offline_deploy
 
 helm_spec:
   project: shaked

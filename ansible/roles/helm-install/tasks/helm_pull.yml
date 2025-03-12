@@ -6,14 +6,14 @@
 
 - name: Create directory for downloaded Helm charts
   file:
-    path: "/home/{{ artifact_path.linux_user }}/{{ artifact_path.offline_deploy }}/helm_charts/downloaded_helm_charts/"
+    path: "{{ artifact.path }}/helm_charts/downloaded_helm_charts/"
     state: directory
-    owner: "{{ artifact_path.linux_user }}"
-    group: "{{ artifact_path.linux_user }}"
+    owner: "{{ linux_user.user_name }}"
+    group: "{{ linux_user.user_name }}"
     mode: '0755'
 
 - name: Pull and untar Helm charts using helm CLI
   command: >
     helm pull {{ item.key }} --version {{ item.value }}
-    --untar --untardir "/home/{{ artifact_path.linux_user }}/{{ artifact_path.offline_deploy }}/helm_charts/downloaded_helm_charts/"
+    --untar --untardir "{{ artifact.path }}/helm_charts/downloaded_helm_charts/"
   loop: "{{ helm_spec.helm_charts | dict2items }}"

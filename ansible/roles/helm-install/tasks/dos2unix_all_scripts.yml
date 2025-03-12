@@ -1,6 +1,6 @@
 - name: Find all .sh files under linux-infra recursively
   find:
-    paths: "/home/{{ artifact_path.linux_user }}/linux-infra/"
+    paths: "{{ artifact.path }}/linux-infra/"
     patterns: "*.sh"
     recurse: yes
   register: sh_files

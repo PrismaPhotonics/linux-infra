@@ -1,10 +1,9 @@
-{{- $offlineDeploy := (env "OFFLINE_DEPLOY" | default "offline_deploy") -}}
-{{- $linuxUser := (env "LINUX_USER" | default "prisma") -}}
+{{- $artifactPath := (env "ARTIFACT_PATH" | default "prisma") -}}
 
 releases:
   - name: event-exporter
     namespace: elk
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/kubernetes-event-exporter
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/kubernetes-event-exporter
     wait: true
     timeout: 600
     values:
@@ -12,7 +11,7 @@ releases:
 
   - name: elasticsearch
     namespace: elk
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/elasticsearch
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/elasticsearch
     timeout: 600
     hooks:
       - events: ["presync"]
@@ -29,7 +28,7 @@ releases:
   - name: logstash
     namespace: elk
     needs: [elasticsearch]
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/logstash
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/logstash
     wait: true
     timeout: 600
     values:
@@ -38,7 +37,7 @@ releases:
   - name: filebeat
     namespace: elk
     needs: [elasticsearch]
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/filebeat
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/filebeat
     wait: true
     timeout: 600
     values:
@@ -47,13 +46,13 @@ releases:
   - name: curator
     namespace: elk
     needs: [elasticsearch]
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/curator
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/curator
     wait: true
   
   - name: kibana
     namespace: elk
     needs: [elasticsearch]
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/kibana
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/kibana
     wait: true
     timeout: 600
     hooks:

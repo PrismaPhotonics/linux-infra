@@ -30,8 +30,7 @@
       when: enable_configure_registry_mirroring | default(false)
 
     - role: setup-local-docker-registry
-      when: enable_setup_local_docker_spec | default(false)
+      when: enable_setup-local-docker-registry | default(false)
 
     - role: helm-install
       when: enable_helm_install | default(false)
-
