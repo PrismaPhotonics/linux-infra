@@ -1,6 +1,6 @@
 - name: Find all tar files in offline deploy artifcats
   find:
-    paths: "{{ artifact.path }}/local_registry/imported_images"
+    paths: "{{ artifact_path }}/local_registry/imported_images"
     patterns: "*.tar"
   register: tar_files
 

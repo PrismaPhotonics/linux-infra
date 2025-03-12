@@ -1,13 +1,13 @@
 linux_user:
-  linux_user.user_name: prisma
+  linux_user_name: prisma
 
 artifact:
-  path: /home/prisma/offline_deploy
+  artifact_path: /home/prisma/offline_deploy
 
 helm_spec:
-  project: shaked
+  project_name: shaked
   threeFirstOctets: 10.10.70
-  branch: main
+  branch_name: main
 
   helm_repos:
     prometheus-community: https://prometheus-community.github.io/helm-charts

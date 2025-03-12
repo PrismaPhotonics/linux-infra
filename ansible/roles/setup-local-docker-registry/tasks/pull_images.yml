@@ -3,4 +3,4 @@
   docker_image:
     name: "{{ item }}"
     source: pull
-  loop: "{{ docker_spec.docker_images.prisma_images + docker_spec.docker_images.third_party }}"
+  loop: "{{ docker_images.prisma_images + docker_images.third_party }}"

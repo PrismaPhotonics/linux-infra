@@ -1,23 +1,10 @@
-- name: Check if helm chart directory exists
-  stat:
-    path: "{{ artifact.path }}/helm_charts/downloaded_helm_charts/"
-  register: imported_charts
+- import_tasks: is_helm_pull_needed.yml
 
 - import_tasks: helm_pull.yml
   when: not imported_charts.stat.exists
 
-- name: Check if linux infra artifact directory exists
-  stat:
-    path: "{{ artifact.path }}/linux-infra/"
-  register: linux_infra
-
-- name: Ensure repository is present and up-to-date
-  git:
-    repo: "https://{{ git_username | urlencode }}:{{ git_password | urlencode }}@github.com/PrismaPhotonics/linux-infra.git"
-    dest: "{{ artifact.path }}/linux-infra/"
-    version: "{{ helm_spec.branch | urlencode }}"
-  when: not linux_infra.stat.exists
+- import_tasks: pull_linux_infra_if_not_exist.yml
 
 - import_tasks: dos2unix_all_scripts.yml
-
+  
 - import_tasks: helm_install.yml

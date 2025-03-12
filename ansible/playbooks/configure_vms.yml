@@ -5,32 +5,47 @@
   gather_facts: true
 
   roles:
-    - role: offline-apt-repo
-      when: enable_offline_apt_repo | default(false)
+    # - role: offline-apt-repo
+    #   when: enable_offline_apt_repo | default(false)
 
-    - role: apt-install
-      when: enable_apt_install | default(false)
-      vars:
-       apt_packages: "{{ merged_configurations.components.apt_packages | default([]) }}"
+    # - role: apt-install
+    #   when: enable_apt_install | default(false)
+    #   vars:
+    #    apt_packages: "{{ merged_configurations.components.apt_packages | default([]) }}"
 
-    - role: gpu-driver-install
-      when: enable_gpu_driver_install | default(false)
-      vars:
-       gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
+    # - role: gpu-driver-install
+    #   when: enable_gpu_driver_install | default(false)
+    #   vars:
+    #    gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
 
-    - role: gpu-driver-uninstall
-      when: enable_gpu_driver_uninstall | default(false)
-      vars:
-       gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
+    # - role: gpu-driver-uninstall
+    #   when: enable_gpu_driver_uninstall | default(false)
+    #   vars:
+    #    gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
 
 #    - role: network-setup
 #      when: enable_network_setup | default(false)
 
     - role: configure-registry-mirroring
       when: enable_configure_registry_mirroring | default(false)
+      vars:
+       docker_registry_address: "{{ docker_spec.docker_registry_address | default(10.10.10.150:5000) }}"
 
     - role: setup-local-docker-registry
-      when: enable_setup-local-docker-registry | default(false)
+      when: enable_setup_local_docker_registry | default(false)
+      vars:
+        docker_images: "{{ docker_spec.docker_images | default([]) }}"
+        docker_registry_address: "{{ docker_spec.docker_registry_address | default(10.10.10.150:5000) }}"
+        artifact_path: "{{ artifact.artifact_path }}
 
     - role: helm-install
       when: enable_helm_install | default(false)
+      vars: 
+        linux_user_name: "{{ linux_user.linux_user_name }}"
+        artifact_path: "{{ artifact.artifact_path }}
+        helm_charts: "{{ helm_spec.helm_charts }}"
+        project_name: "{{ helm_spec.project_name }}"
+        helm_repos: "{{ helm_spec.helm_repos }}"
+        threeFirstOctets: "{{ helm_spec.threeFirstOctets }}"
+        branch_name: "{{ helm_spec.branch_name  }}"
+

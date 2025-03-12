@@ -2,18 +2,18 @@
   community.kubernetes.helm_repository:
     name: "{{ item.key }}"
     repo_url: "{{ item.value }}"
-  loop: "{{ helm_spec.helm_repos | dict2items }}"
+  loop: "{{ helm_repos | dict2items }}"
 
 - name: Create directory for downloaded Helm charts
   file:
-    path: "{{ artifact.path }}/helm_charts/downloaded_helm_charts/"
+    path: "{{ artifact_path }}/helm_charts/downloaded_helm_charts/"
     state: directory
-    owner: "{{ linux_user.user_name }}"
-    group: "{{ linux_user.user_name }}"
+    owner: "{{ linux_user_name }}"
+    group: "{{ linux_user_name }}"
     mode: '0755'
 
 - name: Pull and untar Helm charts using helm CLI
   command: >
     helm pull {{ item.key }} --version {{ item.value }}
-    --untar --untardir "{{ artifact.path }}/helm_charts/downloaded_helm_charts/"
-  loop: "{{ helm_spec.helm_charts | dict2items }}"
+    --untar --untardir "{{ artifact_path }}/helm_charts/downloaded_helm_charts/"
+  loop: "{{ helm_charts | dict2items }}"

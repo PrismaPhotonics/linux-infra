@@ -17,9 +17,9 @@
   debug:
     var: docker_images_list
   
-- name: Set expected images list from docker_spec
+- name: Set expected images list from docker_images
   set_fact:
-    expected_images: "{{ docker_spec.docker_images.prisma_images + docker_spec.docker_images.third_party }}"
+    expected_images: "{{ docker_images.prisma_images + docker_images.third_party }}"
 
 - name: Identify missing images
   set_fact:

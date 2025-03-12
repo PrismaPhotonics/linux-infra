@@ -13,7 +13,7 @@
     content: |
       {
         "storage-driver": "zfs",
-        "insecure-registries": ["{{ docker_spec.docker_registry_address }}"]
+        "insecure-registries": ["{{ docker_registry_address }}"]
       }
     owner: root
     group: root

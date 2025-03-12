@@ -19,20 +19,20 @@
 
 - name: Compute new image tag for local registry
   set_fact:
-    new_image: "{{ docker_spec.docker_registry_address }}/{{ new_repo }}:{{ image_tag }}"
+    new_image: "{{ docker_registry_address }}/{{ new_repo }}:{{ image_tag }}"
 
 - name: Tag and push image to local registry (if not already present)
   community.docker.docker_image:
     name: "{{ original_image }}"
     tag: "{{ image_tag }}"
-    repository: "{{ docker_spec.docker_registry_address }}/{{ new_repo }}"
+    repository: "{{ docker_registry_address }}/{{ new_repo }}"
     push: yes
     source: local
   register: push_result
 
 - name: Remove the newly created local tag after push
   community.docker.docker_image:
-    name: "{{ docker_spec.docker_registry_address }}/{{ new_repo }}"
+    name: "{{ docker_registry_address }}/{{ new_repo }}"
     tag: "{{ image_tag }}"
     state: absent
     source: local
