@@ -9,10 +9,6 @@
   set_fact:
     driver_filename: "{{ driver.url | basename }}"
 
-- name: List contents of drivers directory
-  command: ls -l "{{ offline_deploy_path }}/drivers"
-  register: drivers_dir_listing
-
 - name: Check if driver file exists for {{ driver.name }}
   stat:
     path: "{{ offline_deploy_path }}/drivers/{{ driver_filename }}"
@@ -32,18 +28,17 @@
       blacklist nouveau
       options nouveau modeset=0
     mode: '0644'
-  notify: Update initramfs
+  register: nouveau_blacklist
 
-- name: Update initramfs (Debian/Ubuntu)
+- name: Update initramfs
   command: update-initramfs -u
-  become: true
-  when: ansible_os_family == "Debian"
+  register: initramfs_update
+  changed_when: initramfs_update.rc == 0
 
 - name: Reboot the system to apply Nouveau changes
   reboot:
     reboot_timeout: 600
-  when: do_reboot | default(true)
-
+  when: nouveau_blacklist.changed or initramfs_update.changed
 
 - name: Install CUDA driver from runfile
   command: "sh {{ offline_deploy_path }}/drivers/{{ driver_filename }} --dkms --silent"
@@ -58,4 +53,4 @@
 - name: Reboot the system to load the new driver
   reboot:
     reboot_timeout: 600
-  when: runfile_install.changed and do_reboot | default(false)
+  when: runfile_install.changed

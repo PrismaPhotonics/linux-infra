@@ -44,25 +44,5 @@
       when: enable_helm_install | default(false)
 
     - role: gpu-driver-uninstall
-      when: enable_gpu_driver_uninstall | default(false)
       tags: uninstall-gpu
-
-
-#    - role: network-setup
-#      when: enable_network_setup | default(false)
-
-#    - role: local-registry
-#      when: enable_network_setup | default(false)
-
-    # 4) Docker load if enabled (pass docker_images from versions_data)
-#    - role: docker-load
-#      when: enable_docker_load | default(false)
-#      vars:
-#       docker_images: "{{ merged_configurations.components.docker_images | default([]) }}"
-
-#    # 5) Helm install if enabled (pass helm_charts from versions_data)
-#    - role: helm-install
-#      when: enable_helm_install | default(false)
-#      vars:
-#       helm_charts: "{{ versions_data.helm_charts | default([]) }}"
 
