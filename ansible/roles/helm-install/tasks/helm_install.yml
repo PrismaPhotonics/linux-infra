@@ -19,8 +19,8 @@
       environment:
         PROJECT_NAME: "{{ project_name }}"
         LINUX_USER: "{{ linux_user_name }}"
-        THREE_FIRST_OCTETS: "{{ threeFirstOctets }}"
-        ARTIFACT_PATH: "artifact_path"
+        THREE_FIRST_OCTETS: "{{ three_first_octets }}"
+        ARTIFACT_PATH: "{{ artifact_path }}"
         KUBECONFIG: "/home/{{ linux_user_name }}/.kube/config"
       register: helmfile_output
 
@@ -30,3 +30,8 @@
         path: "{{ artifact_path }}/helmfile_outputs"
         state: directory
         mode: '0755'
+
+    - name: Write helmfile command output 
+      copy:
+        dest: "{{ artifact_path }}/helmfile_outputs/helmfile_output.txt"
+        content: "{{ helmfile_output.stderr }}"
