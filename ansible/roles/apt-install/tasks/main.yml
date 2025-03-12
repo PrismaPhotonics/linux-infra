@@ -1,28 +1,10 @@
 ---
-- name: Install apt packages from local repo
-  block:
-    # Optionally ensure the cache is up to date (if not done by offline-apt-repo)
-    - name: Refresh apt cache
-      apt:
-        update_cache: yes
-        allow_unauthenticated: yes   # If needed for offline repos without GPG signatures
+- name: Update APT cache
+  apt:
+    update_cache: yes
 
-    - name: Install packages from local repo
-      apt:
-        name: "{{ item.name }}={{ item.version | trim }}"
-        state: present
-        allow_unauthenticated: yes   # Since it's an offline repo marked as trusted
-      loop: "{{ apt_packages | default([]) }}"
-      loop_control:
-        label: "{{ item.name }}"
-      register: apt_install_results
-
-    - name: Debug apt install results
-      debug:
-        var: apt_install_results
-
-  rescue:
-    - name: Print error message if apt installation fails
-      debug:
-        msg: "Error occurred installing apt packages from local repo."
-
+- name: Install APT packages
+  apt:
+    name: "{{ item.name }}={{ item.version }}"
+    state: present
+  loop: "{{ apt_packages }}"

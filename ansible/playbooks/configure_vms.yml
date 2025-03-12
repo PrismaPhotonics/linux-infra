@@ -17,7 +17,7 @@
     - role: apt-install
       when: enable_apt_install | default(false)
       vars:
-       apt_packages: "{{ merged_configurations.components.apt_packages | default([]) }}"
+       apt_packages: "{{ spec.components.apt_packages | default([]) }}"
       tags: apt
 
     - role: gpu-driver-install

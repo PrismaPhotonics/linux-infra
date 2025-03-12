@@ -6,10 +6,10 @@ metadata:
 spec:
   components:
     apt_packages:
-      - name: "curl"
-        version: "7.81.0-1ubuntu1.20"
-      - name: "unzip"
-        version: " 6.0-26ubuntu3.2"
+      - name: "zfs-zed"
+        version: "2.2.2-0ubuntu9.1"
+      - name: "zfsutils-linux"
+        version: "2.2.2-0ubuntu9.1"
 
     pip_packages:
       - name: "proxmoxer"
