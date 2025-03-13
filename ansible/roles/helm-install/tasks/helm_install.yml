@@ -1,0 +1,37 @@
+- name: Check existence of helm chart folders
+  stat:
+    path: "{{ artifact_path }}/helm_charts/downloaded_helm_charts/{{ item.split('/')[-1] }}"
+  loop: "{{ helm_charts.keys() | list }}"
+  register: helm_charts_status
+
+- name: Log if any helm chart folders are missing
+  debug:
+    msg: "The following helm chart folders are missing: {{ missing_charts | join(', ') }}"
+  vars:
+    missing_charts: "{{ helm_charts_status.results | selectattr('stat.exists', 'equalto', false) | map(attribute='item') | list }}"
+  when: missing_charts | length > 0
+
+- block:
+    - name: Run helmfile sync with injected environment variables using -f flag
+      command: "helmfile -f helmfile.yaml sync --concurrency=1 --skip-deps"
+      args:
+        chdir: "{{ artifact_path }}/linux-infra/projects/{{ project_name }}"
+      environment:
+        PROJECT_NAME: "{{ project_name }}"
+        LINUX_USER: "{{ linux_user_name }}"
+        THREE_FIRST_OCTETS: "{{ three_first_octets }}"
+        ARTIFACT_PATH: "{{ artifact_path }}"
+        KUBECONFIG: "/home/{{ linux_user_name }}/.kube/config"
+      register: helmfile_output
+
+  always:
+    - name: Ensure output directory exists on the controller
+      file:
+        path: "{{ artifact_path }}/helmfile_outputs"
+        state: directory
+        mode: '0755'
+
+    - name: Write helmfile command output 
+      copy:
+        dest: "{{ artifact_path }}/helmfile_outputs/helmfile_output.txt"
+        content: "{{ helmfile_output.stderr }}"

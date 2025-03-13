@@ -1,0 +1,6 @@
+# tasks/main.yml
+- name: Pull all Docker images
+  docker_image:
+    name: "{{ item }}"
+    source: pull
+  loop: "{{ docker_images.prisma_images + docker_images.third_party }}"

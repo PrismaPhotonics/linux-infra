@@ -1,11 +1,10 @@
-{{- $offlineDeploy := (env "OFFLINE_DEPLOY" | default "offline_deploy") -}}
+{{- $artifactPath := (env "ARTIFACT_PATH" | default "prisma") -}}
 {{- $project_name := (env "PROJECT_NAME" | default "shaked") -}}
-{{- $linuxUser := (env "LINUX_USER" | default "prisma") -}}
 
 releases:
   - name: openebs
     namespace: openebs
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/openebs       
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/openebs       
     wait: true
     timeout: 600
     values:
@@ -18,7 +17,7 @@ releases:
 
   - name: ingress-nginx
     namespace: kube-system
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/ingress-nginx
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/ingress-nginx
     timeout: 600      
     hooks:
       - events: ["presync"]
@@ -34,7 +33,7 @@ releases:
 
   - name: metallb
     namespace: metallb
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/metallb      
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/metallb      
     wait: true
     timeout: 600  
     values:
@@ -42,7 +41,7 @@ releases:
 
   - name: pihole
     namespace: pihole
-    chart: /home/{{ $linuxUser}}/{{ $offlineDeploy }}/helm_charts/downloaded_helm_charts/pihole      
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/pihole      
     timeout: 600
     hooks:
       - events: ["postsync"]

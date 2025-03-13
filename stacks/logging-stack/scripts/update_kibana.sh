@@ -8,6 +8,25 @@ error_exit() {
     exit 1
 }
 
+restart_kibana() {
+    log "Restarting deployment kibana..."
+    if ! kubectl rollout restart deployment kibana-kibana -n elk; then
+        error_exit "Failed to restart deployment kibana"
+    fi
+
+    log "Waiting for deployment rollout to complete..."
+    if ! kubectl rollout status deployment/kibana-kibana -n elk --timeout=180s; then
+        error_exit "Deployment rollout did not complete within 180s"
+    fi
+
+    log "Waiting for pod with label release=kibana to be ready..."
+    if ! kubectl wait --for=condition=ready pod -l release=kibana -n elk --timeout=180s; then
+        error_exit "Pod with label release=kibana failed to become ready within 180s"
+    fi
+
+    log "Operation restart completed successfully."
+}
+
 update_kibana_and_searches() {
     log "Updating Kibana theme and uploading saved searches..."
 
@@ -23,7 +42,8 @@ update_kibana_and_searches() {
         -d '{
           "data_view": {
             "title": "logs*",
-            "name": "logs"
+            "name": "logs",
+            "timeFieldName": "@timestamp"
           }
         }' \
         -u elastic:prisma \
@@ -50,4 +70,5 @@ update_kibana_and_searches() {
     log "Kibana theme and searches updated successfully."
 }
 
+restart_kibana
 update_kibana_and_searches

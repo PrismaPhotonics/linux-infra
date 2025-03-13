@@ -1,0 +1,38 @@
+---
+- name: Compute varibles for new image tag for local registry
+  set_fact:
+    original_image: "{{ current_image }}"
+    image_repo: "{{ current_image.split(':')[0] }}"
+    image_tag: "{{ current_image.split(':')[1] }}"
+    parts: "{{ (current_image.split(':')[0]).split('/') }}"
+
+- name: Compute new repo variable for the new image tag for local registry
+  set_fact:
+    new_repo: >-
+      {%- if parts | length == 1 -%}
+        library/{{ image_repo }}
+      {%- elif parts | length == 3 -%}
+        {{ parts[1:] | join('/') }}
+      {%- else -%}
+        {{ image_repo }}
+      {%- endif -%}
+
+- name: Compute new image tag for local registry
+  set_fact:
+    new_image: "{{ docker_registry_address }}/{{ new_repo }}:{{ image_tag }}"
+
+- name: Tag and push image to local registry (if not already present)
+  community.docker.docker_image:
+    name: "{{ original_image }}"
+    tag: "{{ image_tag }}"
+    repository: "{{ docker_registry_address }}/{{ new_repo }}"
+    push: yes
+    source: local
+  register: push_result
+
+- name: Remove the newly created local tag after push
+  community.docker.docker_image:
+    name: "{{ docker_registry_address }}/{{ new_repo }}"
+    tag: "{{ image_tag }}"
+    state: absent
+    source: local

@@ -39,8 +39,3 @@ tolerations:
   - key: ""
     operator: "Exists"
     effect: "NoSchedule" 
-
-
-image: localhost:5000/docker.elastic.co/beats/filebeat
-imageTag: 8.5.1
-imagePullPolicy: IfNotPresent

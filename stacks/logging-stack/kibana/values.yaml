@@ -20,7 +20,3 @@ resources:
   requests:
     cpu: "300m"
     memory: "2Gi"
-
-image: localhost:5000/docker.elastic.co/kibana/kibana
-imageTag: 8.5.1
-imagePullPolicy: IfNotPresent

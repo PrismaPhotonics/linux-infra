@@ -1,0 +1,24 @@
+- name: Create k3s configuration directory if it does not exist
+  file:
+    path: /etc/rancher/k3s
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: yes
+  
+- name: Configure registry mirrors for k3s worker
+  template:
+    src: registries.yaml.j2
+    dest: /etc/rancher/k3s/registries.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+
+- name: Restart k3s worker
+  systemd:
+    name: k3s-agent
+    state: restarted
+    enabled: yes
+  become: yes

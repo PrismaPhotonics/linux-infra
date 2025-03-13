@@ -1,0 +1,21 @@
+- import_tasks: docker_config.yml
+
+- name: Check if imported images directory exists
+  stat:
+    path: "{{ artifact_path }}/imported_images"
+  register: imported_images_dir
+
+- import_tasks: load_from_tar.yml
+  when: imported_images_dir.stat.exists
+
+- import_tasks: ecr_login.yml
+  when: not imported_images_dir.stat.exists
+
+- import_tasks: pull_images.yml
+  when: not imported_images_dir.stat.exists
+
+- import_tasks: list_from_docker_service.yml
+
+- import_tasks: registry_container.yml
+
+- import_tasks: docker_mirroring.yml

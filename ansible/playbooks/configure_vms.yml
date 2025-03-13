@@ -4,11 +4,6 @@
   become: true
   gather_facts: true
 
-  pre_tasks:
-    - name: Debug versions data
-      debug:
-        var: spec
-
   roles:
     - role: offline-apt-repo
       when: enable_offline_apt_repo | default(false)
@@ -46,4 +41,28 @@
     - role: gpu-driver-uninstall
       when: enable_gpu_driver_uninstall | default(false)
       tags: uninstall-gpu
+
+
+    - role: configure-registry-mirroring
+      when: enable_configure_registry_mirroring | default(false)
+      vars:
+       docker_registry_address: "{{ docker_spec.docker_registry_address }}"
+
+    - role: setup-local-docker-registry
+      when: enable_setup_local_docker_registry | default(false)
+      vars:
+        docker_images: "{{ docker_spec.docker_images }}"
+        docker_registry_address: "{{ docker_spec.docker_registry_address }}"
+        artifact_path: "{{ artifact.artifact_path }}"
+
+    - role: helm-install
+      when: enable_helm_install | default(false)
+      vars: 
+        linux_user_name: "{{ linux_user.linux_user_name }}"
+        artifact_path: "{{ artifact.artifact_path }}"
+        helm_charts: "{{ helm_spec.helm_charts }}"
+        project_name: "{{ helm_spec.project_name }}"
+        helm_repos: "{{ helm_spec.helm_repos }}"
+        three_first_octets: "{{ helm_spec.three_first_octets }}"
+        branch_name: "{{ helm_spec.branch_name  }}"
 
