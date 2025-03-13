@@ -1,0 +1,5 @@
+- name: Mirror Docker images to local registry with logging
+  include_tasks: docker_mirroring_item.yml
+  loop: "{{ docker_images_list }}"
+  loop_control:
+    loop_var: current_image

@@ -1,0 +1,15 @@
+- name: Check if helm chart directory exists
+  stat:
+    path: "{{ artifact_path }}/helm_charts/downloaded_helm_charts/"
+  register: imported_charts
+
+- name: Check if helm chart directory is empty
+  find:
+    paths: "{{ artifact_path }}/helm_charts/downloaded_helm_charts/"
+    file_type: file
+  register: found_charts
+  when: imported_charts.stat.exists
+
+- name: Set helm_pull condition variable
+  set_fact:
+    helm_pull_needed: "{{ (not imported_charts.stat.exists) or (imported_charts.stat.exists and found_charts.matched == 0) }}"

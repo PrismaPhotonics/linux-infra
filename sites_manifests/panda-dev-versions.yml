@@ -92,13 +92,9 @@ spec:
       - name: "my-helm-chart"
         version: "0.5.0"
 
-    gpu_drivers:
-      cuda_installer_file: "cuda_installer.run"
-      cuda_install_flags: "--silent --toolkit"
-      cuda_version: "12.2"
-      cuda_repo_url: "http://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64"
-      cuda_repo_key: "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/7fa2af80.pub"
-      cuda_repo_distribution: "ubuntu2404"
+    drivers:
+      - name: "gpu-driver"
+        url: "https://us.download.nvidia.com/XFree86/Linux-x86_64/570.124.04/NVIDIA-Linux-x86_64-570.124.04.run"
 
     k3s_tools:
       - name: "k3s"

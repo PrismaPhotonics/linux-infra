@@ -4,11 +4,6 @@
   become: true
   gather_facts: true
 
-  pre_tasks:
-    - name: Debug versions data
-      debug:
-        var: spec
-
   roles:
     - role: offline-apt-repo
       when: enable_offline_apt_repo | default(false)
@@ -22,11 +17,12 @@
        apt_packages: "{{ spec.components.apt_packages | default([]) }}"
       tags: apt
 
-    - role: gpu-driver-install
-      when: enable_gpu_driver_install | default(false)
+    - role: drivers-install
+      when: enable_drivers_install | default(false)
       vars:
-       gpu_settings: "{{ versions_data.components.gpu_drivers | default([]) }}"
-      tags: install-gpu
+       drivers: "{{ spec.components.drivers | default([]) }}"
+       offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
+      tags: install-drivers
 
     - role: k3s-install
       when: enable_k3s_install | default(false)
@@ -49,21 +45,26 @@
       tags: uninstall-gpu
 
 
-#    - role: network-setup
-#      when: enable_network_setup | default(false)
+    - role: configure-registry-mirroring
+      when: enable_configure_registry_mirroring | default(false)
+      vars:
+       docker_registry_address: "{{ docker_spec.docker_registry_address }}"
 
-#    - role: local-registry
-#      when: enable_network_setup | default(false)
+    - role: setup-local-docker-registry
+      when: enable_setup_local_docker_registry | default(false)
+      vars:
+        docker_images: "{{ docker_spec.docker_images }}"
+        docker_registry_address: "{{ docker_spec.docker_registry_address }}"
+        artifact_path: "{{ artifact.artifact_path }}"
 
-    # 4) Docker load if enabled (pass docker_images from versions_data)
-#    - role: docker-load
-#      when: enable_docker_load | default(false)
-#      vars:
-#       docker_images: "{{ merged_configurations.components.docker_images | default([]) }}"
-
-#    # 5) Helm install if enabled (pass helm_charts from versions_data)
-#    - role: helm-install
-#      when: enable_helm_install | default(false)
-#      vars:
-#       helm_charts: "{{ versions_data.helm_charts | default([]) }}"
+    - role: helm-install
+      when: enable_helm_install | default(false)
+      vars: 
+        linux_user_name: "{{ linux_user.linux_user_name }}"
+        artifact_path: "{{ artifact.artifact_path }}"
+        helm_charts: "{{ helm_spec.helm_charts }}"
+        project_name: "{{ helm_spec.project_name }}"
+        helm_repos: "{{ helm_spec.helm_repos }}"
+        three_first_octets: "{{ helm_spec.three_first_octets }}"
+        branch_name: "{{ helm_spec.branch_name  }}"
 

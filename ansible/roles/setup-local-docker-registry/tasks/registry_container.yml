@@ -1,0 +1,28 @@
+- name: Check if /var/lib/registry directory exists
+  stat:
+    path: /var/lib/registry
+  register: registry_dir
+
+- name: Fail if /var/lib/registry does not exist
+  fail:
+    msg: "/var/lib/registry does not exist, aborting the playbook."
+  when: not registry_dir.stat.exists
+  
+- name: Check if Docker registry container exists and is running
+  docker_container_info:
+    name: registry
+  register: registry_container_info
+  ignore_errors: yes
+
+- name: Start Docker registry container if not running
+  docker_container:
+    name: registry
+    image: registry:2
+    state: started
+    restart_policy: always
+    published_ports:
+      - "5000:5000"
+    volumes:
+      - /var/lib/registry:/var/lib/registry
+  when: not registry_container_info.exists
+  register: registry_result

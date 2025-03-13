@@ -1,0 +1,6 @@
+---
+- name: Execute driver-specific tasks for each driver
+  include_tasks: "{{ item.name }}.yml"
+  vars:
+    driver: "{{ item }}"
+  loop: "{{ drivers }}"

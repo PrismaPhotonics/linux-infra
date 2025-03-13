@@ -1,3 +1,8 @@
-enable_apt_install: true
-enable_gpu_driver_install: true
-enable_network_setup: true
+enable_create_vms: false
+enable_apt_install: false
+enable_gpu_driver_install: false
+enable_configure_registry_mirroring: true
+enable_setup_local_docker_registry: true
+enable_build_registry_on_node: true
+enable_helm_install: true
+enable_netplan_config: false

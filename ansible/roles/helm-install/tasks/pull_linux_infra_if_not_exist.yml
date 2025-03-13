@@ -1,0 +1,11 @@
+- name: Check if linux infra artifact directory exists
+  stat:
+    path: "{{ artifact_path }}/linux-infra/"
+  register: linux_infra
+
+- name: Ensure repository is present and up-to-date
+  git:
+    repo: "https://{{ git_username | urlencode }}:{{ git_password | urlencode }}@github.com/PrismaPhotonics/linux-infra.git"
+    dest: "{{ artifact_path }}/linux-infra/"
+    version: "{{ branch_name | urlencode }}"
+  when: not linux_infra.stat.exists

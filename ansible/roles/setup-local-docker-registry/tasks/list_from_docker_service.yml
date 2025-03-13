@@ -1,0 +1,31 @@
+- name: Gather Docker images info
+  community.docker.docker_image_info:
+  register: docker_info
+
+- name: Build list of Docker images (repository:tag)
+  set_fact:
+    docker_images_list: >
+      {{
+        docker_info.images
+        | map(attribute='RepoTags')
+        | flatten
+        | select('defined')
+        | list
+      }}
+      
+- name: Debug loaded images array
+  debug:
+    var: docker_images_list
+  
+- name: Set expected images list from docker_images
+  set_fact:
+    expected_images: "{{ docker_images.prisma_images + docker_images.third_party }}"
+
+- name: Identify missing images
+  set_fact:
+    missing_images: "{{ expected_images | difference(docker_images_list) }}"
+
+- name: Log if any expected images are missing
+  debug:
+    msg: "The following expected Docker images are missing: {{ missing_images }}"
+  when: missing_images | length > 0

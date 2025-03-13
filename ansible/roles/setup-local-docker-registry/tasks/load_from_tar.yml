@@ -1,0 +1,29 @@
+- name: Find all tar files in offline deploy artifcats
+  find:
+    paths: "{{ artifact_path }}/local_registry/imported_images"
+    patterns: "*.tar"
+  register: tar_files
+
+- name: Load Docker images from tar files using docker load
+  command: docker load -i "{{ item.path }}"
+  loop: "{{ tar_files.files }}"
+  become: yes
+  when: tar_files.files | length > 0
+  register: load_results
+
+- name: Parse loaded image names from docker load output and set docker_images_list
+  set_fact:
+    docker_images_list: >-
+      {{
+        load_results.results
+        | map(attribute='stdout_lines')
+        | flatten
+        | select('match', '^Loaded image:')
+        | map('regex_replace', '^Loaded image: ', '')
+        | list
+      }}
+
+- name: Debug loaded images array
+  debug:
+    var: docker_images_list
+

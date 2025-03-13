@@ -1,19 +1,10 @@
----
-- name: Check Helm binary
-  command: helm version
-  register: helm_check
-  changed_when: false
-  failed_when: helm_check.rc != 0
+- import_tasks: is_helm_pull_needed.yml
 
-- name: Install or upgrade Helm charts
-  vars:
-    helm_chart_dir: "{{ offline_artifact_path }}/helm_charts"
-  shell: >
-    helm upgrade --install
-    {{ item.name }}
-    {{ helm_chart_dir }}/{{ item.file }}
-    --namespace default
-  loop: "{{ helm_charts | default([]) }}"
-  loop_control:
-    label: "{{ item.name }}"
+- import_tasks: helm_pull.yml
+  when: not imported_charts.stat.exists
 
+- import_tasks: pull_linux_infra_if_not_exist.yml
+
+- import_tasks: dos2unix_all_scripts.yml
+  
+- import_tasks: helm_install.yml

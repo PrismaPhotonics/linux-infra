@@ -1,0 +1,56 @@
+---
+- name: Ensure temporary download directory exists for {{ driver.name }}
+  file:
+    path: "{{ offline_deploy_path }}/drivers"
+    state: directory
+    mode: '0755'
+
+- name: Set driver filename for {{ driver.name }}
+  set_fact:
+    driver_filename: "{{ driver.url | basename }}"
+
+- name: Check if driver file exists for {{ driver.name }}
+  stat:
+    path: "{{ offline_deploy_path }}/drivers/{{ driver_filename }}"
+  register: driver_file
+
+- name: Download {{ driver.name }} driver if not already downloaded
+  get_url:
+    url: "{{ driver.url }}"
+    dest: "{{ offline_deploy_path }}/drivers/{{ driver_filename }}"
+    mode: '0755'
+  when: not driver_file.stat.exists
+
+- name: Disable Nouveau driver by blacklisting it
+  copy:
+    dest: /etc/modprobe.d/nvidia-installer-disable-nouveau.conf
+    content: |
+      blacklist nouveau
+      options nouveau modeset=0
+    mode: '0644'
+  register: nouveau_blacklist
+
+- name: Update initramfs
+  command: update-initramfs -u
+  register: initramfs_update
+  changed_when: initramfs_update.rc == 0
+
+- name: Reboot the system to apply Nouveau changes
+  reboot:
+    reboot_timeout: 600
+  when: nouveau_blacklist.changed or initramfs_update.changed
+
+- name: Install CUDA driver from runfile
+  command: "sh {{ offline_deploy_path }}/drivers/{{ driver_filename }} --dkms --silent"
+  args:
+    creates: "/usr/bin/nvidia-smi"
+  register: runfile_install
+
+- name: Display runfile installation result
+  debug:
+    var: runfile_install
+
+- name: Reboot the system to load the new driver
+  reboot:
+    reboot_timeout: 600
+  when: runfile_install.changed

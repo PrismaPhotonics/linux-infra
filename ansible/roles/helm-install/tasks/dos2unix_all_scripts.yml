@@ -1,0 +1,11 @@
+- name: Find all .sh files under linux-infra recursively
+  find:
+    paths: "{{ artifact_path }}/linux-infra/"
+    patterns: "*.sh"
+    recurse: yes
+  register: sh_files
+
+- name: Run dos2unix on each found .sh file
+  command: dos2unix "{{ item.path }}"
+  loop: "{{ sh_files.files }}"
+  when: sh_files.matched > 0
