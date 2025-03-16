@@ -1,10 +1,9 @@
+enable_offline_apt_repo: true
+enable_apt_install: true
 enable_os_tools_install: true
-enable_k3s_install: false
-enable_offline_apt_repo: false
-enable_apt_install: false
+enable_k3s_install: true
 enable_drivers_install: false
 enable_gpu_driver_uninstall: false
-enable_network_setup: false
-enable_docker_load: false
-enable_helm_install: false
-enable_netplan_config: false
+enable_configure_registry_mirroring: true
+enable_docker_load: true
+enable_helm_install: true

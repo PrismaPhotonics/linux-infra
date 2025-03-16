@@ -64,33 +64,93 @@ spec:
       - name: "unzip"
         version: " 6.0-26ubuntu3.2"
 
-    docker_images:
-      - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/client-api"
-        version: "10.2.1423.4954c"
-      - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/nginx-ui"
-        version: "10.2.1423.4954c"
-      - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/socket-manager"
-        version: "10.2.1423.4954c"
-      - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/utilities"
-        version: "10.2.1423.4954c"
-      - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux"
-        version: "10.7.101"
-      - name: "registry.k8s.io/nfd/node-feature-discovery"
-        version: "v0.15.4"
-      - name: "registry.k8s.io/ingress-nginx/kube-webhook-certgen"
-        version: "v20221220-controller-v1.5.1-58-g787ea74b6"
-      - name: "nvcr.io/nvidia/cloud-native/k8s-driver-manager"
-        version: "v0.6.8"
-      - name: "quay.io/kiwigrid/k8s-sidecar"
-        version: "1.25.2"
-      - name: "rancher/klipper-helm"
-        version: "v0.8.0-build20230510"
-      - name: "rancher/mirrored-pause"
-        version: "3.6"
+        
+    docker_spec:
+      docker_registry_address: 10.10.70.150:5000
+      docker_images:
+        prisma_images:
+          - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec:on-prem2"
+          - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-airflow:1.0.0"
+        third_party:
+          - "bitnami/kubernetes-event-exporter:1.7.0-debian-12-r12"
+          - "docker.elastic.co/beats/filebeat:8.5.1"
+          - "docker.elastic.co/elasticsearch/elasticsearch:8.5.1"
+          - "docker.elastic.co/kibana/kibana:8.5.1"
+          - "docker.elastic.co/logstash/logstash:8.5.1"
+          - "bitnami/kubernetes-event-exporter:1.7.0-debian-12-r11"
+          - "untergeek/curator:8.0.17"
+          - "rancher/klipper-helm:v0.8.0-build20230510"
+          - "rancher/klipper-lb:v0.4.4"
+          - "rancher/mirrored-coredns-coredns:1.10.1"
+          - "rancher/mirrored-library-busybox:1.34.1"
+          - "rancher/mirrored-library-traefik:2.9.10"
+          - "rancher/mirrored-metrics-server:v0.6.3"
+          - "rancher/mirrored-pause:3.6"
+          - "osixia/openldap:1.5.0"
+          - "pihole/pihole:2024.07.0"
+          - "quay.io/kiwigrid/k8s-sidecar:1.25.2"
+          - "quay.io/metallb/controller:v0.14.8"
+          - "quay.io/metallb/speaker:v0.14.8"
+          - "quay.io/prometheus/node-exporter:v1.7.0"
+          - "quay.io/prometheus/prometheus:v2.48.0"
+          - "quay.io/prometheus-operator/prometheus-config-reloader:v0.70.0"
+          - "quay.io/prometheus-operator/prometheus-operator:v0.70.0"
+          - "quay.io/thanos/thanos:v0.32.5"
+          - "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20221220-controller-v1.5.1-58-g787ea74b6"
+          - "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.10.1"
+          - "registry:2"
+          - "komodorio/helm-dashboard:2.0.3"
+          - "registry.k8s.io/ingress-nginx/controller:v1.12.0"
+          - "registry.k8s.io/defaultbackend-amd64:1.5"
+          - "kubernetesui/dashboard-api:1.10.2"
+          - "kubernetesui/dashboard-auth:1.2.3"
+          - "kong:3.8"
+          - "kubernetesui/dashboard-metrics-scraper:1.2.2"
+          - "kubernetesui/dashboard-web:1.6.1"
+          - "telegraf:1.32-alpine"
+          - "registry.k8s.io/sig-storage/csi-snapshotter:v6.2.2"
+          - "registry.k8s.io/sig-storage/snapshot-controller:v6.2.2"
+          - "registry.k8s.io/sig-storage/csi-provisioner:v3.5.0"
+          - "openebs/zfs-driver:2.7.1"
+          - "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.8.0"
+          - "redis:7.2-bookworm"
+          - "bitnami/postgresql:16.1.0-debian-11-r15"
+          - "quay.io/prometheus/statsd-exporter:v0.26.1"
 
-    helm_charts:
-      - name: "my-helm-chart"
-        version: "0.5.0"
+
+    helm_spec:
+      project_name: shaked
+      threeFirstOctets: 10.10.70
+      branch_name: main
+
+      helm_repos:
+        prometheus-community: https://prometheus-community.github.io/helm-charts
+        bitnami: https://charts.bitnami.com/bitnami
+        elastic: https://helm.elastic.co
+        mojo2600: https://mojo2600.github.io/pihole-kubernetes/
+        openebs: https://openebs.github.io/openebs
+        linux-infra: https://prismaphotonics.github.io/linux-infra/
+        ingress-nginx: https://kubernetes.github.io/ingress-nginx
+        apache-airflow: https://airflow.apache.org
+        kubernetes-dashboard: https://kubernetes.github.io/dashboard/
+          
+      helm_charts:
+        kubernetes-dashboard/kubernetes-dashboard: "7.10.4"
+        linux-infra/telegraf: "1.8.55"
+        linux-infra/metallb: "1.0.0"
+        linux-infra/helm-dashboard: "2.0.3"
+        linux-infra/curator: "1.0.0"
+        ingress-nginx/ingress-nginx: "4.12.0"
+        openebs/openebs: "4.2.0"
+        bitnami/postgresql: "15.5.1"
+        bitnami/kubernetes-event-exporter: "3.2.10"
+        prometheus-community/kube-prometheus-stack: "55.3.0"
+        elastic/elasticsearch: "8.5.1"
+        elastic/kibana: "8.5.1"
+        elastic/logstash: "8.5.1"
+        elastic/filebeat: "8.5.1"
+        mojo2600/pihole: "2.26.1"
+        apache-airflow/airflow: "1.15.0"
 
     drivers:
       - name: "gpu-driver"
@@ -123,6 +183,7 @@ spec:
         url: "https://github.com/helmfile/helmfile/releases/download/v0.171.0/helmfile_0.171.0_linux_amd64.tar.gz"
 
   configurations:
+    linux_user_name: prisma
     artifact_path: '/offline_deploy'
     master_node_ip: '20.0.0.210'
     vms:
