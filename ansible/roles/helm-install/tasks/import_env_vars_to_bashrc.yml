@@ -1,5 +1,4 @@
 - name: Add environment variables to the user's .bashrc file only once
-  become: yes
   blockinfile:
     path: "/home/{{ linux_user_name }}/.bashrc"
     create: yes
