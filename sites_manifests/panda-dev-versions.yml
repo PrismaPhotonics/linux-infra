@@ -99,6 +99,7 @@ spec:
     os_tools:
       - name: "aws"
         bin_file: "install"
+        flags: "--update"
         url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
 
     k3s_tools:

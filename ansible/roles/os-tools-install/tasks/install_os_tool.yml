@@ -35,5 +35,5 @@
       register: found_bin
 
     - name: Run binary for {{ item.name }}
-      command: "{{ found_bin.files[0].path }} --update"
+      command: "{{ found_bin.files[0].path }} item.flags"
       when: found_bin.matched > 0
