@@ -28,6 +28,7 @@
       when: enable_os_tools_install | default(false)
       vars:
         os_tools: "{{ spec.components.os_tools }}"
+        k8s_tools: "{{ spec.components.k8s_tools }}"
         offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
 
     - role: k3s-install
@@ -35,12 +36,6 @@
       vars:
         master_node_ip: "{{ spec.configurations.master_node_ip }}"
         k3s_tools: "{{ spec.components.k3s_tools }}"
-        offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
-
-    - role: k8s-tools-install
-      when: enable_k8s_tools_install | default(false)
-      vars:
-        k8s_tools: "{{ spec.components.k8s_tools }}"
         offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
 
     - role: helm-install
