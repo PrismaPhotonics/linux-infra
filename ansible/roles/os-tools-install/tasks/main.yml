@@ -4,7 +4,6 @@
     path: "{{ offline_deploy_path }}/os-utils/"
     state: directory
     mode: '0755'
-  delegate_to: localhost
 
 - name: Install each os tool
   include_tasks: install_tool.yml
