@@ -1,7 +1,7 @@
 ---
 - name: Ensure local repo directory exists
   file:
-    path: "{{ offline_deploy_path }}/apt/deb_packages/"
+    path: "{{ artifact_path }}/apt/deb_packages/"
     state: directory
     owner: root
     group: root
@@ -9,7 +9,7 @@
 
 - name: Fix permissions so '_apt' user can read repo files
   file:
-    path: "{{ offline_deploy_path }}/apt/deb_packages/"
+    path: "{{ artifact_path }}/apt/deb_packages/"
     recurse: yes
     owner: root
     group: root
@@ -25,7 +25,7 @@
     - name: Write new sources.list with local repo and commented original content
       shell: |
         {
-          echo 'deb [trusted=yes] file://{{ offline_deploy_path }}/apt/deb_packages ./';
+          echo 'deb [trusted=yes] file://{{ artifact_path }}/apt/deb_packages ./';
           echo "";
           echo "# ----- Original sources.list (commented) -----";
           sed 's/^/# /' /etc/apt/sources.list.bak;

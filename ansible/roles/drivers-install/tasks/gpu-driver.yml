@@ -1,7 +1,7 @@
 ---
 - name: Ensure temporary download directory exists for {{ driver.name }}
   file:
-    path: "{{ offline_deploy_path }}/drivers"
+    path: "{{ artifact_path }}/drivers"
     state: directory
     mode: '0755'
 
@@ -11,13 +11,13 @@
 
 - name: Check if driver file exists for {{ driver.name }}
   stat:
-    path: "{{ offline_deploy_path }}/drivers/{{ driver_filename }}"
+    path: "{{ artifact_path }}/drivers/{{ driver_filename }}"
   register: driver_file
 
 - name: Download {{ driver.name }} driver if not already downloaded
   get_url:
     url: "{{ driver.url }}"
-    dest: "{{ offline_deploy_path }}/drivers/{{ driver_filename }}"
+    dest: "{{ artifact_path }}/drivers/{{ driver_filename }}"
     mode: '0755'
   when: not driver_file.stat.exists
 
@@ -41,7 +41,7 @@
   when: nouveau_blacklist.changed or initramfs_update.changed
 
 - name: Install CUDA driver from runfile
-  command: "sh {{ offline_deploy_path }}/drivers/{{ driver_filename }} --dkms --silent"
+  command: "sh {{ artifact_path }}/drivers/{{ driver_filename }} --dkms --silent"
   args:
     creates: "/usr/bin/nvidia-smi"
   register: runfile_install

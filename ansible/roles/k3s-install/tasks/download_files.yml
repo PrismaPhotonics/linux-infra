@@ -1,12 +1,12 @@
 - name: Ensure local deploy directory exists
   delegate_to: localhost
   file:
-    path: "{{ offline_deploy_path }}/k8s-utils"
+    path: "{{ artifact_path }}/k8s-utils"
     state: directory
 
 - name: Check if {{ item.name }} exists on local deploy directory
   stat:
-    path: "{{ offline_deploy_path }}/k8s-utils/{{ item.name }}"
+    path: "{{ artifact_path }}/k8s-utils/{{ item.name }}"
   register: local_tool_file
   delegate_to: localhost
 
@@ -14,7 +14,7 @@
   delegate_to: localhost
   get_url:
     url: "{{ item.url }}"
-    dest: "{{ offline_deploy_path }}/k8s-utils/{{ item.name }}"
+    dest: "{{ artifact_path }}/k8s-utils/{{ item.name }}"
     mode: '0755'
     validate_certs: no
   when: not local_tool_file.stat.exists

@@ -9,7 +9,7 @@
       when: enable_offline_apt_repo | default(false)
       tags: apt
       vars:
-        offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
+        artifact_path: "{{ spec.configurations.artifact_path }}"
 
     - role: apt-install
       when: enable_apt_install | default(false)
@@ -21,7 +21,7 @@
       when: enable_drivers_install | default(false)
       vars:
        drivers: "{{ spec.components.drivers | default([]) }}"
-       offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
+       artifact_path: "{{ spec.configurations.artifact_path }}"
       tags: install-drivers
 
     - role: os-tools-install
@@ -29,14 +29,14 @@
       vars:
         os_tools: "{{ spec.components.os_tools }}"
         k8s_tools: "{{ spec.components.k8s_tools }}"
-        offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
+        artifact_path: "{{ spec.configurations.artifact_path }}"
 
     - role: k3s-install
       when: enable_k3s_install | default(false)
       vars:
         master_node_ip: "{{ spec.configurations.master_node_ip }}"
         k3s_tools: "{{ spec.components.k3s_tools }}"
-        offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
+        artifact_path: "{{ spec.configurations.artifact_path }}"
 
     - role: helm-install
       when: enable_helm_install | default(false)

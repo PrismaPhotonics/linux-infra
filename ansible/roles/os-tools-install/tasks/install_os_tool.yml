@@ -7,13 +7,13 @@
 
 - name: Check if {{ tool_filename }} exists on local deploy directory
   stat:
-    path: "{{ offline_deploy_path }}/os-utils/{{ tool_filename }}"
+    path: "{{ artifact_path }}/os-utils/{{ tool_filename }}"
   register: local_tool_file
 
 - name: Download {{ tool_filename }} if not exists
   get_url:
     url: "{{ item.url }}"
-    dest: "{{ offline_deploy_path }}/os-utils/{{ tool_filename }}"
+    dest: "{{ artifact_path }}/os-utils/{{ tool_filename }}"
     mode: '0755'
     validate_certs: no
   when: not local_tool_file.stat.exists
@@ -22,13 +22,13 @@
   block:
     - name: Unarchive {{ tool_filename }}
       unarchive:
-        src: "{{ offline_deploy_path }}/os-utils/{{ tool_filename }}"
-        dest: "{{ offline_deploy_path }}/os-utils/"
+        src: "{{ artifact_path }}/os-utils/{{ tool_filename }}"
+        dest: "{{ artifact_path }}/os-utils/"
         remote_src: yes
 
     - name: Find extracted binary for {{ item.bin_file }}
       find:
-        paths:  "{{ offline_deploy_path }}/os-utils"
+        paths:  "{{ artifact_path }}/os-utils"
         recurse: yes
         file_type: file
         patterns: "{{ item.bin_file }}"

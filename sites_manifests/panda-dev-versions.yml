@@ -122,7 +122,7 @@ spec:
         url: "https://github.com/helmfile/helmfile/releases/download/v0.171.0/helmfile_0.171.0_linux_amd64.tar.gz"
 
   configurations:
-    offline_deploy_path: '/offline_deploy'
+    artifact_path: '/offline_deploy'
     master_node_ip: '20.0.0.210'
     vms:
       workernode-panda:
