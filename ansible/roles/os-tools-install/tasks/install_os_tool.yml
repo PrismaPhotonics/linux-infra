@@ -31,13 +31,8 @@
         paths:  "{{ offline_deploy_path }}/os-utils"
         recurse: yes
         file_type: file
-        patterns: "{{ item.name }}"
+        patterns: "{{ item.bin_file }}"
       register: found_bin
-
-    - name: Fail if binary for {{ item.name }} not found
-      fail:
-        msg: "Could not find binary for {{ item.name }} in /tmp/os-utils"
-      when: found_bin.matched == 0
 
     - name: Run binary for {{ item.name }}
       command: "{{ found_bin.files[0].path }}"
