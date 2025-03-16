@@ -7,10 +7,8 @@
   stat:
     path: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
   register: local_tool_file
-  delegate_to: localhost
 
 - name: Download {{ tool_filename }} on local host if not exists
-  delegate_to: localhost
   get_url:
     url: "{{ item.url }}"
     dest: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
@@ -18,29 +16,16 @@
     validate_certs: no
   when: not local_tool_file.stat.exists
 
-- name: Ensure remote directory /tmp/k8s-utils exists
-  file:
-    path: "/tmp/k8s-utils"
-    state: directory
-    mode: '0755'
-
-- name: Copy {{ tool_filename }} from local deploy to remote /tmp/k8s-utils
-  copy:
-    src: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
-    dest: "/tmp/k8s-utils/{{ tool_filename }}"
-    mode: '0755'
-
 - name: Install {{ item.name }} from archive file
   block:
     - name: Unarchive {{ tool_filename }}
       unarchive:
-        src: "/tmp/k8s-utils/{{ tool_filename }}"
-        dest: "/tmp/k8s-utils/"
-        remote_src: yes
+        src: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
+        dest: "{{ offline_deploy_path }}/k8s-utils/"
 
     - name: Find extracted binary for {{ item.name }}
       find:
-        paths: "/tmp/k8s-utils"
+        paths:  "{{ offline_deploy_path }}/k8s-utils"
         recurse: yes
         file_type: file
         patterns: "{{ item.name }}"
