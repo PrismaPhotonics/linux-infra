@@ -27,7 +27,7 @@
     - role: os-tools-install
       when: enable_os_tools_install | default(false)
       vars:
-        k8s_tools: "{{ spec.components.os_tools }}"
+        os_tools: "{{ spec.components.os_tools }}"
         offline_deploy_path: "{{ spec.configurations.offline_deploy_path }}"
 
     - role: k3s-install
