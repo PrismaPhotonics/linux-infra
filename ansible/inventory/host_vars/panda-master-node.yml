@@ -1,4 +1,5 @@
 enable_k3s_install: true
+enable_configure_registry_mirroring: true
 enable_offline_apt_repo: false
 enable_apt_install: false
 enable_network_setup: false

@@ -6,11 +6,3 @@
   become: yes
   notify:
     - reload systemd daemon
-    - restart k3s service
-
-- name: Ensure k3s server service is enabled and running
-  systemd:
-    name: k3s
-    state: started
-    enabled: yes
-  become: yes

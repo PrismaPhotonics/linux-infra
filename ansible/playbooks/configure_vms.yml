@@ -31,21 +31,9 @@
         k8s_tools: "{{ spec.components.k8s_tools }}"
         artifact_path: "{{ spec.configurations.artifact_path }}"
 
-    - role: k3s-install
-      when: enable_k3s_install | default(false)
-      vars:
-        master_node_ip: "{{ spec.configurations.master_node_ip }}"
-        k3s_tools: "{{ spec.components.k3s_tools }}"
-        artifact_path: "{{ spec.configurations.artifact_path }}"
-
     - role: gpu-driver-uninstall
       when: enable_gpu_driver_uninstall | default(false)
       tags: uninstall-gpu
-
-    - role: configure-registry-mirroring
-      when: enable_configure_registry_mirroring | default(false)
-      vars:
-       docker_registry_address: "{{ spec.components.docker_spec.docker_registry_address }}"
 
     - role: setup-local-docker-registry
       when: enable_setup_local_docker_registry | default(false)
@@ -54,6 +42,18 @@
         docker_registry_address: "{{  spec.components.docker_spec.docker_registry_address }}"
         artifact_path: "{{ spec.configurations.artifact_path }}"
 
+    - role: k3s-install
+      when: enable_k3s_install | default(false)
+      vars:
+        master_node_ip: "{{ spec.configurations.master_node_ip }}"
+        k3s_tools: "{{ spec.components.k3s_tools }}"
+        artifact_path: "{{ spec.configurations.artifact_path }}"
+
+    - role: configure-registry-mirroring
+      when: enable_configure_registry_mirroring | default(false)
+      vars:
+       docker_registry_address: "{{ spec.components.docker_spec.docker_registry_address }}"
+    
     - role: helm-install
       when: enable_helm_install | default(false)
       vars: 

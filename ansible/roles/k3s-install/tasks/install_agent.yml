@@ -1,4 +1,5 @@
 ---
+
 - name: Retrieve k3s node token from the server
   slurp:
     src: /var/lib/rancher/k3s/server/node-token
