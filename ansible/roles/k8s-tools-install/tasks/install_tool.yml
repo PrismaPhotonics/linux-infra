@@ -8,7 +8,7 @@
     path: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
   register: local_tool_file
 
-- name: Download {{ tool_filename }} on local host if not exists
+- name: Download {{ tool_filename }} if not exists
   get_url:
     url: "{{ item.url }}"
     dest: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
@@ -22,6 +22,7 @@
       unarchive:
         src: "{{ offline_deploy_path }}/k8s-utils/{{ tool_filename }}"
         dest: "{{ offline_deploy_path }}/k8s-utils/"
+        remote_src: yes
 
     - name: Find extracted binary for {{ item.name }}
       find:
