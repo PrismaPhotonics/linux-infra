@@ -193,7 +193,7 @@ spec:
         zfs_configuration:
           partition_configuration:
             device: "/dev/sda"
-            number: 2
+            number: 17
             label: "gpt"
             part_type: "primary"
             fs_type: "ext4"
