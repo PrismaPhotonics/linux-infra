@@ -50,6 +50,6 @@
 - name: Write kubeconfig file on agent
   copy:
     content: "{{ k3s_kubeconfig | regex_replace('127.0.0.1', master_node_ip) }}"
-    dest: /etc/rancher/k3s/k3s.yaml
+    dest: "/home/{{ linux_user_name }}/.kube/config"
     mode: '0644'
   become: yes
