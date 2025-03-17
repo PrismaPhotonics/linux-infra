@@ -55,3 +55,12 @@ You can configure just one VM by passing --limit <VM-name>
 ```bash
 ansible-playbook -i inventory/hosts.ini playbooks/configure_vms.yml -l panda-worker-node -e @../sites_manifests/panda-dev-versions.yml
 ```
+
+### 3. Get the password for kunernetes dashboard
+
+1. Configure the VMs
+Once your VMs are created and reachable (ensure they are added to your inventory as needed), run:
+
+```bash
+kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath="{.data.token}" | base64 -d
+```

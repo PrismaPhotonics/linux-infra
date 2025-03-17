@@ -1,0 +1,14 @@
+{{- if .Values.persistence.hostPath }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "tileserver-gl.fullname" . }}-pv
+spec:
+  capacity:
+    storage: {{ .Values.persistence.capacity }}
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ .Values.persistence.hostPath | quote }}
+    type: Directory
+{{- end }}

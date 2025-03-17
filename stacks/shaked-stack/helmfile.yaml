@@ -1,0 +1,46 @@
+{{- $artifactPath := (env "ARTIFACT_PATH" | default "prisma") -}}
+
+releases:
+  - name: postgres-shaked
+    namespace: postgres-shaked
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/postgresql
+    timeout: 600      
+    hooks:
+      - events: ["postsync"]
+        showlogs: true
+        command: "bash"
+        args: ["./postgres/scripts/database_init.sh"]
+    values:
+      - postgres/values.yml.gotmpl
+      
+  - name: airflow
+    namespace: airflow
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/airflow       
+    timeout: 600
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "airflow/pvs.yml"] 
+      - events: ["presync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "airflow/secret.yml"] 
+    values:
+      - airflow/values.yml.gotmpl
+    
+  - name: map-server
+    namespace: map-server
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/tileserver-gl       
+    timeout: 600
+    values:
+      - tileserver/values.yml.gotmpl
+  
+  - name: control-server
+    namespace: airflow
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/kube-prometheus-stack       
+    timeout: 600
+    values:
+      - control-center/values.yml.gotmpl
+      - control-center/extra-manifests.yml.gotmpl
+    

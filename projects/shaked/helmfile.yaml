@@ -1,2 +1,3 @@
 helmfiles:
   - path: ../base/helmfile.yaml
+  - path: ../../stacks/shaked-stack/helmfile.yaml

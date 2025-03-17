@@ -1,0 +1,139 @@
+{{- $threeFirstOctets := (env "THREE_FIRST_OCTETS" | default "10.10.10") -}}
+
+grafana:
+  persistence:
+    type: pvc
+    enabled: true
+    storageClassName: openebs-zfspv
+    size: 4.5Gi
+  defaultDashboardsEnabled: false 
+  service:
+    enabled: true
+    type: LoadBalancer
+    loadBalancerIP: {{ $threeFirstOctets }}.106
+  image:
+    registry: "262399703539.dkr.ecr.eu-central-1.amazonaws.com"
+    repository: "dashboards/grafana-shaked"
+    tag: "v0.0.9-dev"
+  grafana.ini:
+    paths:
+      plugins: /etc/grafana/plugins
+    dashboards.json:
+      enabled: true -
+      path: /etc/grafana/provisioning/dashboards
+      updateIntervalSeconds: 10
+  env:
+    GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: prisma-pulsealertsmap-panel,prisma-analysis-panel,prisma-systemmetricscontrolcenter-panel,prisma-weeklyreports-panel
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana-shaked-dashboard
+      labelValue: "1"
+      folder: /var/lib/grafana/dashboards/default
+      searchNamespace: control-center
+    datasources:
+      label: grafana-shaked-datasource
+      labelValue: "1"
+      enabled: true
+      searchNamespace: control-center
+
+prometheus:
+  enabled: true
+  service:
+    enabled: true
+    type: LoadBalancer
+    loadBalancerIP: {{ $threeFirstOctets }}.107 
+  retention: 120d
+  retentionSize: 9GB
+  prometheusSpec:
+    scrapeTimeout: 1m
+    scrapeInterval: 1m
+    ### Prometheus persistent storage
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-zfspv
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+    ### Shaked targets - list of interrogators.
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    additionalScrapeConfigs: |
+      - job_name: shaked-1094
+        scheme: https
+        tls_config:
+          server_name: prisma-210-1094
+          insecure_skip_verify: true
+        static_configs:
+          - targets:
+            - prisma-210-1094.prisma.external:9273
+        basic_auth:
+          username: prisma
+          password: ShowMeWhereItHurts
+      - job_name: shaked-1092
+        scheme: https
+        tls_config:
+          server_name: prisma-210-1092
+          insecure_skip_verify: true
+        static_configs:
+          - targets:
+            - prisma-210-1092.prisma.external:9273
+        basic_auth:
+          username: prisma
+          password: ShowMeWhereItHurts
+      - job_name: shaked-1091
+        scheme: https
+        tls_config:
+          server_name: prisma-210-1091
+          insecure_skip_verify: true
+        static_configs:
+          - targets:
+            - prisma-210-1091.prisma.external:9273
+        basic_auth:
+          username: prisma
+          password: ShowMeWhereItHurts
+      - job_name: shaked-1037
+        scheme: http
+        static_configs:
+          - targets:
+            - prisma-210-1037.prisma.external:9273
+      - job_name: shaked-1020
+        scheme: http
+        static_configs:
+          - targets:
+            - prisma-210-1020.prisma.external:9273
+      - job_name: shaked-1015
+        scheme: http
+        static_configs:
+          - targets:
+            - prisma-210-1015.prisma.external:9273
+
+kubernetesServiceMonitors:
+  enabled: false
+kubeApiServer:
+  enabled: false
+kubelet:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+coreDns:
+  enabled: false
+kubeDns:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
+nodeExporter:
+  enabled: false
+prometheusOperator:
+  enabled: true
+
+
+

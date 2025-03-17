@@ -4,6 +4,9 @@
     repo_url: "{{ item.value }}"
   loop: "{{ helm_repos | dict2items }}"
 
+- name: Always update Helm repositories
+  command: helm repo update
+
 - name: Create directory for downloaded Helm charts
   file:
     path: "{{ artifact_path }}/helm_charts/downloaded_helm_charts/"

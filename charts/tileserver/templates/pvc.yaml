@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "tileserver-gl.fullname" . }}-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.persistence.capacity }}
+{{- if .Values.persistence.storageClassName }}
+  storageClassName: {{ .Values.persistence.storageClassName | quote }}
+{{- end }}
+{{- if .Values.persistence.hostPath }}
+  volumeName: {{ include "tileserver-gl.fullname" . }}-pv
+{{- end }}

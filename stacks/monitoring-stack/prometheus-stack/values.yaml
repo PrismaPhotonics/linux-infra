@@ -6,7 +6,8 @@ grafana:
     path: /grafana  
   adminUser: admin
   image:
-    repository: 262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec
+    registry: 262399703539.dkr.ecr.eu-central-1.amazonaws.com
+    repository: grafana-iec
     tag: on-prem2 
     env:
       GF_PATHS_PLUGINS: "/data/grafana/plugins"
@@ -54,22 +55,6 @@ prometheus:
     retentionSize: "49GB"
     podMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelectorNilUsesHelmValues: false
-    additionalScrapeConfigs: |
-      - job_name: prisma-external
-        scheme: http
-        static_configs:
-          - targets:
-            - 10.10.10.2:9273
-      - job_name: prisma-external-tls
-        scheme: https
-        tls_config:
-          insecure_skip_verify: true
-        static_configs:
-          - targets:
-            - 10.10.10.2:9273
-        basic_auth:
-          username: prisma
-          password: ShowMeWhereItHurts
     storageSpec:
       volumeClaimTemplate:
         spec:

@@ -1,0 +1,21 @@
+{{- $threeFirstOctets := (env "THREE_FIRST_OCTETS" | default "10.10.10") -}}
+
+auth:
+  enablePostgresUser: true
+  postgresPassword: "postgres"
+  database: "postgres"
+
+primary:
+  resources:
+    limits:
+      cpu: 3
+      memory: 3Gi
+  persistence:
+    enabled: true
+    size: 50Gi
+    storageClass: openebs-zfspv
+  service:
+    type: LoadBalancer
+    loadBalancerIP: "{{ $threeFirstOctets }}.104"
+
+

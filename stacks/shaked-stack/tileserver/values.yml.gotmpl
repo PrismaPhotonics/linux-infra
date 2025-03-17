@@ -1,0 +1,7 @@
+{{- $threeFirstOctets := (env "THREE_FIRST_OCTETS" | default "10.10.10") -}}
+
+service:
+  loadBalancerIP: {{ $threeFirstOctets }}.108
+
+ingress:
+  paths: ["/data/satellite", "/data/osm"]

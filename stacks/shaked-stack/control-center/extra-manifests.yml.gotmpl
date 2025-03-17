@@ -1,0 +1,435 @@
+{{- $threeFirstOctets := (env "THREE_FIRST_OCTETS" | default "10.10.10") -}}
+extraManifests:
+
+###### NODE-SERVER DEPLOYMENT ######
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: node-server
+      namespace: airflow
+      labels:
+        app: node-server
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: node-server
+      template:
+        metadata:
+          labels:
+            app: node-server
+        spec:
+          containers:
+            - name: node-server
+              image: 262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:nodejs-dev01
+              ports:
+                - containerPort: 3002
+              volumeMounts:
+                - name: reports-storage
+                  mountPath: /data
+          volumes:
+            - name: reports-storage
+              persistentVolumeClaim:
+                claimName: report-volume-airflow-worker-0
+
+###### NODE-SERVER SERVICE ######
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: node-server
+      namespace: airflow
+    spec:
+      type: LoadBalancer
+      loadBalancerIP: {{ $threeFirstOctets }}.109
+      ports:
+        - port: 81          # Service port
+          targetPort: 3002  # Container's listening port
+      selector:
+        app: node-server 
+
+
+###### DATASOURCES ######
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: grafana-datasources
+      labels:
+        grafana-shaked-datasource: '1'
+    stringData:
+      datasources.yaml: |-
+        apiVersion: 1
+        datasources:
+          - name: Postgres
+            type: postgres
+            url: postgres-shaked-postgresql.postgres-shaked.svc.cluster.local:5432
+            uid: "shakedCCPostgres"
+            user: postgres
+            secureJsonData:             
+              password: 'postgres'
+            jsonData:
+              version: 1
+              editable: true
+              database: postgres
+              sslmode: 'disable' # disable/require/verify-ca/verify-full
+              maxOpenConns: 0 # Grafana v5.4+
+              maxIdleConns: 2 # Grafana v5.4+
+              connMaxLifetime: 14400 # Grafana v5.4+
+              postgresVersion: 1700 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
+              timescaledb: false
+            # <bool> allow users to edit datasources from the UI.
+            editable: true
+
+###### PROMETHEUS PERSISTENT STORAGE PV\PVC ######
+
+#### GRAFANA PVC
+
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: shaked-control-center-grafana-pvc
+      namespace: airflow
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: openebs-zfspv
+###### DASHBOARDS ######
+
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: shaked-analysis
+      namespace: airflow
+      labels:
+        grafana-shaked-dashboard: "1"
+    data:
+      analysisDashboard.json: |-
+        {
+            "annotations": {
+              "list": [
+                {
+                  "builtIn": 1,
+                  "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                  },
+                  "enable": true,
+                  "hide": true,
+                  "iconColor": "rgba(0, 211, 255, 1)",
+                  "name": "Annotations & Alerts",
+                  "type": "dashboard"
+                }
+              ]
+            },
+            "editable": true,
+            "fiscalYearStartMonth": 0,
+            "graphTooltip": 0,
+            "id": 4,
+            "links": [],
+            "liveNow": false,
+            "panels": [
+              {
+                "datasource": {
+                  "type": "mixed",
+                  "uid": "-- Mixed --"
+                },
+                "gridPos": {
+                  "h": 8,
+                  "w": 12,
+                  "x": 0,
+                  "y": 0
+                },
+                "id": 1,
+                "options": {
+                  "seriesCountSize": "sm",
+                  "showSeriesCount": false,
+                  "text": "Default value of text input option"
+                },
+                "targets": [
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "prometheus"
+                    },
+                    "expr": "up",
+                    "instant": false,
+                    "range": true,
+                    "refId": "A"
+                  }
+                ],
+                "title": "Analysis",
+                "type": "prisma-analysis-panel"
+              }
+            ],
+            "refresh": "",
+            "schemaVersion": 39,
+            "tags": [],
+            "templating": {
+              "list": []
+            },
+            "time": {
+              "from": "now-6h",
+              "to": "now"
+            },
+            "timepicker": {},
+            "timezone": "",
+            "title": "Analysis",
+            "uid": "a029b0b9-8e9f-43b8-814f-79c55d05719c",
+            "version": 1,
+            "weekStart": ""
+          }
+
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: shaked-maps-pulse-alert
+      namespace: airflow
+      labels:
+        grafana-shaked-dashboard: "1"
+    data:
+      pulseAlertMapDashboard.json: |-
+        {
+            "annotations": {
+              "list": [
+                {
+                  "builtIn": 1,
+                  "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                  },
+                  "enable": true,
+                  "hide": true,
+                  "iconColor": "rgba(0, 211, 255, 1)",
+                  "name": "Annotations & Alerts",
+                  "type": "dashboard"
+                }
+              ]
+            },
+            "editable": true,
+            "fiscalYearStartMonth": 0,
+            "graphTooltip": 0,
+            "id": 1,
+            "links": [],
+            "liveNow": false,
+            "panels": [
+              {
+                "datasource": {
+                  "type": "mixed",
+                  "uid": "-- Mixed --"
+                },
+                "gridPos": {
+                  "h": 12,
+                  "w": 24,
+                  "x": 0,
+                  "y": 0
+                },
+                "id": 1,
+                "options": {
+                  "seriesCountSize": "sm",
+                  "showSeriesCount": false,
+                  "text": "Default value of text input option"
+                },
+                "pluginVersion": "10.3.1",
+                "targets": [
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "prometheus"
+                    },
+                    "expr": "up",
+                    "instant": false,
+                    "range": true,
+                    "refId": "A"
+                  }
+                ],
+                "title": "PulseAlerts",
+                "type": "prisma-pulsealertsmap-panel"
+              }
+            ],
+            "refresh": "5s",
+            "schemaVersion": 39,
+            "tags": [],
+            "templating": {
+              "list": []
+            },
+            "time": {
+              "from": "now-6h",
+              "to": "now"
+            },
+            "timepicker": {},
+            "timezone": "",
+            "title": "Maps",
+            "uid": "aa9256e5-2ce9-4a95-b75f-16481c06cfcd",
+            "version": 9,
+            "weekStart": ""
+          }
+
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: shaked-control-center
+      namespace: airflow
+      labels:
+        grafana-shaked-dashboard: "1"
+    data:
+      system-control-center-dashboard.json: |-
+        {
+            "annotations": {
+              "list": [
+                {
+                  "builtIn": 1,
+                  "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                  },
+                  "enable": true,
+                  "hide": true,
+                  "iconColor": "rgba(0, 211, 255, 1)",
+                  "name": "Annotations & Alerts",
+                  "type": "dashboard"
+                }
+              ]
+            },
+            "editable": true,
+            "fiscalYearStartMonth": 0,
+            "graphTooltip": 0,
+            "id": 5,
+            "links": [],
+            "liveNow": false,
+            "panels": [
+              {
+                "datasource": {
+                  "type": "mixed",
+                  "uid": "-- Mixed --"
+                },
+                "gridPos": {
+                  "h": 8,
+                  "w": 12,
+                  "x": 0,
+                  "y": 0
+                },
+                "id": 1,
+                "options": {
+                  "seriesCountSize": "sm",
+                  "showSeriesCount": false,
+                  "text": "Default value of text input option"
+                },
+                "targets": [
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "prometheus"
+                    },
+                    "expr": "up",
+                    "instant": false,
+                    "range": true,
+                    "refId": "A"
+                  }
+                ],
+                "title": "System Status",
+                "type": "prisma-systemmetricscontrolcenter-panel"
+              }
+            ],
+            "refresh": "",
+            "schemaVersion": 39,
+            "tags": [],
+            "templating": {
+              "list": []
+            },
+            "time": {
+              "from": "now-6h",
+              "to": "now"
+            },
+            "timepicker": {},
+            "timezone": "",
+            "title": "System Status",
+            "uid": "b03ead52-b6a4-4630-90a4-9022e46fa843",
+            "version": 1,
+            "weekStart": ""
+          }
+
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: shaked-weekly-report
+      namespace: airflow
+      labels:
+        grafana-shaked-dashboard: "1"
+    data:
+      weeklyReportDashboard.json: |-
+        {
+            "annotations": {
+              "list": [
+                {
+                  "builtIn": 1,
+                  "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                  },
+                  "enable": true,
+                  "hide": true,
+                  "iconColor": "rgba(0, 211, 255, 1)",
+                  "name": "Annotations & Alerts",
+                  "type": "dashboard"
+                }
+              ]
+            },
+            "editable": true,
+            "fiscalYearStartMonth": 0,
+            "graphTooltip": 0,
+            "id": 3,
+            "links": [],
+            "liveNow": false,
+            "panels": [
+              {
+                "datasource": {
+                  "type": "mixed",
+                  "uid": "-- Mixed --"
+                },
+                "gridPos": {
+                  "h": 8,
+                  "w": 12,
+                  "x": 0,
+                  "y": 0
+                },
+                "id": 1,
+                "options": {
+                  "seriesCountSize": "sm",
+                  "showSeriesCount": false,
+                  "text": "Default value of text input option"
+                },
+                "targets": [
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "prometheus"
+                    },
+                    "expr": "up",
+                    "instant": false,
+                    "range": true,
+                    "refId": "A"
+                  }
+                ],
+                "title": "Weekly Reports",
+                "type": "prisma-weeklyreports-panel"
+              }
+            ],
+            "refresh": "",
+            "schemaVersion": 39,
+            "tags": [],
+            "templating": {
+              "list": []
+            },
+            "time": {
+              "from": "now-6h",
+              "to": "now"
+            },
+            "timepicker": {},
+            "timezone": "",
+            "title": "Weekly Reports",
+            "uid": "c9f5d460-4947-4a78-88ad-bce91a2ede29",
+            "version": 1,
+            "weekStart": ""
+          }

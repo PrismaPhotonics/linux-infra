@@ -1,0 +1,122 @@
+{{- $threeFirstOctets := (env "THREE_FIRST_OCTETS" | default "10.10.10") -}}
+
+images:
+  airflow:
+    repository: 262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-airflow
+    tag: 1.0.6
+
+env:
+  - name: AIRFLOW__CORE__PARALLELISM
+    value: "150"
+  - name: DEV_CONFIG
+    value: "/opt/airflow/dags/repo/config"
+  - name: DEV_HOME
+    value: "/opt/airflow/dags/repo"
+  - name: DEV_LOGS
+    value: "/opt/airflow/dags/repo/logs"
+  - name: PYTHONPATH
+    value: "/opt/airflow/src/scripts:/opt/airflow/dags:/opt/airflow:/opt/airflow/src:/usr/local/lib/python3.9/site-packages"
+  - name: AIRFLOW__WEBSERVER__NAVBAR_COLOR
+    value: "#fff0e6"
+  - name: AIRFLOW__WEBSERVER__NAVBAR_LOGO_TEXT_COLOR
+    value: "#51504f"
+  - name: AIRFLOW__WEBSERVER__NAVBAR_TEXT_COLOR
+    value: "#51504f"
+  - name: AIRFLOW__WEBSERVER__NAVBAR_TEXT_HOVER_COLOR
+    value: "#51504f"
+  - name: AIRFLOW__WEBSERVER__INSTANCE_NAME
+    value: "Airflow Shaked"
+  - name: RUNNING_ENV
+    value: dev
+  - name: AIRFLOW__WEBSERVER__BASE_URL
+    value: http://data_dev.internal:8080
+
+secret:
+  - envName: DB_HOST
+    secretName: shaked-onprem-secret
+    secretKey: db_host
+  - envName: DB_USERNAME
+    secretName: shaked-onprem-secret
+    secretKey: db_username
+  - envName: DB_PASSWORD
+    secretName: shaked-onprem-secret
+    secretKey: db_password
+
+workers:
+  persistence:
+    size: 5Gi
+    storageClassName: openebs-zfspv
+
+  resources:
+    limits:
+     cpu: 4
+     memory: 16Gi
+    requests:
+     cpu: 2
+     memory: 1Gi
+  extraVolumes:
+    - name: config-volume
+      persistentVolumeClaim:
+        claimName: config-pv
+    - name: report-volume
+      persistentVolumeClaim:
+        claimName: report-pv
+    - name: coordinates-volume
+      persistentVolumeClaim:
+          claimName: coordinates-pv
+  extraVolumeMounts:
+    - name: config-volume
+      mountPath: "/app/config"
+    - name: report-volume
+      mountPath: "/app/report"
+    - name: coordinates-volume
+      mountPath: "/app/report/coordinates"
+      
+  volumeClaimTemplates:
+    - metadata:
+        name: config-volume
+      spec:
+          accessModes: [ "ReadWriteOnce" ]
+          resources:
+            requests:
+              storage: 100Mi
+          storageClassName: "" 
+          volumeName: config-pv
+
+    - metadata:
+        name: report-volume
+      spec:
+          accessModes: [ "ReadWriteOnce" ]
+          resources:
+            requests:
+              storage: 300Gi
+          storageClassName: "openebs-zfspv"
+
+    - metadata:
+        name: coordinates-volume
+      spec:
+          accessModes: [ "ReadWriteOnce" ]
+          resources:
+            requests:
+              storage: 100Mi
+          storageClassName: ""
+          volumeName: coordinates-pv
+webserver:
+  service:
+    type: LoadBalancer
+    loadBalancerIP: {{ $threeFirstOctets }}.105
+
+redis:
+  persistence:
+    storageClassName: openebs-zfspv
+
+triggerer:
+  persistence:
+    size: 5Gi
+    storageClassName: openebs-zfspv
+
+postgresql:
+  primary:
+    persistence:
+      storageClass: openebs-zfspv
+

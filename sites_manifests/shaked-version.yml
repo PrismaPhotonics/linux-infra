@@ -6,8 +6,8 @@ artifact:
 
 helm_spec:
   project_name: shaked
-  threeFirstOctets: 10.10.70
-  branch_name: main
+  three_first_octets: 10.20.10
+  branch_name: ib/shaked-integration
 
   helm_repos:
     prometheus-community: https://prometheus-community.github.io/helm-charts
@@ -26,6 +26,7 @@ helm_spec:
     linux-infra/metallb: "1.0.0"
     linux-infra/helm-dashboard: "2.0.3"
     linux-infra/curator: "1.0.0"
+    linux-infra/tileserver-gl: "1.0.0"
     ingress-nginx/ingress-nginx: "4.12.0"
     openebs/openebs: "4.2.0"
     bitnami/postgresql: "15.5.1"
@@ -39,11 +40,13 @@ helm_spec:
     apache-airflow/airflow: "1.15.0"
 
 docker_spec:
-  docker_registry_address: 10.10.70.150:5000
+  docker_registry_address: 10.20.10.150:5000
   docker_images:
     prisma_images:
       - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec:on-prem2"
-      - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-airflow:1.0.0"
+      - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-airflow:1.0.6"
+      - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:v0.0.9-dev"
+      - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:nodejs-dev01"
     third_party:
       - "bitnami/kubernetes-event-exporter:1.7.0-debian-12-r12"
       - "docker.elastic.co/beats/filebeat:8.5.1"
@@ -89,3 +92,4 @@ docker_spec:
       - "redis:7.2-bookworm"
       - "bitnami/postgresql:16.1.0-debian-11-r15"
       - "quay.io/prometheus/statsd-exporter:v0.26.1"
+      - "maptiler/tileserver-gl:v5.1.3"
