@@ -71,6 +71,7 @@ spec:
       docker_registry_address: 10.50.0.186:5000
       docker_images:
         prisma_images:
+          - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:v0.0.9-dev"
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec:on-prem2"
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-airflow:1.0.6"
         third_party:
