@@ -16,6 +16,7 @@ BASE_PACKAGES=(
     nfs-common
     nfs-kernel-server
     psutils
+    postgresql-client
     rar
     samba
     samba-common
