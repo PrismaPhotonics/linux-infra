@@ -193,11 +193,11 @@ spec:
         zfs_configuration:
           partition_configuration:
             device: "/dev/sda"
-            number: 17
+            number: 2
             label: "gpt"
             part_type: "primary"
             fs_type: "ext4"
-            start: "60GiB"
+            start: "30GiB"
             end: "100%"
           zpool_name: prismapool
           zpool_device: /dev/sda14
