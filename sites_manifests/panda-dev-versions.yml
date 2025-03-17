@@ -197,21 +197,21 @@ spec:
           data_sets:
             - name: prismapool/root/docker
               mountpoint: /var/lib/docker
-              storage: 12G
+              storage: 50G
 
             - name: prismapool/root/k8storage
               mountpoint: /var/lib/rancher/k3s/storage
-              storage: 12G
+              storage: 50G
 
             - name: prismapool/root/registry
               mountpoint: /var/lib/registry
-              storage: 12G
+              storage: 50G
 
             - name: prismapool/root/backups
               mountpoint: /prisma/root/backups
-              storage: 12G
+              storage: 50G
 
             - name: prismapool/root/recordings
               mountpoint: /prisma/root/recordings
-              storage: 12G
+              storage: 50G
 
