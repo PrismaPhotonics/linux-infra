@@ -195,9 +195,6 @@ spec:
             - zpool_name: prismapool
               zpool_device: /dev/sda2
 
-            - zpool_name: prismapool2
-              zpool_device: /dev/sda1
-
           data_sets:
             - name: prismapool/root/docker
               mountpoint: /var/lib/docker
