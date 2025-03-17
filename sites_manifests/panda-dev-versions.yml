@@ -201,7 +201,7 @@ spec:
           data_sets:
             - name: prismapool/root/docker
               mountpoint: /var/lib/docker
-              quota: 50G
+              quota: 500G
 
             - name: prismapool/root/k8storage
               mountpoint: /var/lib/rancher/k3s/storage
@@ -209,13 +209,13 @@ spec:
 
             - name: prismapool/root/registry
               mountpoint: /var/lib/registry
-              quota: 50G
+              quota: 500G
 
             - name: prismapool/root/backups
               mountpoint: /prisma/root/backups
-              quota: 50G
+              quota: 500G
 
             - name: prismapool/root/recordings
               mountpoint: /prisma/root/recordings
-              quota: 50G
+              quota: 500G
 
