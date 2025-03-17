@@ -1,13 +1,14 @@
 ---
-- name: Create ZFS zpools
-  community.general.zpool:
-    name: "{{ item.zpool_name }}"
+- name: Create the ZFS pool(s)
+  community.general.zfs:
+    pool: "{{ item.zpool_name }}"
     state: present
-    disks: "{{ item.zpool_device }}"
+    disks:
+      - "{{ item.zpool_device }}"
   loop: "{{ zfs_configuration.zpools }}"
   become: yes
   register: zpool_results
 
-- name: Debug zpool creation results
+- name: Debug ZFS pool creation results
   debug:
     var: zpool_results
