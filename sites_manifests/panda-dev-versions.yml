@@ -190,3 +190,27 @@ spec:
       workernode-panda:
         vmid: 108
         k3s_mode: 'agent'
+        zfs-configuration:
+          zpool-name: prismapool
+          zpool-devide: prismapool
+          data-sets:
+            - name: prismapool/root/docker
+              mountpoint: /var/lib/docker
+              storage: 12G
+
+            - name: prismapool/root/k8storage
+              mountpoint: /var/lib/rancher/k3s/storage
+              storage: 12G
+
+            - name: prismapool/root/registry
+              mountpoint: /var/lib/registry
+              storage: 12G
+
+            - name: prismapool/root/backups
+              mountpoint: /prisma/root/backups
+              storage: 12G
+
+            - name: prismapool/root/recordings
+              mountpoint: /prisma/root/recordings
+              storage: 12G
+
