@@ -47,6 +47,13 @@
     mode: '0755'
   become: yes
 
+- name: Ensure .kube directory exists for linux_user_name
+  file:
+    path: "/home/{{ linux_user_name }}/.kube"
+    state: directory
+    mode: '0755'
+  become: yes
+
 - name: Write kubeconfig file on agent
   copy:
     content: "{{ k3s_kubeconfig | regex_replace('127.0.0.1', master_node_ip) }}"
