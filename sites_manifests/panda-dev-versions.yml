@@ -197,7 +197,7 @@ spec:
             label: "gpt"
             part_type: "primary"
             fs_type: "ext4"
-            start: "30GiB"
+            start: "60GiB"
             end: "100%"
           zpool_name: prismapool
           zpool_device: /dev/sda14
