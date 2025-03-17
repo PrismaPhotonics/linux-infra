@@ -66,7 +66,7 @@ spec:
 
         
     docker_spec:
-      docker_registry_address: 10.50.0.69:5000
+      docker_registry_address: 10.50.0.186:5000
       docker_images:
         prisma_images:
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec:on-prem2"
@@ -116,7 +116,6 @@ spec:
           - "redis:7.2-bookworm"
           - "bitnami/postgresql:16.1.0-debian-11-r15"
           - "quay.io/prometheus/statsd-exporter:v0.26.1"
-
 
     helm_spec:
       project_name: shaked
@@ -185,7 +184,7 @@ spec:
   configurations:
     linux_user_name: prisma
     artifact_path: '/offline_deploy'
-    master_node_ip: '20.0.0.210'
+    master_node_ip: '10.50.0.186'
     vms:
       workernode_panda:
         vmid: 108
