@@ -13,8 +13,8 @@
     label: "{{ zfs_configuration.partition_configuration.label }}"
     part_type: "{{ zfs_configuration.partition_configuration.part_type }}"
     fs_type: "{{ zfs_configuration.partition_configuration.fs_type }}"
-    start: "{{ zfs_configuration.partition_configuration.start }}"
-    end: "{{ zfs_configuration.partition_configuration.end }}"
+    part_start: "{{ zfs_configuration.partition_configuration.start }}"
+    part_end: "{{ zfs_configuration.partition_configuration.end }}"
   become: yes
   register: parted_result
 
