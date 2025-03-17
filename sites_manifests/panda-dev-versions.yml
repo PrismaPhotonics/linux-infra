@@ -201,7 +201,7 @@ spec:
             end: "100%"
           zpool_name: prismapool
           zpool_device: /dev/sda2
-          data-sets:
+          data_sets:
             - name: prismapool/root/docker
               mountpoint: /var/lib/docker
               storage: 12G
