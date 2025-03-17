@@ -4,9 +4,9 @@
   community.general.parted:
     device: "{{ zfs_configuration.partition_configuration.device }}"
     label: "{{ zfs_configuration.partition_configuration.label }}"
-    state: table
+    state: present
 
-- name: Create partition on {{ zfs_configuration.partition_configuration.device }}
+- name: Create partition number {{ zfs_configuration.partition_configuration.number }} on {{ zfs_configuration.partition_configuration.device }}
   community.general.parted:
     device: "{{ zfs_configuration.partition_configuration.device }}"
     number: "{{ zfs_configuration.partition_configuration.number }}"
@@ -15,4 +15,3 @@
     state: present
     start: "{{ zfs_configuration.partition_configuration.start }}"
     end: "{{ zfs_configuration.partition_configuration.end }}"
-  # Note: Consider adding checks (e.g. using 'changed_when') to ensure idempotency.
