@@ -16,9 +16,9 @@
     mode: '0644'
   become: yes
 
-- name: Restart k3s worker
+- name: Restart k3s service
   systemd:
-    name: k3s-agent
+    name: "{{ 'k3s-agent' if k3s_mode == 'agent' else 'k3s' }}"
     state: restarted
     enabled: yes
   become: yes
