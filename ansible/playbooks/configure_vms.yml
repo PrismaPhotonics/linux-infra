@@ -47,6 +47,7 @@
       when: enable_k3s_install | default(false)
       vars:
         master_node_ip: "{{ spec.configurations.master_node_ip }}"
+        linux_user_name: "{{ spec.configurations.linux_user_name }}"
         k3s_tools: "{{ spec.components.k3s_tools }}"
         artifact_path: "{{ spec.configurations.artifact_path }}"
 
