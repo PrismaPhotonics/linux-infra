@@ -187,12 +187,12 @@ spec:
     artifact_path: '/offline_deploy'
     master_node_ip: '20.0.0.210'
     vms:
-      workernode-panda:
+      workernode_panda:
         vmid: 108
         k3s_mode: 'agent'
-        zfs-configuration:
-          zpool-name: prismapool
-          zpool-device: prismapool
+        zfs_configuration:
+          zpool_name: prismapool
+          zpool_device: prismapool
           data-sets:
             - name: prismapool/root/docker
               mountpoint: /var/lib/docker
