@@ -14,13 +14,15 @@
   loop: "{{ zfs_configuration.data_sets }}"
   loop_control:
     loop_var: dataset
+    index_var: ds_index
 
 - name: Create ZFS dataset(s) if they do not exist
   command: "zfs create -o mountpoint={{ dataset.mountpoint }} {{ dataset.name }}"
-  when: zfs_dataset_check.results[loop.index0].rc != 0
+  when: zfs_dataset_check.results[ds_index].rc != 0
   loop: "{{ zfs_configuration.data_sets }}"
   loop_control:
     loop_var: dataset
+    index_var: ds_index
 
 - name: Set quota for ZFS dataset(s)
   command: "zfs set quota={{ dataset.quota }} {{ dataset.name }}"
