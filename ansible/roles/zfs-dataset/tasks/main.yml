@@ -1,53 +1,10 @@
-- name: Create new partition
-  ansible.posix.parted:
-    device: "{{ zfs_configuration.partition_configuration.device }}"
-    number: "{{ zfs_configuration.partition_configuration.number }}"
-    label: "{{ zfs_configuration.partition_configuration.label }}"
-    state: present
-    part_type: "{{ zfs_configuration.partition_configuration.part_type }}"
-    fs_type: "{{ zfs_configuration.partition_configuration.fs_type }}"
-    start: "{{ zfs_configuration.partition_configuration.start }}"
-    end: "{{ zfs_configuration.partition_configuration.end }}"
+# roles/create_zfs_dataset/tasks/main.yml
 
-- name: Ensure zpool exists
-  block:
-    - name: Check if zpool exists
-      ansible.builtin.command: zpool list {{ zfs_configuration.zpool_name }}
-      register: zpool_check
-      ignore_errors: yes
-      changed_when: false
+- name: Partition the disk
+  include_tasks: partition.yml
 
-    - name: Create zpool if not exists
-      ansible.builtin.command: zpool create {{ zfs_configuration.zpool_name }} {{ zfs_configuration.zpool_device }}
-      when: zpool_check.rc != 0
-      register: create_zpool
-      changed_when: create_zpool.rc == 0
+- name: Create the ZFS pool
+  include_tasks: zpool.yml
 
-- name: "Create ZFS datasets"
-  block:
-    - name: Create dataset if it doesn't exist
-      ansible.builtin.command: >
-        zfs create -o mountpoint={{ item.mountpoint }} {{ item.name }}
-      args:
-        warn: false
-      register: create_dataset_result
-      failed_when: create_dataset_result.rc not in [0, 1]
-      changed_when: create_dataset_result.rc == 0
-      loop: "{{ zfs_configuration.data_sets }}"
-      loop_control:
-        label: "{{ item.name }}"
-
-    - name: Set quota for dataset
-      ansible.builtin.command: >
-        zfs set quota={{ item.storage }} {{ item.name }}
-      args:
-        warn: false
-      register: set_quota_result
-      changed_when: set_quota_result.rc == 0
-      loop: "{{ zfs_configuration.data_sets }}"
-      loop_control:
-        label: "{{ item.name }}"
-  rescue:
-    - name: Fail if dataset creation fails
-      ansible.builtin.fail:
-        msg: "Failed to create ZFS datasets. Check ZFS installation and configuration."
+- name: Create ZFS datasets
+  include_tasks: dataset.yml

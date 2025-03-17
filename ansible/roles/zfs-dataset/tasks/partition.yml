@@ -1,0 +1,18 @@
+# roles/create_zfs_dataset/tasks/partition.yml
+
+- name: Ensure the disk has a GPT partition table
+  community.general.parted:
+    device: "{{ zfs_configuration.partition_configuration.device }}"
+    label: "{{ zfs_configuration.partition_configuration.label }}"
+    state: present
+
+- name: Create partition on {{ zfs_configuration.partition_configuration.device }}
+  community.general.parted:
+    device: "{{ zfs_configuration.partition_configuration.device }}"
+    number: "{{ zfs_configuration.partition_configuration.number }}"
+    part_type: "{{ zfs_configuration.partition_configuration.part_type }}"
+    fs_type: "{{ zfs_configuration.partition_configuration.fs_type }}"
+    state: present
+    start: "{{ zfs_configuration.partition_configuration.start }}"
+    end: "{{ zfs_configuration.partition_configuration.end }}"
+  # Note: Consider adding checks (e.g. using 'changed_when') to ensure idempotency.

@@ -1,0 +1,18 @@
+# roles/create_zfs_dataset/tasks/dataset.yml
+
+- name: Create ZFS dataset(s)
+  loop: "{{ zfs_configuration.data_sets }}"
+  loop_control:
+    loop_var: dataset
+  command: >
+    zfs create -o mountpoint={{ dataset.mountpoint }} {{ dataset.name }}
+  args:
+    creates: "/{{ dataset.name }}"
+  # Adjust "creates" logic as needed for your environment.
+
+- name: Set quota for ZFS dataset(s)
+  loop: "{{ zfs_configuration.data_sets }}"
+  loop_control:
+    loop_var: dataset
+  command: >
+    zfs set quota={{ dataset.storage }} {{ dataset.name }}
