@@ -192,7 +192,7 @@ spec:
         k3s_mode: 'agent'
         zfs-configuration:
           zpool-name: prismapool
-          zpool-devide: prismapool
+          zpool-device: prismapool
           data-sets:
             - name: prismapool/root/docker
               mountpoint: /var/lib/docker
