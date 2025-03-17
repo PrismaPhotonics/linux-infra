@@ -1,4 +1,3 @@
----
 - name: Create new partition
   ansible.posix.parted:
     device: "{{ zfs_configuration.partition_configuration.device }}"
