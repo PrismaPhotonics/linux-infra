@@ -1,52 +1,31 @@
+---
 - name: Ensure parent dataset(s) exist
   command: "zfs create {{ item }}"
   args:
     creates: "/{{ item }}"
   loop: "{{ zfs_configuration.data_sets | map(attribute='name') | map('regex_replace', '/[^/]+$', '') | unique | list }}"
   when: item != ""
+  # This task extracts the parent dataset from each dataset name (e.g. for prismapool/root/docker it extracts prismapool/root)
+  # and creates it if it does not exist.
 
-- name: Create ZFS dataset(s) if they do not exist
+- name: Create ZFS dataset(s) if not present
+  block:
+    - name: Check if ZFS dataset {{ dataset.name }} exists
+      command: "zfs list {{ dataset.name }}"
+      register: dataset_check
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Create ZFS dataset {{ dataset.name }}
+      command: "zfs create -o mountpoint={{ dataset.mountpoint }} {{ dataset.name }}"
+      when: dataset_check.rc != 0
   loop: "{{ zfs_configuration.data_sets }}"
   loop_control:
     loop_var: dataset
-  command: "zfs create -o mountpoint={{ dataset.mountpoint }} {{ dataset.name }}"
-  args:
-    creates: "/{{ dataset.name }}"
-  register: create_zfs
-  ignore_errors: yes
 
-- name: Debug dataset creation results
-  debug:
-    msg: "Dataset {{ item.item.name }} creation result: {{ item.stderr }}"
-  loop: "{{ create_zfs.results }}"
-  when: item.rc != 0
-
-- name: Verify current quota for each ZFS dataset
+- name: Set quota for ZFS dataset(s)
   loop: "{{ zfs_configuration.data_sets }}"
   loop_control:
     loop_var: dataset
-  command: "zfs get -H -o value quota {{ dataset.name }}"
-  register: current_quota
-  changed_when: false
-  ignore_errors: yes
-
-- name: Adjust quota if it does not match desired storage
-  loop: "{{ zfs_configuration.data_sets }}"
-  loop_control:
-    loop_var: dataset
-  vars:
-    # Retrieve current quota for this dataset; note that this task assumes the previous task's output is available
-    # You might also use a lookup or a separate shell command here for a more direct approach.
-    current: "{{ (current_quota.results | selectattr('item.name', 'equalto', dataset.name) | list)[0].stdout | trim }}"
-  when: current != dataset.storage
-  command: "zfs set quota={{ dataset.storage }} {{ dataset.name }}"
-  register: set_quota_result
-  ignore_errors: no
-
-- name: Report quota update result
-  debug:
-    msg: "Quota for {{ dataset.name }} updated to {{ dataset.storage }}"
-  loop: "{{ zfs_configuration.data_sets }}"
-  loop_control:
-    loop_var: dataset
-  when: "'set_quota_result' in vars and set_quota_result.changed"
+  command: >
+    zfs set quota={{ dataset.quota }} {{ dataset.name }}
