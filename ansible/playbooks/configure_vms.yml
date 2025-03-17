@@ -53,7 +53,7 @@
     - role: configure-registry-mirroring
       when: enable_configure_registry_mirroring | default(false)
       vars:
-       docker_registry_address: "{{ docker_spec.docker_registry_address }}"
+       docker_registry_address: "{{ spec.components.docker_spec.docker_registry_address }}"
 
     - role: helm-install
       when: enable_helm_install | default(false)

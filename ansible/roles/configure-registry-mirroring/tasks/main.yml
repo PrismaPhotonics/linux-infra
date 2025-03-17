@@ -7,7 +7,7 @@
     mode: '0755'
   become: yes
   
-- name: Configure registry mirrors for k3s worker
+- name: Configure registry mirrors for k3s
   template:
     src: registries.yaml.j2
     dest: /etc/rancher/k3s/registries.yaml
