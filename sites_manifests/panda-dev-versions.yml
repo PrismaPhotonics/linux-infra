@@ -191,14 +191,6 @@ spec:
         vmid: 108
         k3s_mode: 'agent'
         zfs_configuration:
-          partition_configuration:
-            device: "/dev/sda"
-            number: 2
-            label: "gpt"
-            part_type: "primary"
-            fs_type: "ext4"
-            start: "30GiB"
-            end: "100%"
           zpool_name: prismapool
           zpool_device: /dev/sda2
           data_sets:

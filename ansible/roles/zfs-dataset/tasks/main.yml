@@ -1,8 +1,5 @@
 # roles/create_zfs_dataset/tasks/main.yml
 
-- name: Partition the disk
-  include_tasks: partition.yml
-
 - name: Create the ZFS pool
   include_tasks: zpool.yml
 
