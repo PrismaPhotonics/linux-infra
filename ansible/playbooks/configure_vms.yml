@@ -27,7 +27,7 @@
     - role: zfs-dataset
       when: enable_zfs_dataset_creation | default(false)
       vars:
-       zfs-configuration: "{{ spec.configurations.vms.workernode-panda.zfs-configuration | default([]) }}"
+       zfs_configuration: "{{ spec.configurations.vms.workernode-panda.zfs-configuration | default([]) }}"
 
     - role: os-tools-install
       when: enable_os_tools_install | default(false)
