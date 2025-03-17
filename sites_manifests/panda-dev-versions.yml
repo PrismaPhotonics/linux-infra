@@ -119,7 +119,7 @@ spec:
 
     helm_spec:
       project_name: shaked
-      threeFirstOctets: 10.10.70
+      three_first_octets: 10.50.0
       branch_name: main
 
       helm_repos:
