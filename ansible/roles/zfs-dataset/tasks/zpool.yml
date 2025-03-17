@@ -1,8 +1,13 @@
-# roles/create_zfs_dataset/tasks/zpool.yml
+---
+- name: Create ZFS zpools
+  community.general.zpool:
+    name: "{{ item.zpool_name }}"
+    state: present
+    disks: "{{ item.zpool_device }}"
+  loop: "{{ zfs_configuration.zpools }}"
+  become: yes
+  register: zpool_results
 
-- name: Create ZFS pool {{ zfs_configuration.zpool_name }}
-  command: >
-    zpool create {{ zfs_configuration.zpool_name }} {{ zfs_configuration.zpool_device }}
-  args:
-    creates: "/{{ zfs_configuration.zpool_name }}"
-  # The "creates" parameter prevents recreating the pool if it already exists.
+- name: Debug zpool creation results
+  debug:
+    var: zpool_results
