@@ -1,7 +1,6 @@
----
 - name: Create the ZFS pool(s)
   community.general.zfs:
-    pool: "{{ item.zpool_name }}"
+    name: "{{ item.zpool_name }}"
     state: present
     disks:
       - "{{ item.zpool_device }}"
