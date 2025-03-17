@@ -205,7 +205,7 @@ spec:
 
             - name: prismapool/root/k8storage
               mountpoint: /var/lib/rancher/k3s/storage
-              quota: 50G
+              quota: 500G
 
             - name: prismapool/root/registry
               mountpoint: /var/lib/registry
