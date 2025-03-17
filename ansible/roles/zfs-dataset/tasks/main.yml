@@ -1,4 +1,16 @@
 ---
+- name: Create new partition
+  become: yes
+  ansible.posix.parted:
+    device: "{{ zfs_configuration.partition_configuration.device }}"
+    number: "{{ zfs_configuration.partition_configuration.number }}"
+    label: "{{ zfs_configuration.partition_configuration.label }}"
+    state: present
+    part_type: "{{ zfs_configuration.partition_configuration.part_type }}"
+    fs_type: "{{ zfs_configuration.partition_configuration.fs_type }}"
+    start: "{{ zfs_configuration.partition_configuration.start }}"
+    end: "{{ zfs_configuration.partition_configuration.end }}"
+
 - name: Ensure zpool exists
   block:
     - name: Check if zpool exists
