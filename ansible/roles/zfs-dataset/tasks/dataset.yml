@@ -1,4 +1,12 @@
-# roles/create_zfs_dataset/tasks/dataset.yml
+---
+- name: Ensure parent dataset(s) exist
+  command: "zfs create {{ item }}"
+  args:
+    creates: "/{{ item }}"
+  loop: "{{ zfs_configuration.data_sets | map(attribute='name') | map('regex_replace', '/[^/]+$', '') | unique | list }}"
+  when: item != ""
+  # This task extracts the parent dataset from each dataset name (e.g. for prismapool/root/docker it extracts prismapool/root)
+  # and creates it if it does not exist.
 
 - name: Create ZFS dataset(s)
   loop: "{{ zfs_configuration.data_sets }}"
