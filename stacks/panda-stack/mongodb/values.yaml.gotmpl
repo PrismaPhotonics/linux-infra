@@ -1,0 +1,67 @@
+{{- $threeFirstOctets := (env "THREE_FIRST_OCTETS" | default "10.10.10") -}}
+
+auth:
+  enabled: true
+  rootPassword: "prisma"
+  username: "prisma"
+  password: "prisma"
+  database: "prisma"
+
+persistence:
+  enabled: true
+  size: "10Gi"
+  storageClass: openebs-zfspv
+
+service:.
+  type: LoadBalancer
+  loadBalancerIP: "{{ $threeFirstOctets }}.103
+  port: 27017
+  nodePort: 32000
+
+sidecars:
+  - name: mongo-indexer
+    workingDir: /home/prisma/debug-codebase
+    env:
+      - name: PRISMA_CERTIFICATES
+        value: /etc/ssl/certs
+      - name: PRISMA_CONFIG
+        value: /home/prisma/pz/config
+    imagePullPolicy: IfNotPresent
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        echo "[mongo-indexer] Waiting for MongoDB to be ready..."
+        until (echo "quit" | telnet mongodb 27017 2>&1 | grep -q "Connected to"); do
+          echo "[mongo-indexer] MongoDB is not ready yet..."
+          sleep 2
+        done
+        echo "[mongo-indexer] MongoDB is up! Running custom script..."
+        ./active-python-env.sh -m pzpy.recording.mongo_mapper --db-url mongodb://prisma:prisma@mongodb:27017/ /prisma/root/recordings/prisma-210-1057 build
+        echo "[mongo-indexer] Finished the indexing"
+        tail -f /dev/null
+    volumeMounts:
+      - name: debug-env-volume
+        mountPath: /home/prisma/debug-codebase
+      - name: prisma-config-volume
+        mountPath: /home/prisma/pz/config
+      - name: storage-san-volume
+        mountPath: /prisma/root/recordings
+
+extraVolumes:
+  - name: debug-env-volume
+    hostPath:
+      path: /home/prisma/debug-codebase
+      type: Directory
+  - name: prisma-config-volume
+    hostPath:
+      path: /home/prisma/pz/config
+      type: Directory
+  - name: python-packages-volume
+    hostPath:
+      path: /home/prisma/.local/lib/python3.10/site-packages
+      type: Directory
+
+  - name: storage-san-volume
+    hostPath:
+      path: /prisma/root/recordings
+      type: Directory

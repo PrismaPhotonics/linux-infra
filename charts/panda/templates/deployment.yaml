@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tileserver-gl.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "tileserver-gl.name" . }}
+    helm.sh/chart: {{ include "tileserver-gl.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "tileserver-gl.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "tileserver-gl.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: tileserver-gl
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+              name: http
+          volumeMounts:
+            - name: tileserver-data
+              mountPath: /data
+          args:
+            {{- if .Values.args }}
+            {{ toYaml .Values.args | nindent 12 }}
+            {{- end }}
+            - "--port"
+            - "{{ .Values.service.port }}"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: tileserver-data
+          persistentVolumeClaim:
+            claimName: {{ include "tileserver-gl.fullname" . }}-pvc

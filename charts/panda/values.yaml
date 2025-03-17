@@ -1,0 +1,32 @@
+replicaCount: 1
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  tls: null
+  paths: ["/data/satellite"]
+
+image:
+  repository: maptiler/tileserver-gl
+  tag: v5.1.3
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer 
+  port: 80
+  loadBalancerIP: null
+persistence:
+  enabled: true
+  capacity: 100Gi
+  storageClassName: openebs-zfspv
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+args:
+  - "--config"
+  - "/data/config.json"
