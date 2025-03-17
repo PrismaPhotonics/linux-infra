@@ -1,16 +1,6 @@
 ---
-- name: Create ZFS pool(s) if they don't exist
-  block:
-    - name: Check if ZFS pool "{{ item.zpool_name }}" exists
-      command: "zpool list -H -o name {{ item.zpool_name }}"
-      register: pool_check
-      ignore_errors: yes
-      changed_when: false
-
-    - name: Create ZFS pool "{{ item.zpool_name }}"
-      command: "zpool create {{ item.zpool_name }} {{ item.zpool_device }}"
-      become: yes
-      when: pool_check.rc != 0
+- name: Create ZFS pools from configuration
+  command: "zpool create {{ item.zpool_name }} {{ item.zpool_device }}"
+  args:
+    creates: "/{{ item.zpool_name }}"
   loop: "{{ zfs_configuration.zpools }}"
-  loop_control:
-    label: "{{ item.zpool_name }}"
