@@ -4,7 +4,7 @@
   community.general.parted:
     device: "{{ zfs_configuration.partition_configuration.device }}"
     label: "{{ zfs_configuration.partition_configuration.label }}"
-    state: present
+    state: table
 
 - name: Create partition on {{ zfs_configuration.partition_configuration.device }}
   community.general.parted:
