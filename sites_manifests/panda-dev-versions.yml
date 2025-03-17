@@ -196,10 +196,7 @@ spec:
               zpool_device: /dev/sda2
 
             - zpool_name: prismapool2
-              zpool_device: /dev/sda2
-
-            - zpool_name: prismapool3
-              zpool_device: /dev/sda2
+              zpool_device: /dev/sda1
 
           data_sets:
             - name: prismapool/root/docker
