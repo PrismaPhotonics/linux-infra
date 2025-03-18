@@ -1,19 +1,19 @@
 {{- $artifactPath := (env "ARTIFACT_PATH" | default "prisma") -}}
 
 releases:
-#  - name: rabbitmq-panda
-#    namespace: rabbitmq-panda
-#    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/rabbitmq
-#    timeout: 600
-#    values:
-#      - ./rabbitmq/values.yml.gotmpl
-#
-#  - name: mongodb
-#    namespace: mongodb
-#    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/mongodb
-#    timeout: 600
-#    values:
-#      - ./mongodb/values.yml.gotmpl
+  - name: rabbitmq-panda
+    namespace: rabbitmq-panda
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/rabbitmq
+    timeout: 600
+    values:
+      - ./rabbitmq/values.yml.gotmpl
+
+  - name: mongodb
+    namespace: mongodb
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/mongodb
+    timeout: 600
+    values:
+      - ./mongodb/values.yml.gotmpl
 
   - name: panda
     namespace: panda
