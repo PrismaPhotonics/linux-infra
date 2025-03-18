@@ -1,5 +1,7 @@
 replicaCount: 1
 
+palyer_enabled: true
+
 ingress:
   enabled: true
   ingressClassName: nginx
