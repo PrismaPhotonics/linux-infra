@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "segy-recorder.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "segy-recorder.name" . }}
+    helm.sh/chart: {{ include "segy-recorder.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  replicas: {{ .Values.segyRecorder.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "segy-recorder.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "segy-recorder.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: segy-recorder
+          image: "{{ .Values.segyRecorder.image.repository }}:{{ .Values.segyRecorder.image.tag }}"
+          imagePullPolicy: {{ .Values.segyRecorder.image.pullPolicy }}
+          workingDir: {{ .Values.segyRecorder.workingDir | quote }}
+          env:
+            - name: PRISMA_RABBIT_MACHINE_NAME
+              value: {{ .Values.segyRecorder.env.PRISMA_RABBIT_MACHINE_NAME | quote }}
+            - name: PRISMA_CERTIFICATES
+              value: {{ .Values.segyRecorder.env.PRISMA_CERTIFICATES | quote }}
+            - name: PRISMA_CONFIG
+              value: {{ .Values.segyRecorder.env.PRISMA_CONFIG | quote }}
+          command: {{ toYaml .Values.segyRecorder.command | nindent 12 }}
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/ssl/certs
+              readOnly: true
+            - name: debug-env-volume
+              mountPath: {{ .Values.segyRecorder.volumeMounts.debugEnv.mountPath | quote }}
+            - name: prisma-config-volume
+              mountPath: {{ .Values.segyRecorder.volumeMounts.prismaConfig.mountPath | quote }}
+            - name: storage-san-volume
+              mountPath: {{ .Values.segyRecorder.volumeMounts.storageSan.mountPath | quote }}
+      terminationGracePeriodSeconds: {{ .Values.segyRecorder.terminationGracePeriodSeconds }}
+      volumes:
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  name: {{ .Values.segyRecorder.tlsSecret.name }}
+                  items:
+                    - key: ca.crt
+                      path: {{ .Values.segyRecorder.tlsSecret.items.caCrtPath }}
+                    - key: tls.crt
+                      path: {{ .Values.segyRecorder.tlsSecret.items.tlsCrtPath }}
+                    - key: tls.key
+                      path: {{ .Values.segyRecorder.tlsSecret.items.tlsKeyPath }}
+        - name: debug-env-volume
+          hostPath:
+            path: {{ .Values.segyRecorder.volumes.debugEnv.path | quote }}
+            type: Directory
+        - name: prisma-config-volume
+          hostPath:
+            path: {{ .Values.segyRecorder.volumes.prismaConfig.path | quote }}
+            type: Directory
+        - name: storage-san-volume
+          hostPath:
+            path: {{ .Values.segyRecorder.volumes.storageSan.path | quote }}
+            type: Directory
