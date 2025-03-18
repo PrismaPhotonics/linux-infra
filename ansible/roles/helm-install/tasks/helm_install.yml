@@ -23,6 +23,17 @@
         ARTIFACT_PATH: "{{ artifact_path }}"
         KUBECONFIG: "/home/{{ linux_user_name }}/.kube/config"
       register: helmfile_output
+      changed_when: helmfile_output.rc != 0  # Marks task as changed only if command fails
+
+    - name: Display helmfile command stdout
+      debug:
+        msg: "{{ helmfile_output.stdout_lines }}"
+      when: helmfile_output.stdout | length > 0
+
+    - name: Display helmfile command stderr
+      debug:
+        msg: "{{ helmfile_output.stderr_lines }}"
+      when: helmfile_output.stderr | length > 0
 
   always:
     - name: Ensure output directory exists on the controller
@@ -34,4 +45,4 @@
     - name: Write helmfile command output
       copy:
         dest: "{{ artifact_path }}/helmfile_outputs/helmfile_output.txt"
-        content: "{{ helmfile_output.stderr }}"
+        content: "{{ helmfile_output.stdout }}\n\nSTDERR:\n{{ helmfile_output.stderr }}"
