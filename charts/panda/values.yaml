@@ -3,30 +3,46 @@ replicaCount: 1
 ingress:
   enabled: true
   ingressClassName: nginx
-  tls: null
-  paths: ["/data/satellite"]
+  rules:
+    - host: example.com
+      paths:
+        - /
+  tls: []
+
+serviceAccountName: focus-server-sa
 
 image:
-  repository: maptiler/tileserver-gl
-  tag: v5.1.3
+  repository: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux"
+  tag: "10.7.104"
   pullPolicy: IfNotPresent
 
-service:
-  type: LoadBalancer 
-  port: 80
-  loadBalancerIP: null
-persistence:
-  enabled: true
-  capacity: 100Gi
-  storageClassName: openebs-zfspv
-resources:
-  requests:
-    cpu: 100m
-    memory: 256Mi
-  limits:
-    cpu: 500m
-    memory: 512Mi
+workingDir: "/home/prisma"
+command:
+  - "./debug-codebase/active-python-env.sh"
+  - "-m"
+  - "focus_server"
 
-args:
-  - "--config"
-  - "/data/config.json"
+service:
+  type: ClusterIP
+  port: 5000
+
+env:
+  PZ_IMAGE_TAG: "10.7.104"
+  PRISMA_CONFIG: "/home/prisma/pz/config/"
+
+volumeMounts:
+  debugEnv:
+    mountPath: "/home/prisma/debug-codebase"
+  prismaConfig:
+    mountPath: "/home/prisma/pz/config"
+
+volumes:
+  debugEnv:
+    path: "/home/prisma/debug-codebase"
+  prismaConfig:
+    path: "/home/prisma/pz/config"
+  pythonPackages:
+    path: "/home/prisma/.local/lib/python3.10/site-packages"
+
+terminationGracePeriodSeconds: 30
+

@@ -141,6 +141,7 @@ spec:
       helm_charts:
         kubernetes-dashboard/kubernetes-dashboard: "7.10.4"
         linux-infra/telegraf: "1.8.55"
+        linux-infra/panda: "0.1.0"
         linux-infra/metallb: "1.0.0"
         linux-infra/helm-dashboard: "2.0.3"
         linux-infra/curator: "1.0.0"
@@ -154,7 +155,7 @@ spec:
         elastic/logstash: "8.5.1"
         elastic/filebeat: "8.5.1"
         mojo2600/pihole: "2.26.1"
-        apache-airflow/airflow: "1.15.0"
+#        apache-airflow/airflow: "1.15.0"
 
     drivers:
       - name: "gpu-driver"

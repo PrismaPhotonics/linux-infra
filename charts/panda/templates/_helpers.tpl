@@ -1,14 +1,14 @@
 {{/*
 Return the chart name.
 */}}
-{{- define "tileserver-gl.name" -}}
+{{- define "focus-server.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
-Return the fully qualified name, e.g. "release-tileserver-gl".
+Return the fully qualified name, e.g. "release-focus-server".
 */}}
-{{- define "tileserver-gl.fullname" -}}
+{{- define "focus-server.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if .Values.fullnameOverride -}}
   {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
@@ -18,8 +18,8 @@ Return the fully qualified name, e.g. "release-tileserver-gl".
 {{- end -}}
 
 {{/*
-Return the chart name and version, e.g. "tileserver-gl-0.1.0".
+Return the chart name and version, e.g. "focus-server-0.1.0".
 */}}
-{{- define "tileserver-gl.chart" -}}
+{{- define "focus-server.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

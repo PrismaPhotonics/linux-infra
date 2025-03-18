@@ -1,43 +1,55 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "tileserver-gl.fullname" . }}
+  name: {{ include "focus-server.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "tileserver-gl.name" . }}
-    helm.sh/chart: {{ include "tileserver-gl.chart" . }}
+    app.kubernetes.io/name: {{ include "focus-server.name" . }}
+    helm.sh/chart: {{ include "focus-server.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "tileserver-gl.name" . }}
+      app.kubernetes.io/name: {{ include "focus-server.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "tileserver-gl.name" . }}
+        app.kubernetes.io/name: {{ include "focus-server.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
       containers:
-        - name: tileserver-gl
+        - name: focus-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          workingDir: {{ .Values.workingDir | quote }}
+          command: {{ toYaml .Values.command | nindent 12 }}
           ports:
             - containerPort: {{ .Values.service.port }}
               name: http
+          env:
+            - name: PZ_IMAGE_TAG
+              value: "{{ .Values.env.PZ_IMAGE_TAG }}"
+            - name: PRISMA_CONFIG
+              value: "{{ .Values.env.PRISMA_CONFIG }}"
           volumeMounts:
-            - name: tileserver-data
-              mountPath: /data
-          args:
-            {{- if .Values.args }}
-            {{ toYaml .Values.args | nindent 12 }}
-            {{- end }}
-            - "--port"
-            - "{{ .Values.service.port }}"
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            - name: debug-env-volume
+              mountPath: {{ .Values.volumeMounts.debugEnv.mountPath | quote }}
+            - name: prisma-config-volume
+              mountPath: {{ .Values.volumeMounts.prismaConfig.mountPath | quote }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
-        - name: tileserver-data
-          persistentVolumeClaim:
-            claimName: {{ include "tileserver-gl.fullname" . }}-pvc
+        - name: debug-env-volume
+          hostPath:
+            path: {{ .Values.volumes.debugEnv.path | quote }}
+            type: Directory
+        - name: prisma-config-volume
+          hostPath:
+            path: {{ .Values.volumes.prismaConfig.path | quote }}
+            type: Directory
+        - name: python-packages-volume
+          hostPath:
+            path: {{ .Values.volumes.pythonPackages.path | quote }}
+            type: Directory

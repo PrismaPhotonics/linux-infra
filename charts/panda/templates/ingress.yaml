@@ -2,26 +2,29 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "tileserver-gl.fullname" . }}
+  name: {{ include "focus-server.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "tileserver-gl.name" . }}
-    helm.sh/chart: {{ include "tileserver-gl.chart" . }}
+    app.kubernetes.io/name: {{ include "focus-server.name" . }}
+    helm.sh/chart: {{ include "focus-server.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
 spec:
   ingressClassName: {{ .Values.ingress.ingressClassName | quote }}
   rules:
-    - http:
+    {{- range .Values.ingress.rules }}
+    - host: {{ .host | quote }}
+      http:
         paths:
-        {{- range .Values.ingress.paths }}
-          - path: {{ . }}
+          {{- range .paths }}
+          - path: {{ . | quote }}
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ include "tileserver-gl.fullname" $ }}
+                name: {{ include "focus-server.fullname" $ }}
                 port:
                   number: {{ $.Values.service.port }}
-        {{- end }}
+          {{- end }}
+    {{- end }}
   {{- if .Values.ingress.tls }}
   tls:
     {{- range .Values.ingress.tls }}
