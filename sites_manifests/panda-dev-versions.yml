@@ -143,7 +143,9 @@ spec:
         ingress-nginx: https://kubernetes.github.io/ingress-nginx
         apache-airflow: https://airflow.apache.org
         kubernetes-dashboard: https://kubernetes.github.io/dashboard/
-          
+        nvidia: https://nvidia.github.io/gpu-operator
+
+
       helm_charts:
         bitnami/rabbitmq:  "14.3.2"
         bitnami/postgresql: "15.5.1"
