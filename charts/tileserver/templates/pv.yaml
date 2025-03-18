@@ -8,6 +8,7 @@ spec:
     storage: {{ .Values.persistence.capacity }}
   accessModes:
     - ReadWriteMany
+  storageClassName: {{ include "tileserver-gl.fullname" . }}
   hostPath:
     path: {{ .Values.persistence.hostPath | quote }}
     type: Directory

@@ -13,4 +13,5 @@ spec:
 {{- end }}
 {{- if .Values.persistence.hostPath }}
   volumeName: {{ include "tileserver-gl.fullname" . }}-pv
+  storageClassName: {{ include "tileserver-gl.fullname" . }}
 {{- end }}
