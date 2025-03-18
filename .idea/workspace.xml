@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8c0d9b9e-2833-4fc3-a21a-ae44219181fb" name="Changes" comment="start build a panda chart">
+      <change afterPath="$PROJECT_DIR$/stacks/panda-stack/panda/values.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/charts/panda/templates/focus-server/_helpers.tpl" beforeDir="false" afterPath="$PROJECT_DIR$/charts/panda/templates/focus-server/_helpers.tpl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/charts/panda/templates/segy-recorder/_helpers.tpl" beforeDir="false" afterPath="$PROJECT_DIR$/charts/panda/templates/segy-recorder/_helpers.tpl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/charts/panda/values.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/charts/panda/values.yaml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2tCs7TuSA7eMgEB0cMj3rQ42nY9" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "panda-chart",
+    "last_opened_file_path": "/home/prisma/clones/linux-infra/charts/panda/templates"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/charts/panda/templates" />
+      <recent name="$PROJECT_DIR$/stacks/panda-stack" />
+      <recent name="$PROJECT_DIR$/charts" />
+      <recent name="$PROJECT_DIR$/stacks" />
+      <recent name="$PROJECT_DIR$/ansible/roles" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/charts/panda/templates/focus-server" />
+      <recent name="$PROJECT_DIR$/ansible/roles/k8s-tools-install/tasks" />
+      <recent name="$PROJECT_DIR$/ansible/playbooks" />
+      <recent name="$PROJECT_DIR$/ansible" />
+      <recent name="$PROJECT_DIR$/sites_versions" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-14705d77f0bb-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.25659.43" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8c0d9b9e-2833-4fc3-a21a-ae44219181fb" name="Changes" comment="" />
+      <created>1739867223507</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1739867223507</updated>
+    </task>
+    <task id="LOCAL-00175" summary="Add zfs_dataset_role">
+      <option name="closed" value="true" />
+      <created>1742209467142</created>
+      <option name="number" value="00175" />
+      <option name="presentableId" value="LOCAL-00175" />
+      <option name="project" value="LOCAL" />
+      <updated>1742209467142</updated>
+    </task>
+    <task id="LOCAL-00176" summary="Add zfs_dataset_role">
+      <option name="closed" value="true" />
+      <created>1742209700908</created>
+      <option name="number" value="00176" />
+      <option name="presentableId" value="LOCAL-00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1742209700908</updated>
+    </task>
+    <task id="LOCAL-00177" summary="Add zfs_dataset_role">
+      <option name="closed" value="true" />
+      <created>1742209834578</created>
+      <option name="number" value="00177" />
+      <option name="presentableId" value="LOCAL-00177" />
+      <option name="project" value="LOCAL" />
+      <updated>1742209834578</updated>
+    </task>
+    <task id="LOCAL-00178" summary="Add zfs_dataset_role">
+      <option name="closed" value="true" />
+      <created>1742209877804</created>
+      <option name="number" value="00178" />
+      <option name="presentableId" value="LOCAL-00178" />
+      <option name="project" value="LOCAL" />
+      <updated>1742209877804</updated>
+    </task>
+    <task id="LOCAL-00179" summary="Add zfs_dataset_role">
+      <option name="closed" value="true" />
+      <created>1742209946246</created>
+      <option name="number" value="00179" />
+      <option name="presentableId" value="LOCAL-00179" />
+      <option name="project" value="LOCAL" />
+      <updated>1742209946246</updated>
+    </task>
+    <task id="LOCAL-00180" summary="Add zfs_dataset_role">
+      <option name="closed" value="true" />
+      <created>1742211062135</created>
+      <option name="number" value="00180" />
+      <option name="presentableId" value="LOCAL-00180" />
+      <option name="project" value="LOCAL" />
+      <updated>1742211062135</updated>
+    </task>
+    <task id="LOCAL-00181" summary="Add zfs_dataset_role">
+      <option name="closed" value="true" />
+      <created>1742211103807</created>
+      <option name="number" value="00181" />
+      <option name="presentableId" value="LOCAL-00181" />
+      <option name="project" value="LOCAL" />
+      <updated>1742211103807</updated>
+    </task>
+    <task id="LOCAL-00182" summary="Add zfs_dataset_role">
+      <option name="closed" value="true" />
+      <created>1742211143482</created>
+      <option name="number" value="00182" />
+      <option name="presentableId" value="LOCAL-00182" />
+      <option name="project" value="LOCAL" />
+      <updated>1742211143482</updated>
+    </task>
+    <task id="LOCAL-00183" summary="Add zfs_dataset_role">
+      <option name="closed" value="true" />
+      <created>1742212726998</created>
+      <option name="number" value="00183" />
+      <option name="presentableId" value="LOCAL-00183" />
+      <option name="project" value="LOCAL" />
+      <updated>1742212726998</updated>
+    </task>
+    <task id="LOCAL-00184" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742213020230</created>
+      <option name="number" value="00184" />
+      <option name="presentableId" value="LOCAL-00184" />
+      <option name="project" value="LOCAL" />
+      <updated>1742213020230</updated>
+    </task>
+    <task id="LOCAL-00185" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742213115645</created>
+      <option name="number" value="00185" />
+      <option name="presentableId" value="LOCAL-00185" />
+      <option name="project" value="LOCAL" />
+      <updated>1742213115645</updated>
+    </task>
+    <task id="LOCAL-00186" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742213212569</created>
+      <option name="number" value="00186" />
+      <option name="presentableId" value="LOCAL-00186" />
+      <option name="project" value="LOCAL" />
+      <updated>1742213212569</updated>
+    </task>
+    <task id="LOCAL-00187" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742213311534</created>
+      <option name="number" value="00187" />
+      <option name="presentableId" value="LOCAL-00187" />
+      <option name="project" value="LOCAL" />
+      <updated>1742213311534</updated>
+    </task>
+    <task id="LOCAL-00188" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742213585407</created>
+      <option name="number" value="00188" />
+      <option name="presentableId" value="LOCAL-00188" />
+      <option name="project" value="LOCAL" />
+      <updated>1742213585407</updated>
+    </task>
+    <task id="LOCAL-00189" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742213630515</created>
+      <option name="number" value="00189" />
+      <option name="presentableId" value="LOCAL-00189" />
+      <option name="project" value="LOCAL" />
+      <updated>1742213630515</updated>
+    </task>
+    <task id="LOCAL-00190" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742214386257</created>
+      <option name="number" value="00190" />
+      <option name="presentableId" value="LOCAL-00190" />
+      <option name="project" value="LOCAL" />
+      <updated>1742214386257</updated>
+    </task>
+    <task id="LOCAL-00191" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742214567503</created>
+      <option name="number" value="00191" />
+      <option name="presentableId" value="LOCAL-00191" />
+      <option name="project" value="LOCAL" />
+      <updated>1742214567503</updated>
+    </task>
+    <task id="LOCAL-00192" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742214815674</created>
+      <option name="number" value="00192" />
+      <option name="presentableId" value="LOCAL-00192" />
+      <option name="project" value="LOCAL" />
+      <updated>1742214815674</updated>
+    </task>
+    <task id="LOCAL-00193" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742215091448</created>
+      <option name="number" value="00193" />
+      <option name="presentableId" value="LOCAL-00193" />
+      <option name="project" value="LOCAL" />
+      <updated>1742215091449</updated>
+    </task>
+    <task id="LOCAL-00194" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742215331399</created>
+      <option name="number" value="00194" />
+      <option name="presentableId" value="LOCAL-00194" />
+      <option name="project" value="LOCAL" />
+      <updated>1742215331400</updated>
+    </task>
+    <task id="LOCAL-00195" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742215448780</created>
+      <option name="number" value="00195" />
+      <option name="presentableId" value="LOCAL-00195" />
+      <option name="project" value="LOCAL" />
+      <updated>1742215448780</updated>
+    </task>
+    <task id="LOCAL-00196" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742215509544</created>
+      <option name="number" value="00196" />
+      <option name="presentableId" value="LOCAL-00196" />
+      <option name="project" value="LOCAL" />
+      <updated>1742215509544</updated>
+    </task>
+    <task id="LOCAL-00197" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742215650850</created>
+      <option name="number" value="00197" />
+      <option name="presentableId" value="LOCAL-00197" />
+      <option name="project" value="LOCAL" />
+      <updated>1742215650850</updated>
+    </task>
+    <task id="LOCAL-00198" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742216153358</created>
+      <option name="number" value="00198" />
+      <option name="presentableId" value="LOCAL-00198" />
+      <option name="project" value="LOCAL" />
+      <updated>1742216153358</updated>
+    </task>
+    <task id="LOCAL-00199" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742216215877</created>
+      <option name="number" value="00199" />
+      <option name="presentableId" value="LOCAL-00199" />
+      <option name="project" value="LOCAL" />
+      <updated>1742216215877</updated>
+    </task>
+    <task id="LOCAL-00200" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742219214790</created>
+      <option name="number" value="00200" />
+      <option name="presentableId" value="LOCAL-00200" />
+      <option name="project" value="LOCAL" />
+      <updated>1742219214790</updated>
+    </task>
+    <task id="LOCAL-00201" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742219304471</created>
+      <option name="number" value="00201" />
+      <option name="presentableId" value="LOCAL-00201" />
+      <option name="project" value="LOCAL" />
+      <updated>1742219304471</updated>
+    </task>
+    <task id="LOCAL-00202" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742219772079</created>
+      <option name="number" value="00202" />
+      <option name="presentableId" value="LOCAL-00202" />
+      <option name="project" value="LOCAL" />
+      <updated>1742219772079</updated>
+    </task>
+    <task id="LOCAL-00203" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742220650085</created>
+      <option name="number" value="00203" />
+      <option name="presentableId" value="LOCAL-00203" />
+      <option name="project" value="LOCAL" />
+      <updated>1742220650085</updated>
+    </task>
+    <task id="LOCAL-00204" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742221675193</created>
+      <option name="number" value="00204" />
+      <option name="presentableId" value="LOCAL-00204" />
+      <option name="project" value="LOCAL" />
+      <updated>1742221675193</updated>
+    </task>
+    <task id="LOCAL-00205" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742222123319</created>
+      <option name="number" value="00205" />
+      <option name="presentableId" value="LOCAL-00205" />
+      <option name="project" value="LOCAL" />
+      <updated>1742222123319</updated>
+    </task>
+    <task id="LOCAL-00206" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742222692494</created>
+      <option name="number" value="00206" />
+      <option name="presentableId" value="LOCAL-00206" />
+      <option name="project" value="LOCAL" />
+      <updated>1742222692494</updated>
+    </task>
+    <task id="LOCAL-00207" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742222733025</created>
+      <option name="number" value="00207" />
+      <option name="presentableId" value="LOCAL-00207" />
+      <option name="project" value="LOCAL" />
+      <updated>1742222733025</updated>
+    </task>
+    <task id="LOCAL-00208" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742222790832</created>
+      <option name="number" value="00208" />
+      <option name="presentableId" value="LOCAL-00208" />
+      <option name="project" value="LOCAL" />
+      <updated>1742222790832</updated>
+    </task>
+    <task id="LOCAL-00209" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742222858875</created>
+      <option name="number" value="00209" />
+      <option name="presentableId" value="LOCAL-00209" />
+      <option name="project" value="LOCAL" />
+      <updated>1742222858875</updated>
+    </task>
+    <task id="LOCAL-00210" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742223358991</created>
+      <option name="number" value="00210" />
+      <option name="presentableId" value="LOCAL-00210" />
+      <option name="project" value="LOCAL" />
+      <updated>1742223358991</updated>
+    </task>
+    <task id="LOCAL-00211" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742223367577</created>
+      <option name="number" value="00211" />
+      <option name="presentableId" value="LOCAL-00211" />
+      <option name="project" value="LOCAL" />
+      <updated>1742223367577</updated>
+    </task>
+    <task id="LOCAL-00212" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742223507103</created>
+      <option name="number" value="00212" />
+      <option name="presentableId" value="LOCAL-00212" />
+      <option name="project" value="LOCAL" />
+      <updated>1742223507103</updated>
+    </task>
+    <task id="LOCAL-00213" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742224009032</created>
+      <option name="number" value="00213" />
+      <option name="presentableId" value="LOCAL-00213" />
+      <option name="project" value="LOCAL" />
+      <updated>1742224009032</updated>
+    </task>
+    <task id="LOCAL-00214" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742224542490</created>
+      <option name="number" value="00214" />
+      <option name="presentableId" value="LOCAL-00214" />
+      <option name="project" value="LOCAL" />
+      <updated>1742224542491</updated>
+    </task>
+    <task id="LOCAL-00215" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742224602706</created>
+      <option name="number" value="00215" />
+      <option name="presentableId" value="LOCAL-00215" />
+      <option name="project" value="LOCAL" />
+      <updated>1742224602706</updated>
+    </task>
+    <task id="LOCAL-00216" summary="Add local registry">
+      <option name="closed" value="true" />
+      <created>1742224620321</created>
+      <option name="number" value="00216" />
+      <option name="presentableId" value="LOCAL-00216" />
+      <option name="project" value="LOCAL" />
+      <updated>1742224620321</updated>
+    </task>
+    <task id="LOCAL-00217" summary="start build a panda chart">
+      <option name="closed" value="true" />
+      <created>1742226722170</created>
+      <option name="number" value="00217" />
+      <option name="presentableId" value="LOCAL-00217" />
+      <option name="project" value="LOCAL" />
+      <updated>1742226722170</updated>
+    </task>
+    <task id="LOCAL-00218" summary="start build a panda chart">
+      <option name="closed" value="true" />
+      <created>1742290387864</created>
+      <option name="number" value="00218" />
+      <option name="presentableId" value="LOCAL-00218" />
+      <option name="project" value="LOCAL" />
+      <updated>1742290387865</updated>
+    </task>
+    <task id="LOCAL-00219" summary="start build a panda chart">
+      <option name="closed" value="true" />
+      <created>1742290567103</created>
+      <option name="number" value="00219" />
+      <option name="presentableId" value="LOCAL-00219" />
+      <option name="project" value="LOCAL" />
+      <updated>1742290567103</updated>
+    </task>
+    <task id="LOCAL-00220" summary="start build a panda chart">
+      <option name="closed" value="true" />
+      <created>1742293088406</created>
+      <option name="number" value="00220" />
+      <option name="presentableId" value="LOCAL-00220" />
+      <option name="project" value="LOCAL" />
+      <updated>1742293088406</updated>
+    </task>
+    <task id="LOCAL-00221" summary="start build a panda chart">
+      <option name="closed" value="true" />
+      <created>1742293140162</created>
+      <option name="number" value="00221" />
+      <option name="presentableId" value="LOCAL-00221" />
+      <option name="project" value="LOCAL" />
+      <updated>1742293140162</updated>
+    </task>
+    <task id="LOCAL-00222" summary="start build a panda chart">
+      <option name="closed" value="true" />
+      <created>1742294251170</created>
+      <option name="number" value="00222" />
+      <option name="presentableId" value="LOCAL-00222" />
+      <option name="project" value="LOCAL" />
+      <updated>1742294251170</updated>
+    </task>
+    <task id="LOCAL-00223" summary="start build a panda chart">
+      <option name="closed" value="true" />
+      <created>1742294328423</created>
+      <option name="number" value="00223" />
+      <option name="presentableId" value="LOCAL-00223" />
+      <option name="project" value="LOCAL" />
+      <updated>1742294328423</updated>
+    </task>
+    <option name="localTasksCounter" value="224" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add role for docker-image" />
+    <MESSAGE value="add dpkg-dev apt" />
+    <MESSAGE value="Start implement network role" />
+    <MESSAGE value="Start implement create vm" />
+    <MESSAGE value="create vm works minus hw" />
+    <MESSAGE value="Ttying vms with vars" />
+    <MESSAGE value="Override panda-dev workernode vmid" />
+    <MESSAGE value="add components to manifest" />
+    <MESSAGE value="add gpu driver role" />
+    <MESSAGE value="Add structure and playbooks for all system" />
+    <MESSAGE value="Add README.md" />
+    <MESSAGE value="Add unistall gpu role" />
+    <MESSAGE value="Add k3s-master install" />
+    <MESSAGE value="add handler" />
+    <MESSAGE value="add k3s master install" />
+    <MESSAGE value="add k3s worker install" />
+    <MESSAGE value="add k8s utils" />
+    <MESSAGE value="os utils installed" />
+    <MESSAGE value="install k3s and tools" />
+    <MESSAGE value="add install driver role" />
+    <MESSAGE value="Add os-utils path" />
+    <MESSAGE value="Add zfs_dataset_role" />
+    <MESSAGE value="Add local registry" />
+    <MESSAGE value="start build a panda chart" />
+    <option name="LAST_COMMIT_MESSAGE" value="start build a panda chart" />
+  </component>
+</project>

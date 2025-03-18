@@ -1,0 +1,625 @@
+Index: ansible/offline_install.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>---\n- name: Offline Installation Playbook\n  hosts: all\n  become: true\n  gather_facts: true\n\n  # 1) First, load the site’s versions.yml\n  pre_tasks:\n    - name: Load versions file\n      include_vars:\n        file: \"{{ versions_file }}\"\n        name: versions_data\n\n  roles:\n    - role: offline-apt-repo\n      when: enable_offline_apt_repo | default(false)\n    \n    # 3) Always run apt-install (pass apt_packages from versions_data)\n    - role: apt-install\n      when: enable_apt_install | default(false)\n      vars:\n        apt_packages: \"{{ versions_data.apt_packages | default([]) }}\"\n\n    # 4) Docker load if enabled (pass docker_images from versions_data)\n    - role: docker-load\n      when: enable_docker_load | default(false)\n      vars:\n        docker_images: \"{{ versions_data.docker_images | default([]) }}\"\n\n    # 5) Helm install if enabled (pass helm_charts from versions_data)\n    - role: helm-install\n      when: enable_helm_install | default(false)\n      vars:\n        helm_charts: \"{{ versions_data.helm_charts | default([]) }}\"\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/offline_install.yml b/ansible/offline_install.yml
+--- a/ansible/offline_install.yml	(revision f661aa4073840b9caa911acb0e41108f046fac78)
++++ b/ansible/offline_install.yml	(date 1740668335598)
+@@ -6,30 +6,56 @@
+ 
+   # 1) First, load the site’s versions.yml
+   pre_tasks:
++    - name: Show filepath
++      debug:
++        msg: "{{ versions_file }}"
++
+     - name: Load versions file
+       include_vars:
+         file: "{{ versions_file }}"
+         name: versions_data
+ 
++    - name: Merge default configurations with overrides
++      set_fact:
++        merged_configurations: "{{ configurations | combine(versions_data.configurations, recursive=True) }}"
++
++    - name: Debug versions data
++      debug:
++        var: merged_configurations
++    
++        
+   roles:
++    - role: create-vms
++      vars:
++        proxmox_host_ip: "{{ merged_configurations.proxmox_host_ip }}"
++        proxmox_user: "{{ merged_configurations.proxmox_user }}"
++        proxmox_user_password: "{{ merged_configurations.proxmox_user_password }}"
++        proxmox_node: "{{ merged_configurations.proxmox_node }}"
++        vms: "{{ merged_configurations.vms }}"
++
+     - role: offline-apt-repo
+       when: enable_offline_apt_repo | default(false)
+-    
+-    # 3) Always run apt-install (pass apt_packages from versions_data)
++
+     - role: apt-install
+       when: enable_apt_install | default(false)
+       vars:
+-        apt_packages: "{{ versions_data.apt_packages | default([]) }}"
++       apt_packages: "{{ merged_configurations.components.apt_packages | default([]) }}"
++
++#    - role: network-setup
++#      when: enable_network_setup | default(false)
++
++#    - role: local-registry
++#      when: enable_network_setup | default(false)
+ 
+     # 4) Docker load if enabled (pass docker_images from versions_data)
+     - role: docker-load
+       when: enable_docker_load | default(false)
+       vars:
+-        docker_images: "{{ versions_data.docker_images | default([]) }}"
++       docker_images: "{{ merged_configurations.components.docker_images | default([]) }}"
+ 
+-    # 5) Helm install if enabled (pass helm_charts from versions_data)
+-    - role: helm-install
+-      when: enable_helm_install | default(false)
+-      vars:
+-        helm_charts: "{{ versions_data.helm_charts | default([]) }}"
++#    # 5) Helm install if enabled (pass helm_charts from versions_data)
++#    - role: helm-install
++#      when: enable_helm_install | default(false)
++#      vars:
++#       helm_charts: "{{ versions_data.helm_charts | default([]) }}"
+ 
+Index: ansible/inventory/hosts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>[panda:children]\npanda-dev\npanda-cloud\npanda-prod\n\n[panda-dev]\n127.0.0.1 ansible_connection=local ansible_user=prisma\n\n[panda-cloud]\n127.0.0.1 ansible_connection=local ansible_user=prisma\n\n[panda-prod]\n127.0.0.1 ansible_connection=local ansible_user=prisma\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/inventory/hosts b/ansible/inventory/hosts
+--- a/ansible/inventory/hosts	(revision f661aa4073840b9caa911acb0e41108f046fac78)
++++ b/ansible/inventory/hosts	(date 1740668335306)
+@@ -4,11 +4,11 @@
+ panda-prod
+ 
+ [panda-dev]
+-127.0.0.1 ansible_connection=local ansible_user=prisma
++127.0.0.1 ansible_connection=local ansible_user=root
+ 
+ [panda-cloud]
+-127.0.0.1 ansible_connection=local ansible_user=prisma
++127.0.0.1 ansible_connection=local ansible_user=root
+ 
+ [panda-prod]
+-127.0.0.1 ansible_connection=local ansible_user=prisma
++127.0.0.1 ansible_connection=local ansible_user=root
+ 
+Index: ansible/roles/docker-load/tasks/pull.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/roles/docker-load/tasks/pull.yml b/ansible/roles/docker-load/tasks/pull.yml
+new file mode 100644
+--- /dev/null	(date 1740656531853)
++++ b/ansible/roles/docker-load/tasks/pull.yml	(date 1740656531853)
+@@ -0,0 +1,13 @@
++- name: AWS ECR Login if image is hosted in AWS ECR
++  docker_login:
++    registry_url: "262399703539.dkr.ecr.eu-central-1.amazonaws.com"
++    username: "AWS"
++    password: "{{ lookup('pipe', 'aws ecr get-login-password --region eu-central-1') }}"
++  when: image.name is search('^262399703539.dkr.ecr.eu-central-1.amazonaws.com')
++  register: aws_login
++
++- name: Pull Docker image {{ image.name }}:{{ image.version }} from Docker Hub
++  docker_image:
++    name: "{{ image.name }}"
++    tag: "{{ image.version }}"
++    source: pull
+Index: ansible/inventory/group_vars/panda.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># group_vars/panda.yml\nenable_offline_apt_repo: false\n\noffline_artifact_path: ../offline_deploy\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/inventory/group_vars/panda.yml b/ansible/inventory/group_vars/panda.yml
+--- a/ansible/inventory/group_vars/panda.yml	(revision f661aa4073840b9caa911acb0e41108f046fac78)
++++ b/ansible/inventory/group_vars/panda.yml	(date 1740668335754)
+@@ -1,4 +1,4 @@
+ # group_vars/panda.yml
+ enable_offline_apt_repo: false
+ 
+-offline_artifact_path: ../offline_deploy
++offline_artifact_path: ../../offline_deploy
+Index: sites_manifests/panda-dev-versions.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/sites_manifests/panda-dev-versions.yml b/sites_manifests/panda-dev-versions.yml
+new file mode 100644
+--- /dev/null	(date 1740656531853)
++++ b/sites_manifests/panda-dev-versions.yml	(date 1740656531853)
+@@ -0,0 +1,54 @@
++---
++components:
++  apt_packages:
++    - name: "curl"
++      version: "7.81.0-1ubuntu1.20"
++    - name: "unzip"
++      version: " 6.0-26ubuntu3.2"
++
++  pip_packages:
++    - name: "proxmoxer"
++      version: "7.81.0-1ubuntu1.20"
++    - name: "unzip"
++      version: " 6.0-26ubuntu3.2"
++
++  docker_images:
++    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/client-api"
++      version: "10.2.1423.4954c"
++    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/nginx-ui"
++      version: "10.2.1423.4954c"
++    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/socket-manager"
++      version: "10.2.1423.4954c"
++    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/utilities"
++      version: "10.2.1423.4954c"
++    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux"
++      version: "10.7.101"
++    - name: "registry.k8s.io/nfd/node-feature-discovery"
++      version: "v0.15.4"
++    - name: "registry.k8s.io/ingress-nginx/kube-webhook-certgen"
++      version: "v20221220-controller-v1.5.1-58-g787ea74b6"
++    - name: "nvcr.io/nvidia/cloud-native/k8s-driver-manager"
++      version: "v0.6.8"
++    - name: "quay.io/kiwigrid/k8s-sidecar"
++      version: "1.25.2"
++    - name: "rancher/klipper-helm"
++      version: "v0.8.0-build20230510"
++    - name: "rancher/mirrored-pause"
++      version: "3.6"
++
++  helm_charts:
++    - name: "my-helm-chart"
++      version: "0.5.0"
++
++  gpu_drivers:
++    - name: "nvidia-driver"
++      version: "460.39"
++
++  os_utils:
++    - name: "k3s"
++      version: "1.18.6"
++
++configurations:
++  vms:
++    workernode-panda:
++      vmid: 108
+\ No newline at end of file
+Index: ansible/inventory/group_vars/panda-dev.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># ansible/inventory/group_vars/panda-dev.yml\n\n# Where we store the versions\nversions_file: \"../offline_deploy/panda-dev-versions.yml\"\n\n# If you still want to toggle roles here, keep them:\nenable_apt_install: false\nenable_docker_load: true\nenable_helm_install: false\nenable_netplan_config: false\n\n# Netplan config (if you want to keep it separate)\nnetplan_config_file: \"panda-dev-netplan.yaml\"\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/inventory/group_vars/panda-dev.yml b/ansible/inventory/group_vars/panda-dev.yml
+--- a/ansible/inventory/group_vars/panda-dev.yml	(revision f661aa4073840b9caa911acb0e41108f046fac78)
++++ b/ansible/inventory/group_vars/panda-dev.yml	(date 1740668335902)
+@@ -1,13 +1,50 @@
+ # ansible/inventory/group_vars/panda-dev.yml
+ 
+ # Where we store the versions
+-versions_file: "../offline_deploy/panda-dev-versions.yml"
++versions_file: "../sites_manifests/panda-dev-versions.yml"
+ 
+ # If you still want to toggle roles here, keep them:
+-enable_apt_install: false
++enable_apt_install: true
++enable_network_setup: true
+ enable_docker_load: true
+ enable_helm_install: false
+ enable_netplan_config: false
+ 
+-# Netplan config (if you want to keep it separate)
+-netplan_config_file: "panda-dev-netplan.yaml"
++
++configurations:
++  # PROXMOX CONNECTION PARAMS #
++  system_type: 'dev'
++  proxmox_host_ip: "10.50.0.24"
++  proxmox_user: "root@pam"
++  proxmox_user_password: "Pa$$w0rd!"
++  proxmox_node: "vm1"
++  installation_mode: offline  # or online
++
++  # vms configuration #
++  vms:
++    workernode-panda:
++      name: "worker-node-panda"
++      ip: "10.50.0.152"
++      vmid: 106
++      dev: true
++      type: workernode
++      gpu: true
++
++    masternode-panda:
++      name: "masternode-panda"
++      ip: "10.50.0.151"
++      vmid: 107
++      dev: true
++      type: workernode
++      gpu: false
++  # # vms configuration #
++
++  # machines:
++  #   interrogator:
++  #     # PROXMOX CONNECTION PARAMS #
++  #     system_type: 'prod'
++  #     proxmox_host_ip: "10.50.2.101"
++  #     proxmox_user: "root@pam"
++  #     proxmpx_user_password: "PASSW0RD"
++  #     installation_mode: offline  # or online
++  #     # PROXMOX CONNECTION PARAMS #
+Index: sites_manifests/panda-prod-versions.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/sites_manifests/panda-prod-versions.yml b/sites_manifests/panda-prod-versions.yml
+new file mode 100644
+--- /dev/null	(date 1740656531853)
++++ b/sites_manifests/panda-prod-versions.yml	(date 1740656531853)
+@@ -0,0 +1,43 @@
++---
++components:
++  apt_packages:
++    - name: "curl"
++      version: "7.81.0-1ubuntu1.20"
++    - name: "unzip"
++      version: " 6.0-26ubuntu3.2"
++
++  docker_images:
++    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/client-api"
++      version: "10.2.1423.4954c"
++    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/nginx-ui"
++      version: "10.2.1423.4954c"
++    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/socket-manager"
++      version: "10.2.1423.4954c"
++    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/utilities"
++      version: "10.2.1423.4954c"
++    - name: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux"
++      version: "10.7.101"
++    - name: "registry.k8s.io/nfd/node-feature-discovery"
++      version: "v0.15.4"
++    - name: "registry.k8s.io/ingress-nginx/kube-webhook-certgen"
++      version: "v20221220-controller-v1.5.1-58-g787ea74b6"
++    - name: "nvcr.io/nvidia/cloud-native/k8s-driver-manager"
++      version: "v0.6.8"
++    - name: "quay.io/kiwigrid/k8s-sidecar"
++      version: "1.25.2"
++    - name: "rancher/klipper-helm"
++      version: "v0.8.0-build20230510"
++    - name: "rancher/mirrored-pause"
++      version: "3.6"
++
++  helm_charts:
++    - name: "my-helm-chart"
++      version: "0.5.0"
++
++  gpu_drivers:
++    - name: "nvidia-driver"
++      version: "460.39"
++
++  os_utils:
++    - name: "k3s"
++      version: "1.18.6"
+Index: ansible/inventory/group_vars/panda-prod.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># ansible/inventory/group_vars/panda-dev.yml\n\n# Path to offline artifacts\noffline_artifact_path: ../offline_deploy/\n\n# Where we store the versions\nversions_file: \"../offline_deploy/panda-dev-versions.yml\"\n\n# If you still want to toggle roles here, keep them:\nenable_helm_install: false\nenable_netplan_config: false\n\n# Netplan config (if you want to keep it separate)\nnetplan_config_file: \"panda-dev-netplan.yaml\"\n\n# If you're leaving apt-install always on, you don't need \"enable_apt_install\" \n# but you could specify it if your logic requires it.\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/inventory/group_vars/panda-prod.yml b/ansible/inventory/group_vars/panda-prod.yml
+--- a/ansible/inventory/group_vars/panda-prod.yml	(revision f661aa4073840b9caa911acb0e41108f046fac78)
++++ b/ansible/inventory/group_vars/panda-prod.yml	(date 1740668336054)
+@@ -1,18 +1,9 @@
+ # ansible/inventory/group_vars/panda-dev.yml
+ 
+-# Path to offline artifacts
+-offline_artifact_path: ../offline_deploy/
+-
+ # Where we store the versions
+-versions_file: "../offline_deploy/panda-dev-versions.yml"
++# versions_file: "../sites_manifests/panda-prod-versions.yml"
++versions_file: "../sites_manifests/panda-dev-versions.yml"
+ 
+ # If you still want to toggle roles here, keep them:
+ enable_helm_install: false
+ enable_netplan_config: false
+-
+-# Netplan config (if you want to keep it separate)
+-netplan_config_file: "panda-dev-netplan.yaml"
+-
+-# If you're leaving apt-install always on, you don't need "enable_apt_install" 
+-# but you could specify it if your logic requires it.
+-
+Index: ansible/roles/docker-load/tasks/main.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>- name: Check if Docker image {{ item.name }}:{{ item.version }} is already installed\n  command: \"docker images -q {{ item.name }}:{{ item.version }}\"\n  register: docker_image_result\n  changed_when: false\n  loop: \"{{ docker_images }}\"\n  loop_control:\n    loop_var: item\n    index_var: loop_index\n    label: \"{{ item.name }}:{{ item.version }}\"\n\n- name: Check for local tar file for {{ item.name }}:{{ item.version }}\n  stat:\n    path: \"../{{ offline_artifact_path }}/docker-images/{{ item.name }}_{{ item.version }}.tar\"\n  register: local_tar_file\n  loop: \"{{ docker_images }}\"\n  loop_control:\n    loop_var: item\n    index_var: loop_index\n    label: \"{{ item.name }}:{{ item.version }}\"\n\n- name: Ensure variables exist before setting facts\n  set_fact:\n    docker_image_result_safe: \"{{ docker_image_result.results | default([]) }}\"\n    local_tar_file_safe: \"{{ local_tar_file.results | default([]) }}\"\n\n- name: Set facts for docker image check\n  set_fact:\n    docker_image_exists: \"{{ docker_image_result_safe[loop_index].stdout != '' | default(false) }}\"\n    docker_tar_exists: \"{{ local_tar_file_safe[loop_index].stat.exists | default(false) }}\"\n  loop: \"{{ docker_images }}\"\n  loop_control:\n    loop_var: item\n    index_var: loop_index\n    label: \"{{ item.name }}:{{ item.version }}\"\n\n- name: Load Docker image from local tar file (Offline Mode)\n  command: \"docker load -i ../{{ offline_artifact_path }}/docker-images/{{ item.name }}_{{ item.version }}.tar\"\n  when:\n    - not docker_image_exists\n    - docker_tar_exists\n  loop: \"{{ docker_images }}\"\n  loop_control:\n    loop_var: item\n    label: \"{{ item.name }}:{{ item.version }}\"\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/roles/docker-load/tasks/main.yml b/ansible/roles/docker-load/tasks/main.yml
+--- a/ansible/roles/docker-load/tasks/main.yml	(revision f661aa4073840b9caa911acb0e41108f046fac78)
++++ b/ansible/roles/docker-load/tasks/main.yml	(date 1740668335446)
+@@ -1,44 +1,14 @@
+-- name: Check if Docker image {{ item.name }}:{{ item.version }} is already installed
+-  command: "docker images -q {{ item.name }}:{{ item.version }}"
+-  register: docker_image_result
+-  changed_when: false
+-  loop: "{{ docker_images }}"
+-  loop_control:
+-    loop_var: item
+-    index_var: loop_index
+-    label: "{{ item.name }}:{{ item.version }}"
+-
+-- name: Check for local tar file for {{ item.name }}:{{ item.version }}
+-  stat:
+-    path: "../{{ offline_artifact_path }}/docker-images/{{ item.name }}_{{ item.version }}.tar"
+-  register: local_tar_file
+-  loop: "{{ docker_images }}"
+-  loop_control:
+-    loop_var: item
+-    index_var: loop_index
+-    label: "{{ item.name }}:{{ item.version }}"
+-
+-- name: Ensure variables exist before setting facts
+-  set_fact:
+-    docker_image_result_safe: "{{ docker_image_result.results | default([]) }}"
+-    local_tar_file_safe: "{{ local_tar_file.results | default([]) }}"
+-
+-- name: Set facts for docker image check
+-  set_fact:
+-    docker_image_exists: "{{ docker_image_result_safe[loop_index].stdout != '' | default(false) }}"
+-    docker_tar_exists: "{{ local_tar_file_safe[loop_index].stat.exists | default(false) }}"
++---
++- name: Process each Docker image in offline mode
++  include_tasks: load.yml
++  when: installation_mode == 'offline'
+   loop: "{{ docker_images }}"
+   loop_control:
+-    loop_var: item
+-    index_var: loop_index
+-    label: "{{ item.name }}:{{ item.version }}"
++    loop_var: image
+ 
+-- name: Load Docker image from local tar file (Offline Mode)
+-  command: "docker load -i ../{{ offline_artifact_path }}/docker-images/{{ item.name }}_{{ item.version }}.tar"
+-  when:
+-    - not docker_image_exists
+-    - docker_tar_exists
++- name: Process each Docker image in online mode
++  include_tasks: pull.yml
++  when: installation_mode == 'online'
+   loop: "{{ docker_images }}"
+   loop_control:
+-    loop_var: item
+-    label: "{{ item.name }}:{{ item.version }}"
++    loop_var: image
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>offline_deploy\noffline_deploy/*\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitignore b/.gitignore
+--- a/.gitignore	(revision f661aa4073840b9caa911acb0e41108f046fac78)
++++ b/.gitignore	(date 1740668333846)
+@@ -1,2 +1,3 @@
+-offline_deploy
+-offline_deploy/*
++offline_deploy/
++.idea/
++
+Index: ansible/roles/docker-load/tasks/load.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/roles/docker-load/tasks/load.yml b/ansible/roles/docker-load/tasks/load.yml
+new file mode 100644
+--- /dev/null	(date 1740656531853)
++++ b/ansible/roles/docker-load/tasks/load.yml	(date 1740656531853)
+@@ -0,0 +1,11 @@
++---
++- name: Set tar file path for {{ image.name | replace('/', '_') }}_{{ image.version }}
++  set_fact:
++    image_tar_path: "/home/prisma/clones/linux-infra/offline_deploy/docker-images/imported_images/{{ image.name | replace('/', '_') }}_{{ image.version }}.tar"
++
++- name: Load Docker image from tar file for {{ image.name }}:{{ image.version }}
++  docker_image:
++    name: "{{ image.name }}"
++    tag: "{{ image.version }}"
++    load_path: "{{ image_tar_path }}"
++    source: load
+Index: ansible/roles/create-vms/tasks/main.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/roles/create-vms/tasks/main.yml b/ansible/roles/create-vms/tasks/main.yml
+new file mode 100644
+--- /dev/null	(date 1740656531853)
++++ b/ansible/roles/create-vms/tasks/main.yml	(date 1740656531853)
+@@ -0,0 +1,48 @@
++---
++- name: Copy Ubuntu ISO to Proxmox host
++  copy:
++   src: "../../offline_deploy/custom-ubuntu.iso"
++   dest: "/var/lib/vz/template/iso/custom-ubuntu.iso"
++   mode: '0644'
++
++- name: Transform VM dictionary into key/value items
++  set_fact:
++    vm_list: "{{ vms | dict2items }}"
++
++
++- name: Create VMs on Proxmox
++  community.general.proxmox_kvm:
++    api_host: "{{ proxmox_host_ip }}"
++    api_user: "{{ proxmox_user }}"
++    api_password: "{{ proxmox_user_password }}"
++    node: "{{ proxmox_node }}"
++    vmid: "{{ item.value.vmid }}"
++    name: "{{ item.value.name | default(item.key) }}"
++    cores: "{{ item.value.cores | default(2) }}"
++    memory: "{{ item.value.memory | default(2048) }}"
++    scsi:
++      scsi0: "{{ item.value.scsi | default('local-lvm:20') }}"
++    ide:
++      ide2: "{{ item.value.ide | default('local:iso/custom-ubuntu.iso,media=cdrom') }}"
++    net:
++      net0: "{{ item.value.net | default('virtio,bridge=vmbr0') }}"
++    ipconfig:
++      ipconfig0: "ip={{ item.value.ip }}/24"  # Adjust the netmask as necessary
++    state: present
++  delegate_to: localhost
++  loop: "{{ vm_list }}"
++  loop_control:
++    label: "{{ item.key }}"
++
++- name: Start the created VMs on Proxmox
++  community.general.proxmox_kvm:
++    api_host: "{{ proxmox_host_ip }}"
++    api_user: "{{ proxmox_user }}"
++    api_password: "{{ proxmox_user_password }}"
++    node: "{{ proxmox_node }}"
++    vmid: "{{ item.value.vmid }}"
++    state: started
++  delegate_to: localhost
++  loop: "{{ vm_list }}"
++  loop_control:
++    label: "{{ item.key }}"
+Index: ansible/roles/network-setup/handlers/main.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/roles/network-setup/handlers/main.yml b/ansible/roles/network-setup/handlers/main.yml
+new file mode 100644
+--- /dev/null	(date 1740656531853)
++++ b/ansible/roles/network-setup/handlers/main.yml	(date 1740656531853)
+@@ -0,0 +1,4 @@
++---
++- name: Apply netplan
++  command: netplan apply
++  become: yes
+Index: ansible/roles/network-setup/tasks/main.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/roles/network-setup/tasks/main.yml b/ansible/roles/network-setup/tasks/main.yml
+new file mode 100644
+--- /dev/null	(date 1740656531853)
++++ b/ansible/roles/network-setup/tasks/main.yml	(date 1740656531853)
+@@ -0,0 +1,12 @@
++---
++- name: Deploy netplan configuration file
++  template:
++    src: netplan.j2
++    dest: /etc/netplan/00-installer-config.yaml
++    mode: '0644'
++  notify: Apply netplan
++
++- name: Ensure netplan directory exists
++  file:
++    path: /etc/netplan
++    state: directory
+Index: ansible/roles/network-setup/templates/netplan.j2
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ansible/roles/network-setup/templates/netplan.j2 b/ansible/roles/network-setup/templates/netplan.j2
+new file mode 100644
+--- /dev/null	(date 1740656531853)
++++ b/ansible/roles/network-setup/templates/netplan.j2	(date 1740656531853)
+@@ -0,0 +1,48 @@
++{% if versions_data.configurations.system_type == 'dev' %}
++# Netplan configuration for panda-dev
++network:
++  version: 2
++  ethernets:
++    eno1np0:
++      dhcp4: true
++      nameservers:
++        addresses: [10.50.0.50, 8.8.8.8]
++      routes:
++        - to: default
++          via: 10.50.0.1
++    eno2np1:
++      dhcp4: false
++      optional: true
++  bridges:
++    br0:
++      interfaces:
++        - vlan1
++      dhcp4: false
++      addresses:
++        - {{ versions_data.configurations.site_ip }}
++  vlans:
++    vlan1:
++      id: 1
++      link: eno1np0
++      accept-ra: false
++
++{% elif versions_data.configurations.system_type == 'prod' %}
++# This is the network config written by 'subiquity' for panda-prod
++network:
++  bonds:
++    LAG1:
++      addresses:
++        - {{ versions_data.configurations.site_ip }}
++      routes:
++        - to: default
++          via: {{ versions_data.configurations.getaway_ip }}
++      interfaces: {{ versions_data.configurations.prod_config.lag1.interfaces | to_nice_yaml(indent=8) | indent(6) }}
++      nameservers:
++        addresses: {{ versions_data.configurations.prod_config.lag1.nameservers | to_nice_yaml(indent=8) | indent(6) }}
++        search: []
++      parameters:
++        lacp-rate: fast
++        mode: 802.3ad
++        transmit-hash-policy: layer2
++  version: 2
++{% endif %}
+Index: required-apt-packages
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>BASE_PACKAGES=(\n    autofs\n    containerd.io\n    curl\n    docker-ce\n    dos2unix\n    gcc\n    gdb\n    git\n    google-chrome-stable\n    jq\n    kubectl\n    libvirt-daemon-system\n    make\n    net-tools\n    nfs-common\n    nfs-kernel-server\n    psutils\n    qemu-kvm\n    rar\n    samba\n    samba-common\n    samba-common-bin\n    sshpass\n    traceroute\n    unzip\n    virt-manager\n    virtinst\n    zfs-zed\n    zfsutils-linux\n    zip\n)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/required-apt-packages b/required-apt-packages
+--- a/required-apt-packages	(revision f661aa4073840b9caa911acb0e41108f046fac78)
++++ b/required-apt-packages	(date 1740668336218)
+@@ -4,6 +4,7 @@
+     curl
+     docker-ce
+     dos2unix
++    dpkg-dev
+     gcc
+     gdb
+     git
