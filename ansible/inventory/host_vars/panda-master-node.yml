@@ -4,4 +4,4 @@ enable_zfs_dataset_creation: false
 enable_os_tools_install: false
 enable_setup_local_docker_registry: false
 enable_k3s_install: true
-enable_configure_registry_mirroring: false
+enable_configure_registry_mirroring: true
