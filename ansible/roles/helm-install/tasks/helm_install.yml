@@ -22,16 +22,18 @@
         THREE_FIRST_OCTETS: "{{ three_first_octets }}"
         ARTIFACT_PATH: "{{ artifact_path }}"
         KUBECONFIG: "/home/{{ linux_user_name }}/.kube/config"
-      register: helmfile_output
-
-  always:
-    - name: Ensure output directory exists on the controller
-      file:
-        path: "{{ artifact_path }}/helmfile_outputs"
-        state: directory
-        mode: '0755'
-
-    - name: Write helmfile command output
-      copy:
-        dest: "{{ artifact_path }}/helmfile_outputs/helmfile_output.txt"
-        content: "{{ helmfile_output.stderr }}"
+      async: 600  # Allow the command to run for up to 10 minutes
+      poll: 5     # Check every 5 seconds and display output in real-time
+#      register: helmfile_output
+#
+#  always:
+#    - name: Ensure output directory exists on the controller
+#      file:
+#        path: "{{ artifact_path }}/helmfile_outputs"
+#        state: directory
+#        mode: '0755'
+#
+#    - name: Write helmfile command output
+#      copy:
+#        dest: "{{ artifact_path }}/helmfile_outputs/helmfile_output.txt"
+#        content: "{{ helmfile_output.stderr }}"
