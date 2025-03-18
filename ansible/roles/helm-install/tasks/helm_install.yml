@@ -8,7 +8,7 @@
   debug:
     msg: "The following helm chart folders are missing: {{ missing_charts | join(', ') }}"
   vars:
-    missing_charts: "{{ helm_charts_status.results | selectattr('stat.exists', 'equalto', false) | map(attribute='item') | list }}"
+    missing_charts: "{{ helm_charts_status.results | selectattr('stat.exists', 'equalto', false) | map(attribute='item') | list | default([]) }}"
   when: missing_charts | length > 0
 
 - block:
@@ -23,6 +23,7 @@
         ARTIFACT_PATH: "{{ artifact_path }}"
         KUBECONFIG: "/home/{{ linux_user_name }}/.kube/config"
       register: helmfile_output
+      ignore_errors: true  # Avoid failure stopping the 'always' block
 
   always:
     - name: Ensure output directory exists on the controller
@@ -31,7 +32,8 @@
         state: directory
         mode: '0755'
 
-    - name: Write helmfile command output 
+    - name: Write helmfile command output
       copy:
         dest: "{{ artifact_path }}/helmfile_outputs/helmfile_output.txt"
-        content: "{{ helmfile_output.stderr }}"
+        content: "{{ helmfile_output.stdout | default('No output captured') }}"
+      when: helmfile_output is defined
