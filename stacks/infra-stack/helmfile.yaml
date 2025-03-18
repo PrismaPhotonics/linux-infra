@@ -6,7 +6,7 @@ releases:
     namespace: openebs
     chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/openebs       
     wait: true
-    timeout: 10
+    timeout: 30
     values:
       - openebs/values.yml
     hooks:
@@ -18,7 +18,7 @@ releases:
   - name: ingress-nginx
     namespace: kube-system
     chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/ingress-nginx
-    timeout: 10      
+    timeout: 30      
     hooks:
       - events: ["presync"]
         showlogs: true
@@ -27,7 +27,7 @@ releases:
       - events: ["postsync"]
         showlogs: true
         command: "kubectl"
-        args: ["wait", "--for=condition=Ready", "pod", "-n", "kube-system", "-l", "app.kubernetes.io/name=ingress-nginx", "--timeout=10s"]
+        args: ["wait", "--for=condition=Ready", "pod", "-n", "kube-system", "-l", "app.kubernetes.io/name=ingress-nginx", "--timeout=30s"]
     values:
       - ingress-nginx/values.yml.gotmpl
 
@@ -35,19 +35,19 @@ releases:
     namespace: metallb
     chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/metallb      
     wait: true
-    timeout: 10  
+    timeout: 30  
     values:
       - metallb/values.yml.gotmpl
 
   - name: pihole
     namespace: pihole
     chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/pihole      
-    timeout: 10
+    timeout: 30
     hooks:
       - events: ["postsync"]
         showlogs: true
         command: "kubectl"
-        args: ["wait", "--for=condition=Ready", "pod", "-n", "pihole", "-l", "release=pihole", "--timeout=10s"]
+        args: ["wait", "--for=condition=Ready", "pod", "-n", "pihole", "-l", "release=pihole", "--timeout=30s"]
     values:
       - pihole/values.yml.gotmpl
       - pihole/projects/{{ $project_name }}/values.yml.gotmpl
