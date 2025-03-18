@@ -3,7 +3,7 @@ enable_apt_install: false
 enable_zfs_dataset_creation: false
 enable_os_tools_install: false
 enable_k3s_install: false
-enable_drivers_install: true
+enable_drivers_install: false
 enable_gpu_driver_uninstall: false
 enable_configure_registry_mirroring: false
 enable_helm_install: true
