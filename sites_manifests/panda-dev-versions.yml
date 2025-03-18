@@ -145,23 +145,17 @@ spec:
         kubernetes-dashboard: https://kubernetes.github.io/dashboard/
           
       helm_charts:
-        kubernetes-dashboard/kubernetes-dashboard: "7.10.4"
-        linux-infra/telegraf: "1.8.55"
-        linux-infra/panda: "0.1.0"
-        linux-infra/metallb: "1.0.0"
-        linux-infra/helm-dashboard: "2.0.3"
-        linux-infra/curator: "1.0.0"
-        ingress-nginx/ingress-nginx: "4.12.0"
-        openebs/openebs: "4.2.0"
+        bitnami/rabbitmq:  "14.3.2"
         bitnami/postgresql: "15.5.1"
         bitnami/kubernetes-event-exporter: "3.2.10"
+        bitnami/mongodb: "15.6.1"
         prometheus-community/kube-prometheus-stack: "55.3.0"
         elastic/elasticsearch: "8.5.1"
         elastic/kibana: "8.5.1"
         elastic/logstash: "8.5.1"
         elastic/filebeat: "8.5.1"
         mojo2600/pihole: "2.26.1"
-#        apache-airflow/airflow: "1.15.0"
+        nvidia/gpu-operator: "24.3.0"
 
     drivers:
       - name: "gpu-driver"
