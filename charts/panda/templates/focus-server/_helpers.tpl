@@ -2,16 +2,16 @@
 Return the chart name.
 */}}
 {{- define "focus-server.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trimSuffix "-" -}}
+{{- default .Chart.Name .Values.focusServer.nameOverride | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Return the fully qualified name, e.g. "release-focus-server".
 */}}
 {{- define "focus-server.fullname" -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if .Values.fullnameOverride -}}
-  {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- $name := default .Chart.Name .Values.focusServer.nameOverride -}}
+{{- if .Values.focusServer.fullnameOverride -}}
+  {{- .Values.focusServer.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
   {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

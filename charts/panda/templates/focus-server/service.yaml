@@ -6,12 +6,12 @@ metadata:
     app.kubernetes.io/name: {{ include "focus-server.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.focusServer.service.type }}
   selector:
     app.kubernetes.io/name: {{ include "focus-server.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
   ports:
     - protocol: TCP
-      port: {{ .Values.service.port }}
+      port: {{ .Values.focusServer.service.port }}
       targetPort: http
       name: http

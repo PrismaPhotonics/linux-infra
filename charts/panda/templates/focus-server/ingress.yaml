@@ -1,4 +1,4 @@
-{{- if .Values.ingress.enabled }}
+{{- if .Values.focusServer.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -9,9 +9,9 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
 spec:
-  ingressClassName: {{ .Values.ingress.ingressClassName | quote }}
+  ingressClassName: {{ .Values.focusServer.ingress.ingressClassName | quote }}
   rules:
-    {{- range .Values.ingress.rules }}
+    {{- range .Values.focusServer.ingress.rules }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -22,12 +22,12 @@ spec:
               service:
                 name: {{ include "focus-server.fullname" $ }}
                 port:
-                  number: {{ $.Values.service.port }}
+                  number: {{ $.Values.focusServer.service.port }}
           {{- end }}
     {{- end }}
-  {{- if .Values.ingress.tls }}
+  {{- if .Values.focusServer.ingress.tls }}
   tls:
-    {{- range .Values.ingress.tls }}
+    {{- range .Values.focusServer.ingress.tls }}
     - hosts:
         {{- range .hosts }}
           - {{ . | quote }}

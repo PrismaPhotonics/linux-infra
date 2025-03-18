@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.focusServer.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "focus-server.name" . }}
@@ -19,37 +19,37 @@ spec:
         app.kubernetes.io/name: {{ include "focus-server.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.focusServer.serviceAccountName }}
       containers:
         - name: focus-server
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          workingDir: {{ .Values.workingDir | quote }}
-          command: {{ toYaml .Values.command | nindent 12 }}
+          image: "{{ .Values.focusServer.image.repository }}:{{ .Values.focusServer.image.tag }}"
+          imagePullPolicy: {{ .Values.focusServer.image.pullPolicy }}
+          workingDir: {{ .Values.focusServer.workingDir | quote }}
+          command: {{ toYaml .Values.focusServer.command | nindent 12 }}
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - containerPort: {{ .Values.focusServer.service.port }}
               name: http
           env:
             - name: PZ_IMAGE_TAG
-              value: "{{ .Values.env.PZ_IMAGE_TAG }}"
+              value: "{{ .Values.focusServer.env.PZ_IMAGE_TAG }}"
             - name: PRISMA_CONFIG
-              value: "{{ .Values.env.PRISMA_CONFIG }}"
+              value: "{{ .Values.focusServer.env.PRISMA_CONFIG }}"
           volumeMounts:
             - name: debug-env-volume
-              mountPath: {{ .Values.volumeMounts.debugEnv.mountPath | quote }}
+              mountPath: {{ .Values.focusServer.volumeMounts.debugEnv.mountPath | quote }}
             - name: prisma-config-volume
-              mountPath: {{ .Values.volumeMounts.prismaConfig.mountPath | quote }}
-      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+              mountPath: {{ .Values.focusServer.volumeMounts.prismaConfig.mountPath | quote }}
+      terminationGracePeriodSeconds: {{ .Values.focusServer.terminationGracePeriodSeconds }}
       volumes:
         - name: debug-env-volume
           hostPath:
-            path: {{ .Values.volumes.debugEnv.path | quote }}
+            path: {{ .Values.focusServer.volumes.debugEnv.path | quote }}
             type: Directory
         - name: prisma-config-volume
           hostPath:
-            path: {{ .Values.volumes.prismaConfig.path | quote }}
+            path: {{ .Values.focusServer.volumes.prismaConfig.path | quote }}
             type: Directory
         - name: python-packages-volume
           hostPath:
-            path: {{ .Values.volumes.pythonPackages.path | quote }}
+            path: {{ .Values.focusServer.volumes.pythonPackages.path | quote }}
             type: Directory
