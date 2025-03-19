@@ -1,16 +1,16 @@
 - name: Check if /home/prisma/helmfile.yml exists
   stat:
-    path: "{{ helmfile_path }}"
+    path: "{{ stack_path }}.helmfile.yml"
   register: helmfile_stat
 
-- name: Fail if helmfile.yml is not found in {{ helmfile_path }}
+- name: Fail if helmfile.yml is not found in {{ stack_path }}
   fail:
-    msg: "helmfile.yml not found in {{ helmfile_path }}"
+    msg: "helmfile.yml not found in {{ stack_path }}"
   when: not helmfile_stat.stat.exists
 
 - name: Load helmfile configuration from {{ helmfile_path }}
   set_fact:
-    helmfile_config: "{{ lookup('file', '{{ helmfile_path }}') | from_yaml }}"
+    helmfile_config: "{{ lookup('file', '{{ stack_path.helmfile.yml }}') | from_yaml }}"
 
 - name: Find release with chart matching "{{ release_name }}"
   set_fact:
@@ -27,6 +27,9 @@
 
 - name: Process each values file for release {{ target_release.name }}
   block:
+    - name: Initialize final values files list
+      set_fact:
+        values_path: "{{ stack_path }}/{{ item }}"
     - name: Process gotmpl file {{ item }}
       block:
         - name: Create temporary file for rendered values
@@ -34,15 +37,15 @@
             state: file
             suffix: ".yml"
           register: tmp_vals
-        - name: Render gotmpl file {{ item }}
-          command: gomplate -f {{ item }} -o {{ tmp_vals.path }}
+        - name: Render gotmpl file {{ values_path }}
+          command: gomplate -f {{ values_path }} -o {{ tmp_vals.path }}
         - name: Append rendered file to final values list
           set_fact:
             final_values_files: "{{ final_values_files + [ tmp_vals.path ] }}"
       when: item.endswith('gotmpl')
-    - name: Append plain YAML file {{ item }} to final values list
+    - name: Append plain YAML file {{ values_path }} to final values list
       set_fact:
-        final_values_files: "{{ final_values_files + [ item ] }}"
+        final_values_files: "{{ final_values_files + [ values_path ] }}"
       when: not item.endswith('gotmpl')
   loop: "{{ target_release.values }}"
   loop_control:
