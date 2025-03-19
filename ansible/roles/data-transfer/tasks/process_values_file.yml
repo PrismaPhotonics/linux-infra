@@ -1,0 +1,22 @@
+- name: Initialize values path
+  set_fact:
+    values_path: "{{ stack_path }}/{{ item }}"
+
+- name: Process gotmpl file {{ item }}
+  block:
+    - name: Create temporary file for rendered values
+      tempfile:
+        state: file
+        suffix: ".yml"
+      register: tmp_vals
+    - name: Render gotmpl file {{ values_path }}
+      command: gomplate -f {{ values_path }} -o {{ tmp_vals.path }}
+    - name: Append rendered file to final values list
+      set_fact:
+        final_values_files: "{{ final_values_files + [ tmp_vals.path ] }}"
+  when: item.endswith('gotmpl')
+
+- name: Append plain YAML file {{ values_path }} to final values list
+  set_fact:
+    final_values_files: "{{ final_values_files + [ values_path ] }}"
+  when: not item.endswith('gotmpl')

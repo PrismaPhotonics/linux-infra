@@ -1,9 +1,5 @@
----
 - name: Process data transfer for each entry
-  block:
-    - include_tasks: helm_template.yml
-    - include_tasks: extract_and_apply_pvc.yml
-    - include_tasks: data_transfer.yml
+  include_tasks: data_transfer_entry.yml
   loop: "{{ data_transfer }}"
   loop_control:
     loop_var: dt
@@ -19,5 +15,6 @@
     project_name: "{{ project_name }}"
     three_first_octets: "{{ three_first_octets }}"
     artifact_path: "{{ artifact_path }}"
-    container_name: "data-transfer-{{ pvc_name }}"
-    pod_name: "data-transfer-{{ pvc_name }}"
+    container_name: "data-transfer-{{ dt.pvc_name }}"
+    pod_name: "data-transfer-{{ dt.pvc_name }}"
+
