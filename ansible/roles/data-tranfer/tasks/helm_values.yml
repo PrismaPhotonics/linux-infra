@@ -1,0 +1,25 @@
+- name: Create temporary file for rendered values if needed (gotmpl)
+  tempfile:
+    state: file
+    suffix: ".yml"
+  register: tmp_vals
+  when: chart_values.endswith('gotmpl')
+
+- name: Render gotmpl to temporary file if needed
+  command: gomplate -f {{ chart_values }} -o {{ tmp_vals.path }}
+  environment:
+    PROJECT_NAME: "{{ project_name }}"
+    LINUX_USER: "{{ linux_user_name }}"
+    THREE_FIRST_OCTETS: "{{ three_first_octets }}"
+    ARTIFACT_PATH: "{{ artifact_path }}"
+  when: chart_values.endswith('gotmpl')
+
+- name: Set final values file from temporary file (gotmpl)
+  set_fact:
+    final_values_file: "{{ tmp_vals.path }}"
+  when: chart_values.endswith('gotmpl')
+
+- name: Set final values file as chart_values (plain YAML)
+  set_fact:
+    final_values_file: "{{ chart_values }}"
+  when: not chart_values.endswith('gotmpl')

@@ -1,0 +1,15 @@
+{{- $artifactPath := (env "ARTIFACT_PATH" | default "prisma") -}}
+
+releases:
+  - name: openebs
+    namespace: openebs
+    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/openebs       
+    wait: true
+    timeout: 600
+    values:
+      - openebs/values.yml
+    hooks:
+      - events: ["postsync"]
+        showlogs: true
+        command: "kubectl"
+        args: ["apply", "-f", "openebs/storageclass.yml"]   

@@ -1,0 +1,21 @@
+---
+- name: Process data transfer for each entry
+  block:
+    - include_tasks: helm_values.yml
+    - include_tasks: extract_pvc.yml
+    - include_tasks: data_transfer.yml
+  loop: "{{ data_transfer }}"
+  loop_control:
+    loop_var: dt
+  vars:
+    chart_dir: "{{ dt.chart_dir }}"        
+    release_name: "{{ dt.chart_release }}"            
+    namespace: "{{ dt.chart_namespace }}" 
+    chart_values: "{{ dt.chart_values }}"
+    pvc_name: "{{ dt.pvc_name }}"
+    src_directory: "{{ dt.src }}"
+    dest_directory: "{{ dt.dest }}"
+    linux_user_name: "{{ linux_user_name }}"
+    project_name: "{{ project_name }}"
+    three_first_octets: "{{ three_first_octets }}"
+    artifact_path: "{{ artifact_path }}"

@@ -1,0 +1,24 @@
+- name: Render Helm template using final values file
+  command: helm template {{ release_name }} . -n {{ namespace }} -f {{ final_values_file }}
+  args:
+    chdir: "{{ chart_dir }}"
+  register: helm_output
+
+- name: Parse Helm output into manifests
+  set_fact:
+    helm_manifests: "{{ helm_output.stdout | from_yaml_all }}"
+
+- name: Select PVC manifest for {{ pvc_name }}
+  set_fact:
+    pvc_manifest: "{{ helm_manifests | selectattr('kind', 'equalto', 'PersistentVolumeClaim') | selectattr('metadata.name', 'equalto', pvc_name) | list }}"
+
+- name: Fail if PVC {{ pvc_name }} not found
+  fail:
+    msg: "PVC {{ pvc_name }} not found in Helm template."
+  when: pvc_manifest | length == 0
+
+- name: Apply PVC manifest for {{ pvc_name }}
+  k8s:
+    state: present
+    definition: "{{ pvc_manifest[0] }}"
+  register: pvc_apply_result

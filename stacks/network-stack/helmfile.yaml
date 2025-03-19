@@ -2,19 +2,6 @@
 {{- $project_name := (env "PROJECT_NAME" | default "shaked") -}}
 
 releases:
-  - name: openebs
-    namespace: openebs
-    chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/openebs       
-    wait: true
-    timeout: 600
-    values:
-      - openebs/values.yml
-    hooks:
-      - events: ["postsync"]
-        showlogs: true
-        command: "kubectl"
-        args: ["apply", "-f", "openebs/storageclass.yml"]      
-
   - name: ingress-nginx
     namespace: kube-system
     chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/ingress-nginx

@@ -1,0 +1,10 @@
+- import_tasks: is_helm_pull_needed.yml
+
+- import_tasks: helm_pull.yml
+  when: not imported_charts.stat.exists
+
+- import_tasks: pull_linux_infra_if_not_exist.yml
+
+- import_tasks: dos2unix_all_scripts.yml
+
+- import_tasks: import_env_vars_to_bashrc.yml
