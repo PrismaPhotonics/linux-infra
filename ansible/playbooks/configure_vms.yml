@@ -65,5 +65,6 @@
         project_name: "{{ spec.components.helm_spec.project_name }}"
         helm_repos: "{{ spec.components.helm_spec.helm_repos }}"
         three_first_octets: "{{ spec.components.helm_spec.three_first_octets }}"
-        branch_name: "{{ spec.components.helm_spec.branch_name  }}"
+        branch_name: "{{ spec.components.helm_spec.branch_name }}"
+        data_transfer: "{{ spec.components.helm_spec.data_transfer }}"
 

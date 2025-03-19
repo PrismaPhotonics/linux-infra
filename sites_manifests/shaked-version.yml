@@ -1,32 +1,19 @@
 spec: 
-
   configurations:
     linux_user_name: prisma
     artifact_path: /home/prisma/offline_deploy
 
   components:
-
     helm_spec:
       project_name: shaked
       three_first_octets: 10.20.10
-      branch_name: ib/shaked-integration
-
+      branch_name: ib/data-transfer
       data_transfer:
-        - pvc-name: map-server-tileserver-gl-pvc
-          src: /mnt/tileserver
-          dest: /data
-          chart_name: "tileserver-gl"        
+        - pvc-name: config-volume-airflow-worker-0
+          src: /home/prisma/shaked/config
+          dest: /app/config
           release_name: "map-server"            
-          namespace: "map-server" 
-          stack_name: ""
-          pvc_name: "{{ dt.pvc_name }}"
-          src_directory: "{{ dt.src }}"
-          dest_directory: "{{ dt.dest }}"
-          linux_user_name: "{{ linux_user_name }}"
-          project_name: "{{ project_name }}"
-          three_first_octets: "{{ three_first_octets }}"
-          artifact_path: "{{ artifact_path }}"
-
+          stack_name: "shaked-stack"
       helm_repos:
         prometheus-community: https://prometheus-community.github.io/helm-charts
         bitnami: https://charts.bitnami.com/bitnami
@@ -37,7 +24,6 @@ spec:
         ingress-nginx: https://kubernetes.github.io/ingress-nginx
         apache-airflow: https://airflow.apache.org
         kubernetes-dashboard: https://kubernetes.github.io/dashboard/
-          
       helm_charts:
         kubernetes-dashboard/kubernetes-dashboard: "7.10.4"
         linux-infra/telegraf: "1.8.55"
@@ -58,9 +44,7 @@ spec:
         apache-airflow/airflow: "1.15.0"
 
     docker_spec:
-
       docker_registry_address: 10.20.10.150:5000
-
       docker_images:
         prisma_images:
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec:on-prem2"
