@@ -1,12 +1,12 @@
 - name: Check existence of helm chart folders
   stat:
     path: "{{ artifact_path }}/helm_charts/downloaded_helm_charts/openebs"
-  register: openebs_chart_file
+  register: openebs_chart_folder
 
 - name: Log if any helm chart folders are missing
   fail:
     msg: "The openebs helm chart folder is missing"
-  when: not openebs.stat.exists 
+  when: not openebs_chart_folder.stat.exists 
 
 - block:
     - name: Run helmfile sync with injected environment variables using -f flag

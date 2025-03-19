@@ -1,31 +1,14 @@
----
 - name: Include setup-artifiacts-for-helm-install role
   include_role:
     name: setup-artifiacts-for-helm-install
-  vars:
-    linux_user_name: "{{ linux_user_name }}"
-    helm_charts: "{{ helm_charts }}"
-    project_name: "{{ project_name }}"
-    helm_repos: "{{ helm_repos }}"
-    three_first_octets: "{{ three_first_octets }}"
-    branch_name: "{{ branch_name }}"
-    artifact_path: "{{ artifact_path }}"
 
 - name: Include setup-openebs role
   include_role:
     name: setup-openebs
-  vars:
-    artifact_path: "{{ artifact_path }}"
 
 - name: Include data-tranfer role if data_transfer is not empty
   include_role:
-    name: data-tranfer
-  vars:
-    data_transfer: "{{ data_transfer }}"
-    linux_user_name: "{{ linux_user_name }}"
-    project_name: "{{ project_name }}"
-    three_first_octets: "{{ three_first_octets }}"
-    artifact_path: "{{ artifact_path }}"
+    name: data-transfer
   when: data_transfer | length > 0
 
 - import_tasks: helm_install.yml
