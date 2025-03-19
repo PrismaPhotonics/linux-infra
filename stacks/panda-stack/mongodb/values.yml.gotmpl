@@ -12,14 +12,15 @@ persistence:
   size: "10Gi"
   storageClass: openebs-zfspv
 
-service:.
+service:
   type: LoadBalancer
-  loadBalancerIP: "{{ $threeFirstOctets }}.103
+  loadBalancerIP: "{{ $threeFirstOctets }}.103"
   port: 27017
   nodePort: 32000
 
 sidecars:
   - name: mongo-indexer
+    image: 262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux:10.7.104
     workingDir: /home/prisma/debug-codebase
     env:
       - name: PRISMA_CERTIFICATES
