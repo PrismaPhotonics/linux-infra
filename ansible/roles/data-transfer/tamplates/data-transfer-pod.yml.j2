@@ -1,18 +1,18 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "data-tranfer-{{ pvc_name }}"
+  name: "{{ pod_name }}"
   namespace: "{{ namespace }}"
 spec:
   restartPolicy: Never
   containers:
-    - name: "data-transfer-{{ pvc_name }}"
+    - name: "{{ container_name }}"
       image: "busybox:1.35.0"
       command: ["sh", "-c", "sleep 3600"]
       volumeMounts:
-        - mountPath: "{{ dest_directory }}"
+        - mountPath: "{{ dest_path }}"
           name: pvc-volume
-        - mountPath: "{{ src_directory }}"
+        - mountPath: "{{ host_mount }}"
           name: host-volume
   volumes:
     - name: pvc-volume
@@ -20,5 +20,5 @@ spec:
         claimName: "{{ pvc_name }}"
     - name: host-volume
       hostPath:
-        path: "{{ src_directory }}"
+        path: "{{ host_path }}"
         type: Directory

@@ -15,20 +15,20 @@
   retries: 30
   delay: 5
 
-- name: Check if destination directory {{ dest_directory }} is empty for PVC {{ pvc_name }}
+- name: Check if destination directory {{ dest_path }} is empty for PVC {{ pvc_name }}
   k8s_exec:
     namespace: "{{ namespace }}"
     pod: "{{ pod_name }}"
     container: "{{ container_name }}"
     command: >
-      sh -c 'if [ -z "$(ls -A {{ dest_directory }})" ]; then echo empty; else echo not_empty; fi'
+      sh -c 'if [ -z "$(ls -A {{ dest_path }})" ]; then echo empty; else echo not_empty; fi'
   register: data_check
 
 - name: Execute cp command inside pod for PVC {{ pvc_name }}
   k8s_exec:
     namespace: "{{ namespace }}"
     pod: "{{ pod_name }}"
-    command: "cp -a {{ src_directory }}/. {{ dest_directory }}/"
+    command: "cp -a {{ host_mount }}/. {{ dest_path }}/"
     container: "{{ container_name }}"
   register: cp_result
   when: override_data or (data_check.stdout | trim) == "empty"

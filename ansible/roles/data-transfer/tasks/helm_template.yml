@@ -56,6 +56,7 @@
     helm_cmd: >-
       helm template {{ target_release.name }} {{ target_release.chart }}
       -n {{ target_release.namespace }}{% for file in final_values_files %} -f {{ file }}{% endfor %}
+    namespace: "{{ target_release.namespace }}"
 
 - name: Debug helm template command
   debug:

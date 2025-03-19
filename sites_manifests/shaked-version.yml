@@ -10,8 +10,9 @@ spec:
       branch_name: ib/data-transfer
       data_transfer:
         - pvc-name: config-volume-airflow-worker-0
-          src: /home/prisma/shaked/config
-          dest: /app/config
+          host_mount: /mnt/shaked/config
+          host_path: /home/prisma/shaked/config
+          dest_path: /app/config
           release_name: "map-server"            
           stack_name: "shaked-stack"
       helm_repos:

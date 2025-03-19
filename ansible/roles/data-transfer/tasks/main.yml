@@ -9,12 +9,15 @@
     loop_var: dt
   vars:
     chart_name: "{{ dt.chart_name }}"        
-    release_name: "{{ dt.chart_release }}"            
+    release_name: "{{ dt.release_name }}"            
     stack_path: "{{ artifact_path }}/linux-infra/stacks/{{ dt.stack_name }}"
     pvc_name: "{{ dt.pvc_name }}"
-    src_directory: "{{ dt.src }}"
-    dest_directory: "{{ dt.dest }}"
+    host_mount: "{{ dt.host_mount }}"
+    host_path: "{{ dt.host_path }}"
+    dest_path: "{{ dt.dest_path }}"
     linux_user_name: "{{ linux_user_name }}"
     project_name: "{{ project_name }}"
     three_first_octets: "{{ three_first_octets }}"
     artifact_path: "{{ artifact_path }}"
+    container_name: "data-transfer-{{ pvc_name }}"
+    pod_name: "data-transfer-{{ pvc_name }}"
