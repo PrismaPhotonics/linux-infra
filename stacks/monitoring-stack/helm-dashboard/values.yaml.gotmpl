@@ -2,6 +2,7 @@
 
 service:
   type: LoadBalancer
+  port: 80
   loadBalancerIP: {{ $threeFirstOctets }}.101
 
 dashboard:
