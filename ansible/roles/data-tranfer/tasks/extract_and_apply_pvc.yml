@@ -1,12 +1,6 @@
-- name: Render Helm template using final values file
-  command: helm template {{ release_name }} . -n {{ namespace }} -f {{ final_values_file }}
-  args:
-    chdir: "{{ chart_dir }}"
-  register: helm_output
-
 - name: Parse Helm output into manifests
   set_fact:
-    helm_manifests: "{{ helm_output.stdout | from_yaml_all }}"
+    helm_manifests: "{{ helm_template_output.stdout | from_yaml_all }}"
 
 - name: Select PVC manifest for {{ pvc_name }}
   set_fact:

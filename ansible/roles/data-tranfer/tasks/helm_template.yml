@@ -1,0 +1,69 @@
+- name: Check if /home/prisma/helmfile.yml exists
+  stat:
+    path: "{{ helmfile_path }}"
+  register: helmfile_stat
+
+- name: Fail if helmfile.yml is not found in {{ helmfile_path }}
+  fail:
+    msg: "helmfile.yml not found in {{ helmfile_path }}"
+  when: not helmfile_stat.stat.exists
+
+- name: Load helmfile configuration from {{ helmfile_path }}
+  set_fact:
+    helmfile_config: "{{ lookup('file', '{{ helmfile_path }}') | from_yaml }}"
+
+- name: Find release with chart matching "{{ release_name }}"
+  set_fact:
+    target_release: "{{ helmfile_config.releases | selectattr('name', 'search', release_name) | list | first }}"
+
+- name: Fail if no release found matching "{{ release_name }}"
+  fail:
+    msg: "No release found with chart containing '{{ release_name }}'"
+  when: target_release is not defined
+
+- name: Initialize final values files list
+  set_fact:
+    final_values_files: []
+
+- name: Process each values file for release {{ target_release.name }}
+  block:
+    - name: Process gotmpl file {{ item }}
+      block:
+        - name: Create temporary file for rendered values
+          tempfile:
+            state: file
+            suffix: ".yml"
+          register: tmp_vals
+        - name: Render gotmpl file {{ item }}
+          command: gomplate -f {{ item }} -o {{ tmp_vals.path }}
+        - name: Append rendered file to final values list
+          set_fact:
+            final_values_files: "{{ final_values_files + [ tmp_vals.path ] }}"
+      when: item.endswith('gotmpl')
+    - name: Append plain YAML file {{ item }} to final values list
+      set_fact:
+        final_values_files: "{{ final_values_files + [ item ] }}"
+      when: not item.endswith('gotmpl')
+  loop: "{{ target_release.values }}"
+  loop_control:
+    loop_var: item
+
+- name: Build helm template command with all values files
+  set_fact:
+    helm_cmd: >-
+      helm template {{ target_release.name }} {{ target_release.chart }}
+      -n {{ target_release.namespace }}{% for file in final_values_files %} -f {{ file }}{% endfor %}
+
+- name: Debug helm template command
+  debug:
+    msg: "{{ helm_cmd }}"
+
+- name: Run helm template command
+  command: "{{ helm_cmd }}"
+  args:
+    chdir: "{{ helmfile_dir }}"
+  register: helm_template_output
+
+- name: Debug helm template output
+  debug:
+    var: helm_template_output.stdout
