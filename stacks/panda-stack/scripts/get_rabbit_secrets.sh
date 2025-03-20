@@ -7,13 +7,14 @@ SECRET_NAME="rabbitmq-tls-secret"
 TEMP_DIR="/tmp/rabbitmq-secrets"
 mkdir -p $TEMP_DIR
 
+
 # Test AWS credentials
 sudo aws sts get-caller-identity || echo "ERROR: AWS credentials not found!"
 
 # Download secrets from S3
-sudo s3cmd --debug get s3://pz-devops/deploy/deployment/ui/panda-certifcates/ca.pem $TEMP_DIR/ca.pem
-sudo s3cmd --debug get s3://pz-devops/deploy/deployment/ui/panda-certifcates/private.pem $TEMP_DIR/private.pem
-sudo s3cmd --debug get s3://pz-devops/deploy/deployment/ui/panda-certifcates/public.pem $TEMP_DIR/public.pem
+sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/ca.pem ca.pem
+sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/private.pem private.pem
+sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/public.pem public.pem
 
 ls -lah $TEMP_DIR
 
