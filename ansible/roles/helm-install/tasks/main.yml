@@ -12,3 +12,4 @@
 - import_tasks: helm_install.yml
 
 - import_tasks: data_transfer.yml
+  when: data_transfer | length > 0
