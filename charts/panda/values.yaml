@@ -87,7 +87,7 @@ segyRecorder:
   tlsSecret:
     name: "rabbitmq-tls-secret"
     items:
-      caCrtPath: "prisma_ca.pem"
-      tlsCrtPath: "data-rabbitmq.prismaphotonics.net_cert.pem"
-      tlsKeyPath: "data-rabbitmq.prismaphotonics.net_key.pem"
+      caCrtPath: "ca.crt"
+      tlsCrtPath: "tls.crt"
+      tlsKeyPath: "tls.key"
   terminationGracePeriodSeconds: 30
