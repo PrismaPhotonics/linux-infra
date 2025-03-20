@@ -5,9 +5,9 @@ TEMP_DIR="/tmp/rabbitmq-secrets"
 mkdir -p $TEMP_DIR
 echo "*******************start to downlaod*******************"
 # Download secrets from S3
-aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/ca.pem $TEMP_DIR/ca.pem
-aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/private.pem $TEMP_DIR/private.pem
-aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/public.pem $TEMP_DIR/public.pem
+aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/ca.pem /etc/panda-certificates/ca.pem
+aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/private.pem /etc/panda-certificates/private.pem
+aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/public.pem /etc/panda-certificates/public.pem
 echo "*******************finish to downlaod*******************"
 ls $TEMP_DIR
 echo "*******************finish to ls*******************"
