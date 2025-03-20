@@ -14,7 +14,7 @@ echo "*******************Start Downloading*******************"
 sudo aws sts get-caller-identity || echo "ERROR: AWS credentials not found!"
 
 # Download secrets from S3
-sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/ca.pem $TEMP_DIR/ca.srt
+sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/ca.pem $TEMP_DIR/ca.crt
 sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/private.pem $TEMP_DIR/private.key
 sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/public.pem $TEMP_DIR/public.crt
 
