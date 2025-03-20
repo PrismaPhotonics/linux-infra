@@ -25,6 +25,6 @@ echo "*******************Finish Listing Files*******************"
 # Create Kubernetes secret
 kubectl delete secret $SECRET_NAME -n $SECRET_NAMESPACE --ignore-not-found
 kubectl create secret generic $SECRET_NAME -n $SECRET_NAMESPACE \
-  --from-file=ca.pem=$TEMP_DIR/ca.pem \
-  --from-file=private.pem=$TEMP_DIR/private.pem \
-  --from-file=public.pem=$TEMP_DIR/public.pem
+  --from-file=ca.crt=$TEMP_DIR/ca.pem \
+  --from-file=tls.key=$TEMP_DIR/private.pem \
+  --from-file=tls.crt=$TEMP_DIR/public.pem
