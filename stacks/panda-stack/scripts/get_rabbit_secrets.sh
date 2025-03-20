@@ -11,12 +11,12 @@ mkdir -p $TEMP_DIR
 echo "*******************Start Downloading*******************"
 
 # Test AWS credentials
-aws sts get-caller-identity || echo "ERROR: AWS credentials not found!"
+sudo aws sts get-caller-identity || echo "ERROR: AWS credentials not found!"
 
 # Download secrets from S3
-s3cmd --debug get s3://pz-devops/deploy/deployment/ui/panda-certifcates/ca.pem $TEMP_DIR/ca.pem
-s3cmd --debug get s3://pz-devops/deploy/deployment/ui/panda-certifcates/private.pem $TEMP_DIR/private.pem
-s3cmd --debug get s3://pz-devops/deploy/deployment/ui/panda-certifcates/public.pem $TEMP_DIR/public.pem
+sudo s3cmd --debug get s3://pz-devops/deploy/deployment/ui/panda-certifcates/ca.pem $TEMP_DIR/ca.pem
+sudo s3cmd --debug get s3://pz-devops/deploy/deployment/ui/panda-certifcates/private.pem $TEMP_DIR/private.pem
+sudo s3cmd --debug get s3://pz-devops/deploy/deployment/ui/panda-certifcates/public.pem $TEMP_DIR/public.pem
 
 echo "*******************Finish Downloading*******************"
 ls -lah $TEMP_DIR
