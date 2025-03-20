@@ -19,7 +19,7 @@ sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/private.pem
 sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/public.pem $TEMP_DIR/public.crt
 
 echo "*******************Finish Downloading*******************"
-ls -lah $TEMP_DIR
+sudo ls -la $TEMP_DIR
 echo "*******************Finish Listing Files*******************"
 
 # Create Kubernetes secret
