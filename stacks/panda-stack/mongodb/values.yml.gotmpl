@@ -18,6 +18,11 @@ service:
   port: 27017
   nodePort: 32000
 
+image:
+  repository: bitnami/mongodb
+  tag: 7.0.11-debian-12-r0
+  pullPolicy: IfNotPresent
+
 sidecars:
   - name: mongo-indexer
     image: 262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux:10.7.104
