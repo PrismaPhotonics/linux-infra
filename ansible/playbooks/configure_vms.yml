@@ -17,6 +17,9 @@
        apt_packages: "{{ spec.components.apt_packages | default([]) }}"
       tags: apt
 
+    - role: ecr-login
+      when: enable_ecr_login | default(false)
+
     - role: drivers-install
       when: enable_drivers_install | default(false)
       vars:
