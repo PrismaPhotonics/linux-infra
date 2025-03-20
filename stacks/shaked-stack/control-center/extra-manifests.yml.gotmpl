@@ -21,12 +21,23 @@ extraManifests:
         spec:
           containers:
             - name: node-server
-              image: 262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:nodejs-dev01
+              image: 262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:node-test02
               ports:
-                - containerPort: 3002
+                - containerPort: 3001
+              env:
+                - name: DB_HOST
+                  value: "shaked-postgres-postgresql.postgresql.svc.cluster.local:5432"
+                - name: DB_USER
+                  value: "shaked"
+                - name: DB_PASSWORD
+                  value: "shaked@2025"
+                - name: DB_NAME
+                  value: "postgres"
+                - name: PORT
+                  value: "3001"
               volumeMounts:
                 - name: reports-storage
-                  mountPath: /data
+                  mountPath: /app/report
           volumes:
             - name: reports-storage
               persistentVolumeClaim:
@@ -42,13 +53,13 @@ extraManifests:
       type: LoadBalancer
       loadBalancerIP: {{ $threeFirstOctets }}.109
       ports:
-        - port: 81          # Service port
-          targetPort: 3002  # Container's listening port
+        - port: 3001          # Service port
+          targetPort: 3001  # Container's listening port
       selector:
         app: node-server 
 
 
-###### DATASOURCES ######
+###### GRAFANA DATASOURCES ######
   - apiVersion: v1
     kind: Secret
     metadata:
@@ -79,7 +90,7 @@ extraManifests:
             # <bool> allow users to edit datasources from the UI.
             editable: true
 
-###### PROMETHEUS PERSISTENT STORAGE PV\PVC ######
+###### GRAFANA PERSISTENT STORAGE ######
 
 #### GRAFANA PVC
 
