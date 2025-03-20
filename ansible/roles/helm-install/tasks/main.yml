@@ -10,3 +10,5 @@
 - import_tasks: import_env_vars_to_bashrc.yml
   
 - import_tasks: helm_install.yml
+
+- import_tasks: transfer_data.yml
