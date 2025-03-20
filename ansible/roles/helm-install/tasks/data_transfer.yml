@@ -11,4 +11,5 @@
     container_name: "data-transfer-{{ dt.pvc_name }}"
     pod_name: "data-transfer-{{ dt.pvc_name }}"
     namespace: "{{ dt.namespace }}"
+    override_data: "{{ dt.override_data | default(false)}}"
 

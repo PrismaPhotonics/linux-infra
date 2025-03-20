@@ -80,8 +80,7 @@ workers:
           resources:
             requests:
               storage: 100Mi
-          storageClassName: "" 
-          volumeName: config-pv
+          storageClassName: "openebs-zfspv" 
 
     - metadata:
         name: report-volume
@@ -99,7 +98,7 @@ workers:
           resources:
             requests:
               storage: 100Mi
-          storageClassName: ""
+          storageClassName: "openebs-zfspv"
           volumeName: coordinates-pv
 webserver:
   service:

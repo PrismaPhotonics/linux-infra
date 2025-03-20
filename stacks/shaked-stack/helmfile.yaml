@@ -21,10 +21,6 @@ releases:
       - events: ["presync"]
         showlogs: true
         command: "kubectl"
-        args: ["apply", "-f", "airflow/pvs.yml"] 
-      - events: ["presync"]
-        showlogs: true
-        command: "kubectl"
         args: ["apply", "-f", "airflow/secret.yml"] 
     values:
       - airflow/values.yml.gotmpl

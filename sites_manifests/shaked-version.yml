@@ -14,6 +14,18 @@ spec:
           host_path: /home/prisma/shaked/config
           dest_path: /app/config
           namespace: control-center
+        - pvc_name: coordinates-volume-airflow-worker-0
+          host_mount: /mnt/shaked/coordinates
+          host_path: /home/prisma/shaked/coordinates
+          dest_path: /app/report/coordinates
+          namespace: control-center
+          command_after_transfer: "kubectl rollout restart statefullset airflow-worker -n control-center"
+        # - pvc_name: map-server-tileserver-gl-pvc 
+        #   host_mount: /mnt/shaked/tileserver-data
+        #   host_path: /mnt/shaked/tileserver-data
+        #   dest_path: /data
+        #   namespace: map-server
+        #   command_after_transfer: "kubectl rollout restart deployment map-server-tileserver-gl -n map-server"
       helm_repos:
         prometheus-community: https://prometheus-community.github.io/helm-charts
         bitnami: https://charts.bitnami.com/bitnami

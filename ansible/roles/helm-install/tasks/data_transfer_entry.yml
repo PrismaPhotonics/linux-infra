@@ -39,3 +39,7 @@
     namespace: "{{ namespace }}"
     kind: Pod
     name: "{{ pod_name }}"
+
+- name: Run after copy command if needed
+  command: "{{ command_after_transfer }}"
+  when: command_after_transfer is defined
