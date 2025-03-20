@@ -1,0 +1,20 @@
+# Define secrets path
+SECRET_NAMESPACE="rabbitmq-panda"
+SECRET_NAME="rabbitmq-tls-secret"
+TEMP_DIR="/tmp/rabbitmq-secrets"
+mkdir -p $TEMP_DIR
+echo "*******************start to downlaod*******************"
+# Download secrets from S3
+s3cmd get s3://pz-devops/deploy/deployment/ui/panda-certifcates/ca.pem $TEMP_DIR/ca.pem
+s3cmd get s3://pz-devops/deploy/deployment/ui/panda-certifcates/private.pem $TEMP_DIR/private.pem
+s3cmd get s3://pz-devops/deploy/deployment/ui/panda-certifcates/public.pem $TEMP_DIR/public.pem
+echo "*******************finish to downlaod*******************"
+ls $TEMP_DIR
+echo "*******************finish to ls*******************"
+
+# Create Kubernetes secret
+kubectl delete secret $SECRET_NAME -n $SECRET_NAMESPACE --ignore-not-found
+kubectl create secret generic $SECRET_NAME -n $SECRET_NAMESPACE \
+  --from-file=ca.pem=$TEMP_DIR/ca.pem \
+  --from-file=private.pem=$TEMP_DIR/private.pem \
+  --from-file=public.pem=$TEMP_DIR/public.pem

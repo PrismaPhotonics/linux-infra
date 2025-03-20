@@ -1,7 +1,9 @@
 {{- $threeFirstOctets := (env "THREE_FIRST_OCTETS" | default "10.10.10") -}}
 
+{{- $password := "prismapanda" -}}
+
 auth:
-  password: prismapanda
+  password:  "{{ $password }}"
   tls:
     enabled: true
     existingSecret: rabbitmq-tls-secret
@@ -19,17 +21,17 @@ extraSecrets:
         "users": [
             {
                 "name": "admin",
-                "password": "{{ .Values.auth.password }}",
+                "password": "{{ $password }}",
                 "tags": "administrator"
             },
             {
                 "name": "prisma",
-                "password": "{{ .Values.auth.password }}",
+                "password": "{{ $password }}",
                 "tags": "administrator"
             },
             {
                 "name": "user",
-                "password": "{{ .Values.auth.password }}",
+                "password": "{{ $password }}",
                 "tags": "administrator"
             }
         ],
@@ -72,6 +74,7 @@ extraSecrets:
         ]
       }
 
+
 loadDefinition:
   enabled: true
   existingSecret: load-definition-2
@@ -113,6 +116,6 @@ resources:
 
 service:
   type: LoadBalancer
-  loadBalancerIP: "{{ $threeFirstOctets }}.101
+  loadBalancerIP: "{{ $threeFirstOctets }}.101"
   nodePorts:
     amqps: 5671
