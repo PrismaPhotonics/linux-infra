@@ -1,0 +1,41 @@
+- name: Deploy data transfer pod for PVC pvc-name
+  k8s:
+    state: present
+    namespace: "{{ namespace }}"
+    definition: "{{ lookup('template', 'data-transfer-pod.yml.j2') }}"
+  register: deploy_result
+
+- name: Wait for pod {{ pod_name }} to be Running
+  k8s_info:
+    kind: Pod
+    namespace: "{{ namespace }}"
+    name: "{{ pod_name }}"
+  register: pod_info
+  until: pod_info.resources[0].status.phase == "Running"
+  retries: 30
+  delay: 5
+
+- name: Check if destination directory {{ dest_path }} is empty for PVC {{ pvc_name }}
+  k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ pod_name }}"
+    container: "{{ container_name }}"
+    command: >
+      sh -c 'if [ -z "$(ls -A {{ dest_path }})" ]; then echo empty; else echo not_empty; fi'
+  register: data_check
+
+- name: Execute cp command inside pod for PVC {{ pvc_name }}
+  k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ pod_name }}"
+    command: "cp -a {{ host_mount }}/. {{ dest_path }}/"
+    container: "{{ container_name }}"
+  register: cp_result
+  when: override_data or (data_check.stdout | trim) == "empty"
+
+- name: Delete data transfer pod for PVC {{ pvc_name }}
+  k8s:
+    state: absent
+    namespace: "{{ namespace }}"
+    kind: Pod
+    name: "{{ pod_name }}"
