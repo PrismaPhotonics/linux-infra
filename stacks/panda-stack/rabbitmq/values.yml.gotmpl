@@ -119,3 +119,15 @@ service:
   loadBalancerIP: "{{ $threeFirstOctets }}.101"
   nodePorts:
     amqps: 5671
+
+volumes:
+  - name: certs
+    secret:
+      secretName: rabbitmq-tls-secret
+      items:
+        - key: ca.crt
+          path: ca.crt
+        - key: tls.crt
+          path: tls.crt
+        - key: tls.key
+          path: tls.key
