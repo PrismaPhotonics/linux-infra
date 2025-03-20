@@ -10,11 +10,11 @@ releases:
     hooks:
       - events: [ "presync" ]
         command: "sh"
-    showlogs: true
-    args:
-      - "-c"
-      - |
-        ./scripts/get_rabbit_secrets.sh
+        showlogs: true
+        args:
+          - "-c"
+          - |
+            ./scripts/get_rabbit_secrets.sh
 
   - name: mongodb
     namespace: mongodb
