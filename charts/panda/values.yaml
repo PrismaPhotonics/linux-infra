@@ -1,4 +1,7 @@
 # Focus Server values
+cleanupService:
+  serviceAccountName: cleanup-sa
+
 focusServer:
   nameOverride: "focus-server"
   replicaCount: 1
