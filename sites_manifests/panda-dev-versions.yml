@@ -83,7 +83,7 @@ spec:
         third_party:
           - "bitnami/kubectl:latest"
           - "bitnami/kubernetes-event-exporter:1.7.0-debian-12-r12"
-          - "bitnami/mongodb:latest"
+          - "bitnami/mongodb:8.0.5-debian-12-r0"
           - "bitnami/postgresql:16.3.0-debian-12-r12"
           - "bitnami/postgresql:16.1.0-debian-11-r15"
           - "bitnami/rabbitmq:3.12.10-debian-11-r3"
