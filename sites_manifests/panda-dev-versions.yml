@@ -148,7 +148,7 @@ spec:
 
       helm_charts:
         bitnami/rabbitmq: "14.3.2"
-        bitnami/mongodb: "15.6.1"
+        bitnami/mongodb: "15.6.26"
         nvidia/gpu-operator: "24.3.0"
         kubernetes-dashboard/kubernetes-dashboard: "7.10.4"
         linux-infra/telegraf: "1.8.55"
