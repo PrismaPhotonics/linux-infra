@@ -13,3 +13,5 @@
 
 - import_tasks: data_transfer.yml
   when: data_transfer | length > 0
+  environment: 
+    KUBECONFIG: "/home/{{ linux_user_name }}/.kube/config"

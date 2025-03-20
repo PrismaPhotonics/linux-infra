@@ -1,5 +1,5 @@
 spec:
-  configuration:
+  configurations:
     linux_user_name: prisma
     artifact_path: /home/prisma/offline_deploy
 
@@ -7,7 +7,7 @@ spec:
     helm_spec:
       project_name: shaked
       three_first_octets: 10.10.70
-      branch_name: ib/data-transfer
+      branch_name: main
       data_transfer:
         - pvc_name: config-volume-airflow-worker-0
           host_mount: /mnt/shaked/config
@@ -20,12 +20,12 @@ spec:
           dest_path: /app/report/coordinates
           namespace: control-center
           command_after_transfer: "kubectl rollout restart statefullset airflow-worker -n control-center"
-        # - pvc_name: map-server-tileserver-gl-pvc 
-        #   host_mount: /mnt/shaked/tileserver-data
-        #   host_path: /mnt/shaked/tileserver-data
-        #   dest_path: /data
-        #   namespace: map-server
-        #   command_after_transfer: "kubectl rollout restart deployment map-server-tileserver-gl -n map-server"
+        - pvc_name: map-server-tileserver-gl-pvc 
+          host_mount: /mnt/shaked/tileserver-data
+          host_path: /mnt/shaked/tileserver-data
+          dest_path: /data
+          namespace: map-server
+          command_after_transfer: "kubectl rollout restart deployment map-server-tileserver-gl -n map-server"
       helm_repos:
         prometheus-community: https://prometheus-community.github.io/helm-charts
         bitnami: https://charts.bitnami.com/bitnami
