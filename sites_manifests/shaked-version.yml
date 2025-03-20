@@ -5,15 +5,11 @@ spec:
 
   components:
     pip_packages:
-      - name: "proxmoxer"
-        version: "7.81.0-1ubuntu1.20"
-      - name: "unzip"
-        version: "6.0-26ubuntu3.2"
       - name: "kubernetes"
         version: ">=24.2.0"
       - name: "PyYAML"
         version: ">=3.11"
-        
+
     apt_packages:
       - name: "autofs"
         version: "5.1.9-1ubuntu4.1"

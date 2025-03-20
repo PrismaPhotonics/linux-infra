@@ -16,6 +16,12 @@
       vars:
        apt_packages: "{{ spec.components.apt_packages | default([]) }}"
       tags: apt
+    
+    - role: pip-install
+      when: enable_pip_install | default(false)
+      vars:
+       pip_packages: "{{ spec.components.pip_packages | default([]) }}"
+       artifact_path: "{{ spec.configurations.artifact_path }}"
 
     - role: drivers-install
       when: enable_drivers_install | default(false)
