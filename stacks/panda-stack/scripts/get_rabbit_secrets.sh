@@ -3,7 +3,7 @@ echo "*******************ENVIRONMENT VARIABLES*******************"
 env | grep -E 'AWS|S3'
 
 # Define secrets path
-SECRET_NAMESPACE="rabbitmq-panda"
+SECRET_NAMESPACE="panda"
 SECRET_NAME="rabbitmq-tls-secret"
 TEMP_DIR="/tmp/rabbitmq-secrets"
 mkdir -p $TEMP_DIR
