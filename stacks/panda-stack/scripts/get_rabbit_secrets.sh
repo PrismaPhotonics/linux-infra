@@ -14,9 +14,9 @@ echo "*******************Start Downloading*******************"
 sudo aws sts get-caller-identity || echo "ERROR: AWS credentials not found!"
 
 # Download secrets from S3
-sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/ca.pem $TEMP_DIR/ca.pem
-sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/private.pem $TEMP_DIR/private.pem
-sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/public.pem $TEMP_DIR/public.pem
+sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/ca.pem $TEMP_DIR/ca.srt
+sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/private.pem $TEMP_DIR/private.key
+sudo aws s3 cp s3://pz-devops/deploy/deployment/ui/panda-certifcates/public.pem $TEMP_DIR/public.crt
 
 echo "*******************Finish Downloading*******************"
 ls -lah $TEMP_DIR
@@ -28,6 +28,3 @@ kubectl create secret generic $SECRET_NAME -n $SECRET_NAMESPACE \
   --from-file=ca.pem=$TEMP_DIR/ca.pem \
   --from-file=private.pem=$TEMP_DIR/private.pem \
   --from-file=public.pem=$TEMP_DIR/public.pem
-
-# Cleanup
-rm -rf $TEMP_DIR
