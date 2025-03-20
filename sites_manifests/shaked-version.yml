@@ -13,8 +13,7 @@ spec:
           host_mount: /mnt/shaked/config
           host_path: /home/prisma/shaked/config
           dest_path: /app/config
-          release_name: airflow           
-          stack_name: shaked-stack
+          namespace: control-center
       helm_repos:
         prometheus-community: https://prometheus-community.github.io/helm-charts
         bitnami: https://charts.bitnami.com/bitnami

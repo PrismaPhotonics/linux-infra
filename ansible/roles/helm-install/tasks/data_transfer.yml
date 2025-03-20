@@ -10,4 +10,5 @@
     dest_path: "{{ dt.dest_path }}"
     container_name: "data-transfer-{{ dt.pvc_name }}"
     pod_name: "data-transfer-{{ dt.pvc_name }}"
+    namespace: "{{ dt.namespace }}"
 
