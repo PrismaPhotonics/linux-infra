@@ -2,7 +2,7 @@
 
 releases:
   - name: rabbitmq-panda
-    namespace: rabbitmq-panda
+    namespace: panda
     chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/rabbitmq
     timeout: 600
     values:
