@@ -5,8 +5,7 @@
     loop_var: dt
   vars:
     pvc_name: "{{ dt.pvc_name }}"
-    host_mount: "{{ dt.host_mount }}"
-    host_path: "{{ dt.host_path }}"
+    host_path: "/mnt/{{ project_name }}/{{ dt.folder_name }}"
     dest_path: "{{ dt.dest_path }}"
     container_name: "data-transfer-{{ dt.pvc_name }}"
     pod_name: "data-transfer-{{ dt.pvc_name }}"

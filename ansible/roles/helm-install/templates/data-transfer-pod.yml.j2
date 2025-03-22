@@ -12,7 +12,7 @@ spec:
       volumeMounts:
         - mountPath: "{{ dest_path }}"
           name: pvc-volume
-        - mountPath: "{{ host_mount }}"
+        - mountPath: "{{ host_path }}"
           name: host-volume
   volumes:
     - name: pvc-volume

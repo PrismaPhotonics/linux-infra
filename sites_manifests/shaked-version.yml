@@ -75,13 +75,11 @@ spec:
       aws_artifacts: exist
       data_transfer:
         - pvc_name: config-volume-airflow-worker-0
-          host_mount: /mnt/shaked/config
-          host_path: /mnt/shaked/config
+          folder_name: config
           dest_path: /app/config
           namespace: control-center
         - pvc_name: coordinates-volume-airflow-worker-0
-          host_mount: /mnt/shaked/coordinates
-          host_path: /mnt/shaked/coordinates
+          folder_name: coordinates
           dest_path: /app/report/coordinates
           namespace: control-center
           command_after_transfer: "kubectl rollout restart statefullset airflow-worker -n control-center"
