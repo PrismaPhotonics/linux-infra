@@ -16,6 +16,12 @@
       vars:
        apt_packages: "{{ spec.components.apt_packages | default([]) }}"
       tags: apt
+    
+    - role: pip-install
+      when: enable_pip_install | default(false)
+      vars:
+       pip_packages: "{{ spec.components.pip_packages | default([]) }}"
+       artifact_path: "{{ spec.configurations.artifact_path }}"
 
     - role: drivers-install
       when: enable_drivers_install | default(false)
@@ -66,4 +72,6 @@
         helm_repos: "{{ spec.components.helm_spec.helm_repos }}"
         three_first_octets: "{{ spec.components.helm_spec.three_first_octets }}"
         branch_name: "{{ spec.components.helm_spec.branch_name  }}"
+        data_transfer: "{{ spec.components.helm_spec.data_transfer | default([]) }}"
+        aws_artifacts: "{{ spec.components.helm_spec.aws_artifacts | default('not exist') }}"
 

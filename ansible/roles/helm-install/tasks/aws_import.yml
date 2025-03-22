@@ -1,0 +1,35 @@
+- name: Set AWS access key
+  command: aws configure set aws_access_key_id "{{ aws_access_key }}"
+  when: aws_access_key is defined
+
+- name: Set AWS secret key
+  command: aws configure set aws_secret_access_key "{{ aws_secret_key }}"
+  when: aws_secret_key is defined
+
+- name: Set default AWS region
+  command: aws configure set default.region "{{ aws_region }}"
+
+- name: List all objects under the project prefix in S3
+  amazon.aws.s3_object:
+    bucket: "prisma-linux-platform"
+    mode: list
+    prefix: "{{ project_name }}/"
+  register: s3_object_list
+
+- name: Create directories for S3 keys
+  file:
+    path: "/mnt/{{ item if item.endswith('/') else (item | dirname) }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ s3_object_list.s3_keys | unique }}"
+  loop_control:
+    label: "{{ item if item.endswith('/') else (item | dirname) }}"
+
+- name: Download each object from S3
+  amazon.aws.s3_object:
+    bucket: "prisma-linux-platform"
+    mode: get
+    object: "{{ item }}"
+    dest: "/mnt/{{ item }}"
+  loop: "{{ s3_object_list.s3_keys }}"
+  when: not item.endswith('/')

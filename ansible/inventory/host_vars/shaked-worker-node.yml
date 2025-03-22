@@ -4,5 +4,6 @@ enable_gpu_driver_install: false
 enable_configure_registry_mirroring: true
 enable_setup_local_docker_registry: true
 enable_build_registry_on_node: true
+enable_pip_install: true
 enable_helm_install: true
 enable_netplan_config: false
