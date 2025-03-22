@@ -33,3 +33,14 @@
     dest: "/mnt/{{ item }}"
   loop: "{{ s3_object_list.s3_keys }}"
   when: not item.endswith('/')
+
+- name: Find downloaded part files in destination directory recursively
+  find:
+    paths: "/mnt/{{ project_name }}"
+    patterns: "*_part_*"
+    file_type: file
+    recurse: yes
+  register: downloaded_parts
+
+- import_tasks: assemble_parts.yml
+  when: not downloaded_parts.matched == 0
