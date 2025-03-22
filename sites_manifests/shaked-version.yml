@@ -9,6 +9,8 @@ spec:
         version: ">=24.2.0"
       - name: "PyYAML"
         version: ">=3.11"
+      - name: "boto3" 
+        version: ">=1.28.0"
 
     apt_packages:
       - name: "autofs"
@@ -70,24 +72,19 @@ spec:
       project_name: shaked
       three_first_octets: 10.10.70
       branch_name: main
+      aws_artifacts: exist
       data_transfer:
         - pvc_name: config-volume-airflow-worker-0
           host_mount: /mnt/shaked/config
-          host_path: /home/prisma/shaked/config
+          host_path: /mnt/shaked/config
           dest_path: /app/config
           namespace: control-center
         - pvc_name: coordinates-volume-airflow-worker-0
           host_mount: /mnt/shaked/coordinates
-          host_path: /home/prisma/shaked/coordinates
+          host_path: /mnt/shaked/coordinates
           dest_path: /app/report/coordinates
           namespace: control-center
           command_after_transfer: "kubectl rollout restart statefullset airflow-worker -n control-center"
-        - pvc_name: map-server-tileserver-gl-pvc 
-          host_mount: /mnt/shaked/tileserver-data
-          host_path: /mnt/shaked/tileserver-data
-          dest_path: /data
-          namespace: map-server
-          command_after_transfer: "kubectl rollout restart deployment map-server-tileserver-gl -n map-server"
       helm_repos:
         prometheus-community: https://prometheus-community.github.io/helm-charts
         bitnami: https://charts.bitnami.com/bitnami
@@ -116,7 +113,6 @@ spec:
         elastic/filebeat: "8.5.1"
         mojo2600/pihole: "2.26.1"
         apache-airflow/airflow: "1.15.0"
-
     docker_spec:
       docker_registry_address: 10.20.10.150:5000
       docker_images:

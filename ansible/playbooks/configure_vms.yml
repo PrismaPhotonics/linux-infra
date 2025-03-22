@@ -73,4 +73,5 @@
         three_first_octets: "{{ spec.components.helm_spec.three_first_octets }}"
         branch_name: "{{ spec.components.helm_spec.branch_name  }}"
         data_transfer: "{{ spec.components.helm_spec.data_transfer | default([]) }}"
+        aws_artifacts: "{{ spec.components.helm_spec.aws_artifacts | default('not exist') }}"
 
