@@ -5,7 +5,7 @@ grafana:
     type: pvc
     enabled: true
     storageClassName: openebs-zfspv
-    size: 4.5Gi
+    size: 5Gi
   defaultDashboardsEnabled: false 
   service:
     enabled: true
@@ -14,7 +14,7 @@ grafana:
   image:
     registry: "262399703539.dkr.ecr.eu-central-1.amazonaws.com"
     repository: "dashboards/grafana-shaked"
-    tag: "v0.0.9-dev"
+    tag: "v0.0.34-dev"
   grafana.ini:
     paths:
       plugins: /etc/grafana/plugins
@@ -61,53 +61,24 @@ prometheus:
     podMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelectorNilUsesHelmValues: false
     additionalScrapeConfigs: |
-      - job_name: shaked-1094
+      - job_name: "interrogators-tls"
         scheme: https
         tls_config:
-          server_name: prisma-210-1094
           insecure_skip_verify: true
         static_configs:
           - targets:
             - prisma-210-1094.prisma.external:9273
-        basic_auth:
-          username: prisma
-          password: ShowMeWhereItHurts
-      - job_name: shaked-1092
-        scheme: https
-        tls_config:
-          server_name: prisma-210-1092
-          insecure_skip_verify: true
-        static_configs:
-          - targets:
             - prisma-210-1092.prisma.external:9273
-        basic_auth:
-          username: prisma
-          password: ShowMeWhereItHurts
-      - job_name: shaked-1091
-        scheme: https
-        tls_config:
-          server_name: prisma-210-1091
-          insecure_skip_verify: true
-        static_configs:
-          - targets:
             - prisma-210-1091.prisma.external:9273
         basic_auth:
           username: prisma
           password: ShowMeWhereItHurts
-      - job_name: shaked-1037
+      - job_name: "interrogators"
         scheme: http
         static_configs:
           - targets:
             - prisma-210-1037.prisma.external:9273
-      - job_name: shaked-1020
-        scheme: http
-        static_configs:
-          - targets:
             - prisma-210-1020.prisma.external:9273
-      - job_name: shaked-1015
-        scheme: http
-        static_configs:
-          - targets:
             - prisma-210-1015.prisma.external:9273
 
 kubernetesServiceMonitors:

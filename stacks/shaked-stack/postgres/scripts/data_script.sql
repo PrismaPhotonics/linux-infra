@@ -20,3 +20,6 @@ values  (60, 'Shaked_E', 5950, 'IL', 'Asia/Jerusalem', 'Shaked', 'Eagle', 'prism
         (59, 'Shaked_K', 8000, 'IL', 'Asia/Jerusalem', 'Shaked', 'Eagle', 'prisma-210-1091', '10.212.70.38', 1, 'Shaked_K', 'prisma-210-1091.prisma.external'),
         (97, 'Shaked_NR', 6000, 'IL', 'Asia/Jerusalem', 'Shaked', 'Eagle', 'prisma-210-1094', '10.212.70.41', 1, 'Shaked_NR', 'prisma-210-1094.prisma.external');
 
+insert into prisma_projects.control_center_config (env_name, env_value)
+values  ('tile_server_url', ''),
+        ('nodejs_url', '');

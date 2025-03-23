@@ -11,15 +11,15 @@ SET row_security = off;
 
 CREATE SCHEMA IF NOT EXISTS applications_group;
 
-ALTER SCHEMA applications_group OWNER TO shaked;
+ALTER SCHEMA applications_group OWNER TO postgres;
 
 CREATE SCHEMA if not exists operational_results;
 
-ALTER SCHEMA operational_results OWNER TO shaked;
+ALTER SCHEMA operational_results OWNER TO postgres;
 
 CREATE SCHEMA if not exists prisma_projects;
 
-ALTER SCHEMA prisma_projects OWNER TO shaked;
+ALTER SCHEMA prisma_projects OWNER TO postgres;
 
 SET default_tablespace = '';
 
@@ -40,7 +40,7 @@ CREATE TABLE if not exists applications_group.shaked_combined_events (
     owner character varying(255)
 );
 
-ALTER TABLE applications_group.shaked_combined_events OWNER TO shaked;
+ALTER TABLE applications_group.shaked_combined_events OWNER TO postgres;
 
 CREATE TABLE if not exists applications_group.shaked_tasks (
     task_number integer,
@@ -56,7 +56,7 @@ CREATE TABLE if not exists applications_group.shaked_tasks (
     insert_time timestamp without time zone
 );
 
-ALTER TABLE applications_group.shaked_tasks OWNER TO shaked;
+ALTER TABLE applications_group.shaked_tasks OWNER TO postgres;
 
 CREATE TABLE if not exists operational_results.shaked_e_algoruns (
     algorun_id character varying(64) NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE if not exists operational_results.shaked_e_algoruns (
     external_params text
 );
 
-ALTER TABLE operational_results.shaked_e_algoruns OWNER TO shaked;
+ALTER TABLE operational_results.shaked_e_algoruns OWNER TO postgres;
 
 CREATE TABLE if not exists operational_results.shaked_e_pulse_alerts (
     id integer NOT NULL,
@@ -125,7 +125,7 @@ CREATE TABLE if not exists operational_results.shaked_e_pulse_alerts (
     insert_time timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE operational_results.shaked_e_pulse_alerts OWNER TO shaked;
+ALTER TABLE operational_results.shaked_e_pulse_alerts OWNER TO postgres;
 
 DO $$
 BEGIN
@@ -166,7 +166,7 @@ CREATE TABLE  if not exists operational_results.shaked_g_algoruns (
     external_params text
 );
 
-ALTER TABLE operational_results.shaked_g_algoruns OWNER TO shaked;
+ALTER TABLE operational_results.shaked_g_algoruns OWNER TO postgres;
 
 CREATE TABLE if not exists operational_results.shaked_g_pulse_alerts (
     id integer NOT NULL,
@@ -215,7 +215,7 @@ CREATE TABLE if not exists operational_results.shaked_g_pulse_alerts (
     insert_time timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE operational_results.shaked_g_pulse_alerts OWNER TO shaked;
+ALTER TABLE operational_results.shaked_g_pulse_alerts OWNER TO postgres;
 
 DO $$
 BEGIN
@@ -255,7 +255,7 @@ CREATE TABLE if not exists operational_results.shaked_k_algoruns (
     external_params text
 );
 
-ALTER TABLE operational_results.shaked_k_algoruns OWNER TO shaked;
+ALTER TABLE operational_results.shaked_k_algoruns OWNER TO postgres;
 
 CREATE TABLE if not exists operational_results.shaked_k_pulse_alerts (
     id integer NOT NULL,
@@ -304,7 +304,7 @@ CREATE TABLE if not exists operational_results.shaked_k_pulse_alerts (
     insert_time timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE operational_results.shaked_k_pulse_alerts OWNER TO shaked;
+ALTER TABLE operational_results.shaked_k_pulse_alerts OWNER TO postgres;
 
 DO $$
 BEGIN
@@ -344,7 +344,7 @@ CREATE TABLE if not exists operational_results.shaked_nr_algoruns (
     external_params text
 );
 
-ALTER TABLE operational_results.shaked_nr_algoruns OWNER TO shaked;
+ALTER TABLE operational_results.shaked_nr_algoruns OWNER TO postgres;
 
 CREATE TABLE if not exists operational_results.shaked_nr_pulse_alerts (
     id integer NOT NULL,
@@ -393,7 +393,7 @@ CREATE TABLE if not exists operational_results.shaked_nr_pulse_alerts (
     insert_time timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE operational_results.shaked_nr_pulse_alerts OWNER TO shaked;
+ALTER TABLE operational_results.shaked_nr_pulse_alerts OWNER TO postgres;
 
 DO $$
 BEGIN
@@ -434,7 +434,7 @@ CREATE TABLE if not exists operational_results.shaked_o_algoruns (
     external_params text
 );
 
-ALTER TABLE operational_results.shaked_o_algoruns OWNER TO shaked;
+ALTER TABLE operational_results.shaked_o_algoruns OWNER TO postgres;
 
 CREATE TABLE if not exists operational_results.shaked_o_pulse_alerts (
     id integer NOT NULL,
@@ -483,7 +483,37 @@ CREATE TABLE if not exists operational_results.shaked_o_pulse_alerts (
     insert_time timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE operational_results.shaked_o_pulse_alerts OWNER TO shaked;
+ALTER TABLE operational_results.shaked_o_pulse_alerts OWNER TO postgres;
+
+
+create table operational_results.shaked_reports
+(
+    report_date      date,
+    report_site      varchar(64),
+    report_location  varchar(1000),
+    report_file_name varchar(100),
+    report_volume    varchar(300),
+    report_path      varchar(300)
+);
+
+alter table operational_results.shaked_reports
+    owner to postgres;
+
+create unique index idx_shaked_reports_unique
+    on operational_results.shaked_reports (report_date, report_site);
+
+
+create table prisma_projects.control_center_config
+(
+    env_name  varchar(100),
+    env_value varchar(1000)
+);
+
+alter table prisma_projects.control_center_config
+    owner to postgres;
+
+
+
 
 DO $$
 BEGIN
@@ -513,7 +543,7 @@ CREATE TABLE if not exists prisma_projects.customers (
     active smallint DEFAULT 0 NOT NULL
 );
 
-ALTER TABLE prisma_projects.customers OWNER TO shaked;
+ALTER TABLE prisma_projects.customers OWNER TO postgres;
 
 CREATE TABLE if not exists prisma_projects.data_collection_mongo_params (
     id integer NOT NULL,
@@ -530,7 +560,7 @@ CREATE TABLE if not exists prisma_projects.data_collection_mongo_params (
     on_demand smallint DEFAULT 0 NOT NULL
 );
 
-ALTER TABLE prisma_projects.data_collection_mongo_params OWNER TO shaked;
+ALTER TABLE prisma_projects.data_collection_mongo_params OWNER TO postgres;
 
 DO $$
 BEGIN
@@ -541,8 +571,8 @@ BEGIN
         AND column_name = 'id'
         AND is_identity = 'YES'
     ) THEN
-        ALTER TABLE operational_results.data_collection_mongo_params ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
-            SEQUENCE NAME operational_results.data_collection_mongo_params_id_seq
+        ALTER TABLE prisma_projects.data_collection_mongo_params ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+            SEQUENCE NAME prisma_projects.data_collection_mongo_params_id_seq
             START WITH 1
             INCREMENT BY 1
             NO MINVALUE
@@ -568,7 +598,7 @@ CREATE TABLE if not exists prisma_projects.sites (
     machine_url   character varying(300)
 );
 
-ALTER TABLE prisma_projects.sites OWNER TO shaked;
+ALTER TABLE prisma_projects.sites OWNER TO postgres;
 
 DO $$
 BEGIN
@@ -594,7 +624,7 @@ BEGIN
         AND constraint_type = 'PRIMARY KEY'
     ) THEN
         ALTER TABLE ONLY operational_results.shaked_e_pulse_alerts
-        ADD CONSTRAINT shaked_e_pulse_alerts_pkey PRIMARY KEY (algorun_id);
+        ADD CONSTRAINT shaked_e_pulse_alerts_pkey PRIMARY KEY (algorun_id, alert_id, alert_time);
     END IF;
 END $$;
 
@@ -622,7 +652,7 @@ BEGIN
         AND constraint_type = 'PRIMARY KEY'
     ) THEN
         ALTER TABLE ONLY operational_results.shaked_g_pulse_alerts
-        ADD CONSTRAINT shaked_g_pulse_alerts_pkey PRIMARY KEY (algorun_id);
+        ADD CONSTRAINT shaked_g_pulse_alerts_pkey PRIMARY KEY (algorun_id, alert_id, alert_time);
     END IF;
 END $$;
 
@@ -650,7 +680,7 @@ BEGIN
         AND constraint_type = 'PRIMARY KEY'
     ) THEN
         ALTER TABLE ONLY operational_results.shaked_k_pulse_alerts
-        ADD CONSTRAINT shaked_k_pulse_alerts_pkey PRIMARY KEY (algorun_id);
+        ADD CONSTRAINT shaked_k_pulse_alerts_pkey PRIMARY KEY (algorun_id, alert_id, alert_time);
     END IF;
 END $$;
 
@@ -677,7 +707,7 @@ BEGIN
         AND constraint_type = 'PRIMARY KEY'
     ) THEN
         ALTER TABLE ONLY operational_results.shaked_nr_pulse_alerts
-        ADD CONSTRAINT shaked_nr_pulse_alerts_pkey PRIMARY KEY (algorun_id);
+        ADD CONSTRAINT shaked_nr_pulse_alerts_pkey PRIMARY KEY (algorun_id, alert_id, alert_time);
     END IF;
 END $$;
 
@@ -705,23 +735,10 @@ BEGIN
         AND constraint_type = 'PRIMARY KEY'
     ) THEN
         ALTER TABLE ONLY operational_results.shaked_o_pulse_alerts
-        ADD CONSTRAINT shaked_o_pulse_alerts_pkey PRIMARY KEY (algorun_id);
+        ADD CONSTRAINT shaked_o_pulse_alerts_pkey PRIMARY KEY (algorun_id, alert_id, alert_time);
     END IF;
 END $$;
 
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1
-        FROM information_schema.table_constraints
-        WHERE table_schema = 'prisma_projects'
-        AND table_name = 'data_collection_mongo_params'
-        AND constraint_type = 'PRIMARY KEY'
-    ) THEN
-        ALTER TABLE ONLY operational_results.data_collection_mongo_params
-        ADD CONSTRAINT data_collection_mongo_params_pkey PRIMARY KEY (algorun_id);
-    END IF;
-END $$;
 
 CREATE INDEX if not exists shaked_e_algorun_id_index ON operational_results.shaked_e_pulse_alerts USING btree (algorun_id);
 CREATE INDEX if not exists shaked_e_algoruns_siteid ON operational_results.shaked_e_algoruns USING btree (site_id);
@@ -751,3 +768,4 @@ CREATE INDEX if not exists shaked_o_site_fk ON operational_results.shaked_o_puls
 CREATE INDEX if not exists mongo_config_site_id_fk ON prisma_projects.data_collection_mongo_params USING btree (site);
 CREATE INDEX if not exists siteid ON prisma_projects.sites USING btree (siteid);
 CREATE INDEX if not exists sites_name_index ON prisma_projects.sites USING btree (name);
+create index if not exists control_center_config_env_name on prisma_projects.control_center_config (env_name);
