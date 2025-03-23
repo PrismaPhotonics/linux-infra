@@ -1,0 +1,29 @@
+
+- import_tasks: check_if_to_skip.yml
+
+- import_tasks: aws_configure.yml
+  when: not aws_content_exists
+
+- name: Import from aws
+  include_tasks: aws_import.yml
+  when: aws_s3_src | length > 0
+  loop: "{{ aws_s3_src }}"
+  loop_control:
+    loop_var: item
+  vars:
+    bucket_name: "{{ item.bucket_name }}"
+    object_prefix: "{{ item.object_prefix }}"
+  when: not aws_content_exists
+
+- name: Find downloaded part files in destination directory recursively
+  find:
+    paths: "{{ artifact_path }}"
+    patterns: "*_part_*"
+    file_type: file
+    recurse: yes
+  register: downloaded_parts
+  when: not aws_content_exists
+
+- import_tasks: assemble_parts.yml
+  when: not aws_content_exists and not downloaded_parts.matched == 0
+

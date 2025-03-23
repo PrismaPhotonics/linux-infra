@@ -1,0 +1,9 @@
+- name: Check for content in the AWS folder
+  find:
+    paths: "{{ artifact_path }}/aws/"
+    file_type: any
+  register: aws_dir_content
+
+- name: Set a fact if content exists in the AWS folder
+  set_fact:
+    aws_content_exists: "{{ aws_dir_content.matched > 0 }}"

@@ -67,12 +67,15 @@ spec:
         version: "3.0-13ubuntu0.2"
       - name: "python3-pip"
         version: "20.0.2-5ubuntu1.11"
-
+    
+    aws_s3_src: 
+      - bucket_name: prisma-linux-platform 
+        object_prefix: shaked
+    
     helm_spec:
       project_name: shaked
       three_first_octets: 10.10.70
       branch_name: main
-      aws_artifacts: exist
       data_transfer:
         - pvc_name: config-volume-airflow-worker-0
           folder_name: config
