@@ -6,7 +6,7 @@ extraManifests:
     kind: Deployment
     metadata:
       name: node-server
-      namespace: airflow
+      namespace: control-center
       labels:
         app: node-server
     spec:
@@ -48,7 +48,7 @@ extraManifests:
     kind: Service
     metadata:
       name: node-server
-      namespace: airflow
+      namespace: control-center
     spec:
       type: LoadBalancer
       loadBalancerIP: {{ $threeFirstOctets }}.109
@@ -96,7 +96,7 @@ extraManifests:
     kind: PersistentVolumeClaim
     metadata:
       name: shaked-control-center-grafana-pvc
-      namespace: airflow
+      namespace: control-center
     spec:
       accessModes:
         - ReadWriteOnce
@@ -111,7 +111,7 @@ extraManifests:
     kind: ConfigMap
     metadata:
       name: shaked-analysis
-      namespace: airflow
+      namespace: control-center
       labels:
         grafana-shaked-dashboard: "1"
     data:
@@ -195,7 +195,7 @@ extraManifests:
     kind: ConfigMap
     metadata:
       name: shaked-maps-pulse-alert
-      namespace: airflow
+      namespace: control-center
       labels:
         grafana-shaked-dashboard: "1"
     data:
@@ -280,7 +280,7 @@ extraManifests:
     kind: ConfigMap
     metadata:
       name: shaked-control-center
-      namespace: airflow
+      namespace: control-center
       labels:
         grafana-shaked-dashboard: "1"
     data:
@@ -364,7 +364,7 @@ extraManifests:
     kind: ConfigMap
     metadata:
       name: shaked-weekly-report
-      namespace: airflow
+      namespace: control-center
       labels:
         grafana-shaked-dashboard: "1"
     data:

@@ -1,0 +1,22 @@
+- name: "Find wheels for each package in the pip wheels directory"
+  find:
+    paths: "{{ pip_wheels_dir }}"
+    patterns: "{{ item.name }}*.whl"
+    file_type: file
+  register: pkg_wheel_result
+  loop: "{{ pip_packages }}"
+  loop_control:
+    loop_var: item
+
+- name: "Aggregate missing wheels"
+  set_fact:
+    missing_wheels: "{{ missing_wheels | default([]) + [ item.item.name ] }}"
+  when: item.matched == 0
+  loop: "{{ pkg_wheel_result.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+
+- name: "Display missing wheels"
+  fail:
+    msg: "Missing wheels for packages: {{ missing_wheels }}"
+  when: missing_wheels | default([]) | length > 0

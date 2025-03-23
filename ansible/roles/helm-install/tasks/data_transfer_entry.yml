@@ -1,0 +1,57 @@
+- name: "Deploy data transfer pod for PVC pvc-name"
+  kubernetes.core.k8s:
+    state: present
+    namespace: "{{ namespace }}"
+    template: data-transfer-pod.yml.j2
+  register: deploy_result
+
+- name: "Wait for pod {{ pod_name }} to be Running"
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ namespace }}"
+    name: "{{ pod_name }}"
+  register: pod_info
+
+- name: "Wait for pod {{ pod_name }} to be Running"
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ namespace }}"
+    name: "{{ pod_name }}"
+  register: pod_info
+  until: pod_info.resources[0].status.phase == "Running"
+  retries: 30
+  delay: 5
+
+- name: "Check if destination directory {{ dest_path }} is empty for PVC {{ pvc_name }}"
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ pod_name }}"
+    container: "{{ container_name }}"
+    command: >
+      sh -c 'if [ -z "$(ls -A {{ dest_path }})" ]; then echo empty; else echo not_empty; fi'
+  register: data_check
+
+- name: "Debug: Destination directory not empty, skipping data copy"
+  debug:
+    msg: "Destination directory {{ dest_path }} for PVC {{ pvc_name }} is not empty and override_data is: {{ override_data }} . Skipping data copy."
+  when: (data_check.stdout | trim) == "not_empty" and not override_data
+
+- name: "Execute cp command inside pod for PVC {{ pvc_name }}"
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ pod_name }}"
+    container: "{{ container_name }}"
+    command: "cp -a {{ host_path }}/. {{ dest_path }}/"
+  register: cp_result
+  when: override_data or (data_check.stdout | trim) == "empty"
+
+- name: "Delete data transfer pod for PVC {{ pvc_name }}"
+  kubernetes.core.k8s:
+    state: absent
+    namespace: "{{ namespace }}"
+    kind: Pod
+    name: "{{ pod_name }}"
+
+- name: Run after copy command if needed
+  command: "{{ command_after_transfer }}"
+  when: command_after_transfer is defined

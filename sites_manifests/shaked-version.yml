@@ -1,95 +1,296 @@
-linux_user:
-  linux_user_name: prisma
+kind: PrismaPandaDevDeployment
+metadata:
+  name: shaked
+  timezone: timezone
 
-artifact:
-  artifact_path: /home/prisma/offline_deploy
+spec:
+  configurations:
+    linux_user_name: prisma
+    artifact_path: /home/prisma/offline_deploy
 
-helm_spec:
-  project_name: shaked
-  three_first_octets: 10.20.10
-  branch_name: ib/shaked-integration
+  components:
+    pip_packages:
+      - name: "kubernetes"
+        version: ">=24.2.0"
+      - name: "PyYAML"
+        version: ">=3.11"
+      - name: "boto3" 
+        version: ">=1.28.0"
 
-  helm_repos:
-    prometheus-community: https://prometheus-community.github.io/helm-charts
-    bitnami: https://charts.bitnami.com/bitnami
-    elastic: https://helm.elastic.co
-    mojo2600: https://mojo2600.github.io/pihole-kubernetes/
-    openebs: https://openebs.github.io/openebs
-    linux-infra: https://prismaphotonics.github.io/linux-infra/
-    ingress-nginx: https://kubernetes.github.io/ingress-nginx
-    apache-airflow: https://airflow.apache.org
-    kubernetes-dashboard: https://kubernetes.github.io/dashboard/
-      
-  helm_charts:
-    kubernetes-dashboard/kubernetes-dashboard: "7.10.4"
-    linux-infra/telegraf: "1.8.55"
-    linux-infra/metallb: "1.0.0"
-    linux-infra/helm-dashboard: "2.0.3"
-    linux-infra/curator: "1.0.0"
-    linux-infra/tileserver-gl: "1.0.0"
-    ingress-nginx/ingress-nginx: "4.12.0"
-    openebs/openebs: "4.2.0"
-    bitnami/postgresql: "15.5.1"
-    bitnami/kubernetes-event-exporter: "3.2.10"
-    prometheus-community/kube-prometheus-stack: "55.3.0"
-    elastic/elasticsearch: "8.5.1"
-    elastic/kibana: "8.5.1"
-    elastic/logstash: "8.5.1"
-    elastic/filebeat: "8.5.1"
-    mojo2600/pihole: "2.26.1"
-    apache-airflow/airflow: "1.15.0"
+    apt_packages:
+      - name: "autofs"
+        version: "5.1.9-1ubuntu4.1"
+      - name: "containerd.io"
+        version: "1.7.25-1"
+      - name: "curl"
+        version: "8.5.0-2ubuntu10.6"
+      - name: "docker-ce"
+        version: "5:28.0.1-1~ubuntu.24.04~noble"
+      - name: "dos2unix"
+        version: "7.5.1-1"
+      - name: "dpkg-dev"
+        version: "1.22.6ubuntu6.1"
+      - name: "gcc"
+        version: "4:13.2.0-7ubuntu1"
+      - name: "gdb"
+        version: "15.0.50.20240403-0ubuntu1"
+      - name: "git"
+        version: "1:2.43.0-1ubuntu7.2"
+      - name: "jq"
+        version: "1.7.1-3build1"
+      - name: "make"
+        version: "4.3-4.1build2"
+      - name: "net-tools"
+        version: "2.10-0.1ubuntu4"
+      - name: "nfs-common"
+        version: "1:2.6.4-3ubuntu5.1"
+      - name: "nfs-kernel-server"
+        version: "1:2.6.4-3ubuntu5.1"
+      - name: "psutils"
+        version: "1.17.dfsg-4build1"
+      - name: "postgresql-client"
+        version: "16+257build1.1"
+      - name: "rar"
+        version: "2:7.00-1build1"
+      - name: "samba"
+        version: "2:4.19.5+dfsg-4ubuntu9"
+      - name: "samba-common"
+        version: "2:4.19.5+dfsg-4ubuntu9"
+      - name: "samba-common-bin"
+        version: "2:4.19.5+dfsg-4ubuntu9"
+      - name: "sshpass"
+        version: "1.09-1"
+      - name: "traceroute"
+        version: "1:2.1.5-1"
+      - name: "unzip"
+        version: "6.0-28ubuntu4.1"
+      - name: "zfs-zed"
+        version: "2.2.2-0ubuntu9.1"
+      - name: "zfsutils-linux"
+        version: "2.2.2-0ubuntu9.1"
+      - name: "zip"
+        version: "3.0-13ubuntu0.2"
+      - name: "python3-pip"
+        version: "20.0.2-5ubuntu1.11"
+    
+    aws_s3_src: 
+      - bucket_name: prisma-linux-platform 
+        object_prefix: shaked
+    
+    helm_spec:
+      project_name: shaked
+      three_first_octets: 10.10.70
+      branch_name: main
+      data_transfer:
+        - pvc_name: config-volume-airflow-worker-0
+          folder_name: config
+          dest_path: /app/config
+          namespace: control-center
+        - pvc_name: coordinates-volume-airflow-worker-0
+          folder_name: coordinates
+          dest_path: /app/report/coordinates
+          namespace: control-center
+          command_after_transfer: "kubectl rollout restart statefullset airflow-worker -n control-center"
+      helm_repos:
+        prometheus-community: https://prometheus-community.github.io/helm-charts
+        bitnami: https://charts.bitnami.com/bitnami
+        elastic: https://helm.elastic.co
+        mojo2600: https://mojo2600.github.io/pihole-kubernetes/
+        openebs: https://openebs.github.io/openebs
+        linux-infra: https://prismaphotonics.github.io/linux-infra/
+        ingress-nginx: https://kubernetes.github.io/ingress-nginx
+        apache-airflow: https://airflow.apache.org
+        kubernetes-dashboard: https://kubernetes.github.io/dashboard/
+      helm_charts:
+        kubernetes-dashboard/kubernetes-dashboard: "7.10.4"
+        linux-infra/telegraf: "1.8.55"
+        linux-infra/metallb: "1.0.0"
+        linux-infra/helm-dashboard: "2.0.3"
+        linux-infra/curator: "1.0.0"
+        linux-infra/tileserver-gl: "1.0.0"
+        ingress-nginx/ingress-nginx: "4.12.0"
+        openebs/openebs: "4.2.0"
+        bitnami/postgresql: "15.5.1"
+        bitnami/kubernetes-event-exporter: "3.2.10"
+        prometheus-community/kube-prometheus-stack: "55.3.0"
+        elastic/elasticsearch: "8.5.1"
+        elastic/kibana: "8.5.1"
+        elastic/logstash: "8.5.1"
+        elastic/filebeat: "8.5.1"
+        mojo2600/pihole: "2.26.1"
+        apache-airflow/airflow: "1.15.0"
 
-docker_spec:
-  docker_registry_address: 10.20.10.150:5000
-  docker_images:
-    prisma_images:
-      - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec:on-prem2"
-      - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-airflow:1.0.6"
-      - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:v0.0.9-dev"
-      - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:nodejs-dev01"
-    third_party:
-      - "bitnami/kubernetes-event-exporter:1.7.0-debian-12-r12"
-      - "docker.elastic.co/beats/filebeat:8.5.1"
-      - "docker.elastic.co/elasticsearch/elasticsearch:8.5.1"
-      - "docker.elastic.co/kibana/kibana:8.5.1"
-      - "docker.elastic.co/logstash/logstash:8.5.1"
-      - "bitnami/kubernetes-event-exporter:1.7.0-debian-12-r11"
-      - "untergeek/curator:8.0.17"
-      - "rancher/klipper-helm:v0.8.0-build20230510"
-      - "rancher/klipper-lb:v0.4.4"
-      - "rancher/mirrored-coredns-coredns:1.10.1"
-      - "rancher/mirrored-library-busybox:1.34.1"
-      - "rancher/mirrored-library-traefik:2.9.10"
-      - "rancher/mirrored-metrics-server:v0.6.3"
-      - "rancher/mirrored-pause:3.6"
-      - "osixia/openldap:1.5.0"
-      - "pihole/pihole:2024.07.0"
-      - "quay.io/kiwigrid/k8s-sidecar:1.25.2"
-      - "quay.io/metallb/controller:v0.14.8"
-      - "quay.io/metallb/speaker:v0.14.8"
-      - "quay.io/prometheus/node-exporter:v1.7.0"
-      - "quay.io/prometheus/prometheus:v2.48.0"
-      - "quay.io/prometheus-operator/prometheus-config-reloader:v0.70.0"
-      - "quay.io/prometheus-operator/prometheus-operator:v0.70.0"
-      - "quay.io/thanos/thanos:v0.32.5"
-      - "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20221220-controller-v1.5.1-58-g787ea74b6"
-      - "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.10.1"
-      - "registry:2"
-      - "komodorio/helm-dashboard:2.0.3"
-      - "registry.k8s.io/ingress-nginx/controller:v1.12.0"
-      - "registry.k8s.io/defaultbackend-amd64:1.5"
-      - "kubernetesui/dashboard-api:1.10.2"
-      - "kubernetesui/dashboard-auth:1.2.3"
-      - "kong:3.8"
-      - "kubernetesui/dashboard-metrics-scraper:1.2.2"
-      - "kubernetesui/dashboard-web:1.6.1"
-      - "telegraf:1.32-alpine"
-      - "registry.k8s.io/sig-storage/csi-snapshotter:v6.2.2"
-      - "registry.k8s.io/sig-storage/snapshot-controller:v6.2.2"
-      - "registry.k8s.io/sig-storage/csi-provisioner:v3.5.0"
-      - "openebs/zfs-driver:2.7.1"
-      - "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.8.0"
-      - "redis:7.2-bookworm"
-      - "bitnami/postgresql:16.1.0-debian-11-r15"
-      - "quay.io/prometheus/statsd-exporter:v0.26.1"
-      - "maptiler/tileserver-gl:v5.1.3"
+    docker_spec:
+      docker_registry_address: 10.20.10.150:5000
+      docker_images:
+        prisma_images:
+          - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec:on-prem2"
+          - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-airflow:1.1.0"
+          - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:v0.0.35-dev"
+          - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:node-test05"
+        third_party:
+          - "bitnami/kubernetes-event-exporter:1.7.0-debian-12-r12"
+          - "docker.elastic.co/beats/filebeat:8.5.1"
+          - "docker.elastic.co/elasticsearch/elasticsearch:8.5.1"
+          - "docker.elastic.co/kibana/kibana:8.5.1"
+          - "docker.elastic.co/logstash/logstash:8.5.1"
+          - "bitnami/kubernetes-event-exporter:1.7.0-debian-12-r11"
+          - "untergeek/curator:8.0.17"
+          - "rancher/klipper-helm:v0.8.0-build20230510"
+          - "rancher/klipper-lb:v0.4.4"
+          - "rancher/mirrored-coredns-coredns:1.10.1"
+          - "rancher/mirrored-library-busybox:1.34.1"
+          - "rancher/mirrored-library-traefik:2.9.10"
+          - "rancher/mirrored-metrics-server:v0.6.3"
+          - "rancher/mirrored-pause:3.6"
+          - "osixia/openldap:1.5.0"
+          - "pihole/pihole:2024.07.0"
+          - "quay.io/kiwigrid/k8s-sidecar:1.25.2"
+          - "quay.io/metallb/controller:v0.14.8"
+          - "quay.io/metallb/speaker:v0.14.8"
+          - "quay.io/prometheus/node-exporter:v1.7.0"
+          - "quay.io/prometheus/prometheus:v2.48.0"
+          - "quay.io/prometheus-operator/prometheus-config-reloader:v0.70.0"
+          - "quay.io/prometheus-operator/prometheus-operator:v0.70.0"
+          - "quay.io/thanos/thanos:v0.32.5"
+          - "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20221220-controller-v1.5.1-58-g787ea74b6"
+          - "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.10.1"
+          - "registry:2"
+          - "komodorio/helm-dashboard:2.0.3"
+          - "registry.k8s.io/ingress-nginx/controller:v1.12.0"
+          - "registry.k8s.io/defaultbackend-amd64:1.5"
+          - "kubernetesui/dashboard-api:1.10.2"
+          - "kubernetesui/dashboard-auth:1.2.3"
+          - "kong:3.8"
+          - "kubernetesui/dashboard-metrics-scraper:1.2.2"
+          - "kubernetesui/dashboard-web:1.6.1"
+          - "telegraf:1.32-alpine"
+          - "registry.k8s.io/sig-storage/csi-snapshotter:v6.2.2"
+          - "registry.k8s.io/sig-storage/snapshot-controller:v6.2.2"
+          - "registry.k8s.io/sig-storage/csi-provisioner:v3.5.0"
+          - "openebs/zfs-driver:2.7.1"
+          - "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.8.0"
+          - "redis:7.2-bookworm"
+          - "bitnami/postgresql:16.1.0-debian-11-r15"
+          - "quay.io/prometheus/statsd-exporter:v0.26.1"
+          - "maptiler/tileserver-gl:v5.1.3"
+          - "busybox:1.35.0"
+
+    os_tools:
+      - name: "aws"
+        bin_file: "install"
+        flags: "--update"
+        url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+
+    k3s_tools:
+      - name: "k3s"
+        url: "https://github.com/k3s-io/k3s/releases/download/v1.25.12%2Bk3s1/k3s"
+
+      - name: "k3s_install.sh"
+        url: "https://get.k3s.io/k3s_install.sh"
+
+    k8s_tools:
+      - name: "k9s"
+        bin_file: "k9s"
+        url: "https://github.com/derailed/k9s/releases/download/v0.32.5/k9s_Linux_amd64.tar.gz"
+
+      - name: "helm"
+        bin_file: "helm"
+        url: "https://get.helm.sh/helm-v3.12.0-linux-amd64.tar.gz"
+
+      - name: "helmfile"
+        bin_file: "helmfile"
+        url: "https://github.com/helmfile/helmfile/releases/download/v0.171.0/helmfile_0.171.0_linux_amd64.tar.gz"
+
+machines:
+  shaked:
+    system_type: 'prod'
+
+    # Connectivity to the bare-metal (proxmox host)
+    ansible_host: "10.50.0.144"
+    ansible_user: "root"
+    ansible_password: "Pa$$w0rd!"
+
+    proxmox_host_ip: "10.50.0.144"
+    proxmox_user: "root@pam"
+    proxmox_user_password: "Pa$$w0rd!"
+    proxmox_node: "vm1"
+
+    template_vmid: 9000
+
+    net_bridge:
+      name: "vmbrStaging"
+      netmask: "255.255.255.0"
+      cidr: "10.20.20.1/24"
+
+    # vms configuration #
+    vms:
+      worker-node:
+        name: "shaked"
+        type: workernode
+        username: "prisma"
+        password: "prisma"
+        ssh_key_file: "/root/.ssh/id_rsa.pub"
+        sockets: 2
+        cores: 28
+        memory: 57344
+        zfs_configuration:
+        zpools:
+          - zpool_name: prismapool
+            zpool_device: /dev/sda2
+
+        data_sets:
+          - name: prismapool/root/k8storage
+            mountpoint: /var/lib/rancher/k3s/storage
+            quota: 15T
+
+        accessable_ip: "10.20.20.150" # The IP used to connect to the VM, later it will be taken from the ipconfig part
+        ipconfig:
+          ipconfig0: "ip=10.20.20.150/24"
+          ipconfig1: "ip=dhcp"
+
+        net:
+          net0: "virtio,bridge=vmbrStaging"
+          net1: "virtio,bridge=vmbr0"
+
+        mounts:
+          src: "/mnt/shaked"
+          dest: "/mnt/shaked"
+          tag: "shaked"
+
+      master-node:
+        name: "shaked"
+        type: masternode
+        username: "prisma"
+        password: "prisma"
+        ssh_key_file: "/root/.ssh/id_rsa.pub"
+        sockets: 2
+        cores: 2
+        memory: 4096
+        zfs_configuration:
+          zpools:
+            - zpool_name: prismapool
+              zpool_device: /dev/sda2
+
+          data_sets:
+            - name: prismapool/root/docker
+              mountpoint: /var/lib/docker
+              quota: 100G
+
+            - name: prismapool/root/registry
+              mountpoint: /var/lib/registry
+              quota: 200G
+
+        accessable_ip: "10.20.20.151" # The IP used to connect to the VM, later it will be taken from the ipconfig part
+        ipconfig:
+          ipconfig0: "ip=10.20.20.151/24"
+          ipconfig1: "ip=dhcp"
+
+        net:
+          net0: "virtio,bridge=vmbrStaging"
+          net1: "virtio,bridge=vmbr0"
+
+        mounts:
+          src: "/mnt/shaked"
+          dest: "/mnt/shaked"
+          tag: "shaked"

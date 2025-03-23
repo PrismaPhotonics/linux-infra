@@ -16,6 +16,12 @@
       vars:
        apt_packages: "{{ spec.components.apt_packages | default([]) }}"
       tags: apt
+    
+    - role: pip-install
+      when: enable_pip_install | default(false)
+      vars:
+       pip_packages: "{{ spec.components.pip_packages | default([]) }}"
+       artifact_path: "{{ spec.configurations.artifact_path }}"
 
     - role: drivers-install
       when: enable_drivers_install | default(false)
@@ -55,6 +61,12 @@
       when: enable_configure_registry_mirroring | default(false)
       vars:
        docker_registry_address: "{{ spec.components.docker_spec.docker_registry_address }}"
+    
+    - role: s3-import
+      when: (spec.components.aws_s3_src | default([])) | length > 0
+      vars: 
+        artifact_path: "{{ spec.configurations.artifact_path }}"
+        aws_s3_src: "{{ spec.components.aws_s3_src}}"
 
     - role: helm-install
       when: enable_helm_install | default(false)
@@ -66,4 +78,6 @@
         helm_repos: "{{ spec.components.helm_spec.helm_repos }}"
         three_first_octets: "{{ spec.components.helm_spec.three_first_octets }}"
         branch_name: "{{ spec.components.helm_spec.branch_name  }}"
+        data_transfer: "{{ spec.components.helm_spec.data_transfer | default([]) }}"
+        
 

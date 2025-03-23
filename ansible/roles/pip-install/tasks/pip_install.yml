@@ -1,0 +1,18 @@
+- name: "Install required pip packages from wheels"
+  ansible.builtin.pip:
+    name: >-
+      {{ item.name }}{{ '=='+(item.version | trim)
+      if (item.version | trim)[0].isdigit() else item.version | trim }}
+    extra_args: "--no-index --find-links=file://{{ pip_wheels_dir }}"
+    state: present
+  loop: "{{ pip_packages }}"
+  when: pip_wheels_folder_valid
+
+- name: "Install required pip packages from internet"
+  ansible.builtin.pip:
+    name: >-
+      {{ item.name }}{{ '=='+(item.version | trim)
+      if (item.version | trim)[0].isdigit() else item.version | trim }}
+    state: present
+  loop: "{{ pip_packages }}"
+  when: not pip_wheels_folder_valid

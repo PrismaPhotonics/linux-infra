@@ -1,0 +1,14 @@
+- name: Process data transfer for each entry
+  include_tasks: data_transfer_entry.yml
+  loop: "{{ data_transfer }}"
+  loop_control:
+    loop_var: dt
+  vars:
+    pvc_name: "{{ dt.pvc_name }}"
+    host_path: "{{ dt.host_path | default(artifact_path ~ '/aws/' ~ project_name ~ '/' ~ dt.folder_name) }}"
+    dest_path: "{{ dt.dest_path }}"
+    container_name: "data-transfer-{{ dt.pvc_name }}"
+    pod_name: "data-transfer-{{ dt.pvc_name }}"
+    namespace: "{{ dt.namespace }}"
+    override_data: "{{ dt.override_data | default(false)}}"
+

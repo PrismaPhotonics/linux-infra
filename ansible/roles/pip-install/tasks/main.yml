@@ -1,0 +1,9 @@
+- import_tasks: check_valid_wheels_dir.yml
+
+- import_tasks: check_missing_wheels.yml
+  when: pip_wheels_folder_valid
+
+- import_tasks: pip_install.yml
+
+
+

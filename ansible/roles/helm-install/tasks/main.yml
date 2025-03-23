@@ -10,3 +10,8 @@
 - import_tasks: import_env_vars_to_bashrc.yml
   
 - import_tasks: helm_install.yml
+
+- import_tasks: data_transfer.yml
+  when: data_transfer | length > 0
+  environment: 
+    KUBECONFIG: "/home/{{ linux_user_name }}/.kube/config"

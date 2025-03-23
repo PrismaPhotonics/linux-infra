@@ -1,3 +1,6 @@
+# READ THIS PLEASE!
+# https://galaxy.ansible.com/ui/repo/published/community/general/content/module/proxmox_kvm/
+
 - name: Extract VM name and parameters
   set_fact:
     vm_name: "{{ vm_item.key }}"
@@ -20,6 +23,7 @@
     state: present
   register: clone_vm
 
+
 # - name: Create VMs on Proxmox
 - name: Update Cloud-Init configuration on the new VM
   community.general.proxmox_kvm:
@@ -31,14 +35,22 @@
     sshkeys: "{{ lookup('file', vm_params.ssh_key_file ) }}"  # Can be configurable but for now it like this
     ciuser: "{{ vm_params.username }}"
     cipassword: "{{ vm_params.password }}"
-    cores: "{{ vm_params.cores | default(2) }}"               # Can be configurable but for now it like this
-    memory: "{{ vm_params.memory | default(2048) }}"          # Can be configurable but for now it like this
+    cpu: "host"
+    cores: "{{ vm_params.cores | default(default_cores) }}"
+    sockets: "{{ vm_params.sockets | default(default_sockets) }}"      
+    memory: "{{ vm_params.memory | default(default_memory) }}"
+    
+    ipconfig: "{{ vm_params.ipconfig }}"
+    net: "{{ vm_params.net }}"
+
     scsi:
-      scsi0: "{{ vm_params.scsi | default('local-lvm:20') }}" # Can be configurable but for now it like this
-    ipconfig:
-      ipconfig0: "ip={{ vm_params.ip }}/24"                   # Adjust the netmask as necessary
+      scsi1: "{{ vm_params.scsi | default('local-lvm:20') }}" # Can be configurable but for now it like this
+
+    args: "-virtfs local,path={{ vm_params.mounts.src }},mount_tag={{ vm_params.mounts.tag }},security_model=none"  # Currently added just one mount path we need a better understanding how to handle it better
+
     state: present
-    update: True                                              # Must be here to apply the update
+    update: True                               # Must be here to apply the update
+    update_unsafe: True                        # Must be here to apply the update
   delegate_to: localhost
 
 - name: Debug - Finished creating the VM
@@ -58,7 +70,7 @@
 
 - name: Wait for SSH to become available on the new VM
   wait_for:
-    host: "{{ vm_params.ip }}"
+    host: "{{ vm_params.accessable_ip }}"
     port: 22
     delay: 10
     timeout: 300
@@ -66,5 +78,10 @@
 - name: Add new VM to in-memory inventory
   add_host:
     name: "{{ vm_params.name | default(vm_name) }}"
-    ansible_host: "{{ vm_params.ip }}"
+    ansible_host: "{{ vm_params.accessable_ip }}"
+    ansible_user: "{{ vm_params.username }}"
+    ansible_password: "{{ vm_params.password }}"
     groups: new_vms
+
+- name: Sets up the mounting
+  include_tasks: mount.yml
