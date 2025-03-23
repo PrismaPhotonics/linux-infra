@@ -1,7 +1,7 @@
 {{/*
-Return the chart name for segy-recorder.
+Return the chart name for player.
 */}}
-{{- define "segy-recorder.name" -}}
+{{- define "player.name" -}}
 {{- if .Values.segyRecorder.nameOverride -}}
   {{- .Values.segyRecorder.nameOverride | trimSuffix "-" -}}
 {{- else -}}
@@ -10,10 +10,10 @@ Return the chart name for segy-recorder.
 {{- end -}}
 
 {{/*
-Return the fully qualified name for segy-recorder.
+Return the fully qualified name for player.
 If fullnameOverride is set, use it; otherwise, use nameOverride.
 */}}
-{{- define "segy-recorder.fullname" -}}
+{{- define "player.fullname" -}}
 {{- if .Values.segyRecorder.fullnameOverride -}}
   {{- .Values.segyRecorder.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else if .Values.segyRecorder.nameOverride -}}
@@ -24,8 +24,8 @@ If fullnameOverride is set, use it; otherwise, use nameOverride.
 {{- end -}}
 
 {{/*
-Return the chart name and version for segy-recorder.
+Return the chart name and version for player.
 */}}
-{{- define "segy-recorder.chart" -}}
+{{- define "player.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
