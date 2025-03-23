@@ -96,7 +96,7 @@ segyRecorder:
   terminationGracePeriodSeconds: 30
 
 
-# SEGY Recorder values
+# player values
 player:
   nameOverride: "player"
   replicaCount: 1
