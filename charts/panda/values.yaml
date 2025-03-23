@@ -108,7 +108,15 @@ player:
   command:
     - "./debug-codebase/active-python-env.sh"
     - "-m"
-    - "play"
+    - "play.py"
+    - '--embd'
+    - '--continuous-timestamp-override'
+    - '--forever'
+    - '0'
+    - '--playrate'
+    - '1'
+    - '/prisma/root/recordings/kuler/251a30d7-72fa-40e2-bc6b-c28a03aea098'
+    - '-vc'
   env:
     PRISMA_RABBIT_MACHINE_NAME: "data-rabbitmq.prismaphotonics.net"
     PRISMA_CERTIFICATES: "/etc/ssl/certs"
