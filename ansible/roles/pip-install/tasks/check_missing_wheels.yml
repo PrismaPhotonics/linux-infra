@@ -17,6 +17,6 @@
     label: "{{ item.item.name }}"
 
 - name: "Display missing wheels"
-  debug:
+  fail:
     msg: "Missing wheels for packages: {{ missing_wheels }}"
   when: missing_wheels | default([]) | length > 0

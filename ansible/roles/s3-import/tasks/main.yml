@@ -6,7 +6,6 @@
 
 - name: Import from aws
   include_tasks: aws_import.yml
-  when: aws_s3_src | length > 0
   loop: "{{ aws_s3_src }}"
   loop_control:
     loop_var: item

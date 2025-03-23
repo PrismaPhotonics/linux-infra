@@ -63,9 +63,10 @@
        docker_registry_address: "{{ spec.components.docker_spec.docker_registry_address }}"
     
     - role: s3-import
+      when: (spec.components.aws_s3_src | default([])) | length > 0
       vars: 
         artifact_path: "{{ spec.configurations.artifact_path }}"
-        aws_s3_src: "{{ spec.components.aws_s3_src | default([]) }}"
+        aws_s3_src: "{{ spec.components.aws_s3_src}}"
 
     - role: helm-install
       when: enable_helm_install | default(false)
