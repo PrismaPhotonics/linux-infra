@@ -97,7 +97,7 @@ segyRecorder:
 
 
 # SEGY Recorder values
-Player:
+player:
   nameOverride: "player"
   replicaCount: 1
   image:
