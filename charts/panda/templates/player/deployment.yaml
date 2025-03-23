@@ -1,4 +1,4 @@
-{{- if .Values.global.is_dev }}
+{{- if ( .Values.global.is_dev | default false ) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
