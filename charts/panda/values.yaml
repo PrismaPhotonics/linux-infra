@@ -108,7 +108,7 @@ player:
   command:
     - "./debug-codebase/active-python-env.sh"
     - "-m"
-    - "play.py"
+    - "play"
     - '--embd'
     - '--continuous-timestamp-override'
     - '--forever'
