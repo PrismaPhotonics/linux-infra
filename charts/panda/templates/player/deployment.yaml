@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "segy-recorder.fullname" . }}
+  name: {{ include "player.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "segy-recorder.name" . }}
-    helm.sh/chart: {{ include "segy-recorder.chart" . }}
+    app.kubernetes.io/name: {{ include "player.name" . }}
+    helm.sh/chart: {{ include "player.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
 spec:
   replicas: {{ .Values.segyRecorder.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "segy-recorder.name" . }}
+      app.kubernetes.io/name: {{ include "player.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "segy-recorder.name" . }}
+        app.kubernetes.io/name: {{ include "player.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
-        - name: segy-recorder
+        - name: player
           image: "{{ .Values.segyRecorder.image.repository }}:{{ .Values.segyRecorder.image.tag }}"
           imagePullPolicy: {{ .Values.segyRecorder.image.pullPolicy }}
           workingDir: {{ .Values.segyRecorder.workingDir | quote }}

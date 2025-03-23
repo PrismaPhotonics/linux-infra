@@ -94,3 +94,43 @@ segyRecorder:
       tlsCrtPath: "tls.crt"
       tlsKeyPath: "tls.key"
   terminationGracePeriodSeconds: 30
+
+
+# SEGY Recorder values
+Player:
+  nameOverride: "player"
+  replicaCount: 1
+  image:
+    repository: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux"
+    tag: "10.7.104"
+    pullPolicy: IfNotPresent
+  workingDir: "/home/prisma"
+  command:
+    - "./debug-codebase/active-python-env.sh"
+    - "-m"
+    - "play"
+  env:
+    PRISMA_RABBIT_MACHINE_NAME: "data-rabbitmq.prismaphotonics.net"
+    PRISMA_CERTIFICATES: "/etc/ssl/certs"
+    PRISMA_CONFIG: "/home/prisma/pz/config"
+  volumeMounts:
+    debugEnv:
+      mountPath: "/home/prisma/debug-codebase"
+    prismaConfig:
+      mountPath: "/home/prisma/pz/config"
+    storageSan:
+      mountPath: "/prisma/root/recordings"
+  volumes:
+    debugEnv:
+      path: "/home/prisma/debug-codebase"
+    prismaConfig:
+      path: "/home/prisma/pz/config"
+    storageSan:
+      path: "/prisma/root/recordings"
+  tlsSecret:
+    name: "rabbitmq-tls-secret"
+    items:
+      caCrtPath: "ca.crt"
+      tlsCrtPath: "tls.crt"
+      tlsKeyPath: "tls.key"
+  terminationGracePeriodSeconds: 30
