@@ -1,0 +1,59 @@
+---
+- name: Load machine configuration and add hosts dynamically
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Add each machine from manifest to dynamic inventory
+      add_host:
+        name: "{{ item.key }}"
+        ansible_host: "{{ item.value.ansible_host }}"
+        ansible_user: "{{ item.value.ansible_user }}"
+        ansible_password: "{{ item.value.ansible_password }}"
+        configuration: "{{ item.value }}"
+      loop: "{{ machines | dict2items }}"
+
+
+- name: Offline Installation Playbook
+  hosts: "{{ machines.keys() }}"
+  become: true
+  gather_facts: true
+  pre_tasks:
+    - name: Set machine configuration fact
+      set_fact:
+        machine_name: "{{ inventory_hostname }}"
+        machine_config: "{{ machines[inventory_hostname] }}"
+        
+    - name: Add each VM from manifest to dynamic inventory
+      add_host:
+        name: "{{ item.key }}"
+        groups: all_vms_yuval
+        ansible_host: "{{ item.value.ip }}"
+        ansible_user: "{{ item.value.username }}"
+        # ansible_password: "{{ item.value.ansible_password }}"
+        machine_name: "{{ inventory_hostname }}"
+        configuration: "{{ item.value }}"
+      loop: "{{ machines[inventory_hostname].vms | dict2items }}"
+
+- name: Setup VMs
+  hosts: all_vms_yuval
+  become: true
+  gather_facts: true
+  pre_tasks:
+    - name: Set machine configuration fact
+      set_fact:
+        machine_name: "{{ hostvars[inventory_hostname].machine_name }}"
+        vm_name: "{{ inventory_hostname }}"
+        vm_configuration: "{{ hostvars[inventory_hostname].configuration }}"
+
+  tasks:
+    - name: Debug - Creating VM
+      debug:
+        msg: "{{ vm_configuration }}"
+
+    - name: Wait for SSH to become available on the new VM
+      wait_for:
+        host: "{{ hostvars[inventory_hostname].configuration.ip }}"
+        port: 22
+        delay: 10
+        timeout: 300
+

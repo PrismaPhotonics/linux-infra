@@ -1,0 +1,16 @@
+- name: Ensure mount point directory exists
+  file:
+    path: "{{ vm_params.mounts.dest }}"      # Local directory where the share will be mounted
+    state: directory
+    mode: '0777'
+  delegate_to: "{{ vm_name }}"
+
+- name: Mount the 9p share
+  mount:
+    path: "{{ vm_params.mounts.dest }}"     # Local mount point in the guest
+    src: "{{ vm_params.mounts.tag }}"      # The mount tag defined on the Proxmox side
+    fstype: 9p                # Filesystem type for 9p
+    opts: "rw,trans=virtio"  # Mount options for optimal compatibility
+    state: mounted
+  become: yes
+  delegate_to: "{{ vm_name }}"
