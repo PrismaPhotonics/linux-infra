@@ -2,7 +2,7 @@
 - import_tasks: check_if_to_skip.yml
 
 - import_tasks: aws_configure.yml
-  when: not aws_content_exists
+  when: not aws_folder_valid
 
 - name: Import from aws
   include_tasks: aws_import.yml
@@ -13,7 +13,7 @@
   vars:
     bucket_name: "{{ item.bucket_name }}"
     object_prefix: "{{ item.object_prefix }}"
-  when: not aws_content_exists
+  when: not aws_folder_valid
 
 - name: Find downloaded part files in destination directory recursively
   find:
@@ -22,8 +22,8 @@
     file_type: file
     recurse: yes
   register: downloaded_parts
-  when: not aws_content_exists
+  when: not aws_folder_valid
 
 - import_tasks: assemble_parts.yml
-  when: not aws_content_exists and not downloaded_parts.matched == 0
+  when: not aws_folder_valid and not downloaded_parts.matched == 0
 
