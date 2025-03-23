@@ -5,7 +5,7 @@
     loop_var: dt
   vars:
     pvc_name: "{{ dt.pvc_name }}"
-    host_path: "{{ dt.host_path | default(artifact_path ~ '/' ~ project_name ~ '/' ~ folder_name) }}"
+    host_path: "{{ dt.host_path | default(artifact_path ~ '/aws/' ~ project_name ~ '/' ~ dt.folder_name) }}"
     dest_path: "{{ dt.dest_path }}"
     container_name: "data-transfer-{{ dt.pvc_name }}"
     pod_name: "data-transfer-{{ dt.pvc_name }}"

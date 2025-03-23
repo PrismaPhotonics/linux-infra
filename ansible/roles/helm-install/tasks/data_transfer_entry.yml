@@ -41,7 +41,7 @@
     namespace: "{{ namespace }}"
     pod: "{{ pod_name }}"
     container: "{{ container_name }}"
-    command: "cp -a {{ host_mount }}/. {{ dest_path }}/"
+    command: "cp -a {{ host_path }}/. {{ dest_path }}/"
   register: cp_result
   when: override_data or (data_check.stdout | trim) == "empty"
 
