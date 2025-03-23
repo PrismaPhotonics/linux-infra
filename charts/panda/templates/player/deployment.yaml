@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
 spec:
-  replicas: {{ .Values.segyRecorder.replicaCount }}
+  replicas: {{ .Values.player.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "player.name" . }}
@@ -21,50 +21,50 @@ spec:
     spec:
       containers:
         - name: player
-          image: "{{ .Values.segyRecorder.image.repository }}:{{ .Values.segyRecorder.image.tag }}"
-          imagePullPolicy: {{ .Values.segyRecorder.image.pullPolicy }}
-          workingDir: {{ .Values.segyRecorder.workingDir | quote }}
+          image: "{{ .Values.player.image.repository }}:{{ .Values.player.image.tag }}"
+          imagePullPolicy: {{ .Values.player.image.pullPolicy }}
+          workingDir: {{ .Values.player.workingDir | quote }}
           env:
             - name: PRISMA_RABBIT_MACHINE_NAME
-              value: {{ .Values.segyRecorder.env.PRISMA_RABBIT_MACHINE_NAME | quote }}
+              value: {{ .Values.player.env.PRISMA_RABBIT_MACHINE_NAME | quote }}
             - name: PRISMA_CERTIFICATES
-              value: {{ .Values.segyRecorder.env.PRISMA_CERTIFICATES | quote }}
+              value: {{ .Values.player.env.PRISMA_CERTIFICATES | quote }}
             - name: PRISMA_CONFIG
-              value: {{ .Values.segyRecorder.env.PRISMA_CONFIG | quote }}
-          command: {{ toYaml .Values.segyRecorder.command | nindent 12 }}
+              value: {{ .Values.player.env.PRISMA_CONFIG | quote }}
+          command: {{ toYaml .Values.player.command | nindent 12 }}
           volumeMounts:
             - name: certs
               mountPath: /etc/ssl/certs
               readOnly: true
             - name: debug-env-volume
-              mountPath: {{ .Values.segyRecorder.volumeMounts.debugEnv.mountPath | quote }}
+              mountPath: {{ .Values.player.volumeMounts.debugEnv.mountPath | quote }}
             - name: prisma-config-volume
-              mountPath: {{ .Values.segyRecorder.volumeMounts.prismaConfig.mountPath | quote }}
+              mountPath: {{ .Values.player.volumeMounts.prismaConfig.mountPath | quote }}
             - name: storage-san-volume
-              mountPath: {{ .Values.segyRecorder.volumeMounts.storageSan.mountPath | quote }}
-      terminationGracePeriodSeconds: {{ .Values.segyRecorder.terminationGracePeriodSeconds }}
+              mountPath: {{ .Values.player.volumeMounts.storageSan.mountPath | quote }}
+      terminationGracePeriodSeconds: {{ .Values.player.terminationGracePeriodSeconds }}
       volumes:
         - name: certs
           projected:
             sources:
               - secret:
-                  name: {{ .Values.segyRecorder.tlsSecret.name }}
+                  name: {{ .Values.player.tlsSecret.name }}
                   items:
                     - key: ca.crt
-                      path: {{ .Values.segyRecorder.tlsSecret.items.caCrtPath }}
+                      path: {{ .Values.player.tlsSecret.items.caCrtPath }}
                     - key: tls.crt
-                      path: {{ .Values.segyRecorder.tlsSecret.items.tlsCrtPath }}
+                      path: {{ .Values.player.tlsSecret.items.tlsCrtPath }}
                     - key: tls.key
-                      path: {{ .Values.segyRecorder.tlsSecret.items.tlsKeyPath }}
+                      path: {{ .Values.player.tlsSecret.items.tlsKeyPath }}
         - name: debug-env-volume
           hostPath:
-            path: {{ .Values.segyRecorder.volumes.debugEnv.path | quote }}
+            path: {{ .Values.player.volumes.debugEnv.path | quote }}
             type: Directory
         - name: prisma-config-volume
           hostPath:
-            path: {{ .Values.segyRecorder.volumes.prismaConfig.path | quote }}
+            path: {{ .Values.player.volumes.prismaConfig.path | quote }}
             type: Directory
         - name: storage-san-volume
           hostPath:
-            path: {{ .Values.segyRecorder.volumes.storageSan.path | quote }}
+            path: {{ .Values.player.volumes.storageSan.path | quote }}
             type: Directory
