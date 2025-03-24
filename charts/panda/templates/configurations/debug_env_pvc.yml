@@ -8,9 +8,7 @@ spec:
   resources:
     requests:
       storage: {{ .Values.debugEnv.persistence.capacity }}
-{{- if .Values.debugEnv.persistence.storageClassName }}
   storageClassName: {{ .Values.debugEnv.persistence.storageClassName | quote }}
-{{- end }}
 {{- if .Values.debugEnv.persistence.hostPath }}
   volumeName: debugEnv-pv
   storageClassName: debugEnv
