@@ -6,7 +6,7 @@ data:
   default_config.py: |
       import datetime
       import os
-
+    
       # ----------------------------------------- Prisma Master Configuration ----------------------------------------
       
       class ConfigMeta(type):
@@ -33,7 +33,7 @@ data:
           class Backoffice:
               backoffice_port = 8050
               drives_blacklist = ["C:\\", "I:\\"]
-
+    
       class Broker:
           #broker_server = 'rabbitmq-panda-0.rabbitmq-panda-headless.default.svc.cluster.local' #'localhost'
           broker_server = 'data-rabbitmq.prismaphotonics.net'
@@ -48,35 +48,35 @@ data:
           reconnect_attempts = 60
           reconnect_timeout = 1
           tls = True
-
+    
           class ManagementAPI:
               mgmt_port = 15671
-
+    
       class Player:
           num_msgs_between_info = 5
           throttling_min_trigger = 100
           throttling_max_trigger = 200
           throttling_check_status = 100
           throttling_sleep = 5
-
+    
       class QueueThrottle:
           throttling_min_trigger = 10
           throttling_max_trigger = 50
           throttling_check_status = 10
           throttling_sleep = 1
-
+    
       class Recorder:
           recording_chunks_per_file = 40
-
+    
       class SmartRecorder:
           class Cumsum:
               f_pass = 20
               f_stop = 5
-
+    
           class Decimation:
               x = 5
               t = 8
-
+    
       class Mongo:
           schema = 'mongodb'
           host_name = 'mongodb'
@@ -89,9 +89,9 @@ data:
           authentication_db_name_for_mongo = 'prisma'
           mongo_hardcoded_user = 'prisma'
           mongo_hardcoded_password = 'pass'
-  
+    
           url = f"{schema}://{mongo_hardcoded_user}:{mongo_hardcoded_password}@{host_name}:{mongo_port}/"
-
+    
       class AnnotationDB:
           user = 'select_only_user'
           password = 'pass'
@@ -100,35 +100,35 @@ data:
           truth_table = 'truth_table'
           truth_table_raw = 'truth_table_raw'
           subclass_table = 'subclass'
-
+    
       class NetworkDrives:
           _drives = ['prisma_server1', 'pz_nas', 'prisma_red1']
           prisma_server1 = r'\\prisma-server1\Data'
           pz_nas = r'\\10.50.0.52\Public'
           prisma_red1 = r'\\prisma-red1\Data'
-
+    
       LocalDrives = NetworkDrives()
-
+    
       class Logging:
           log_dir = os.path.join(os.environ['PRISMA_LOGS'])
           backup_count = 7
           hierarchical_logs = False
-
+    
       class SupervisorClient:
           timeout = 2
           keepalive_interval = 5
-
+    
       class RPC:
           server_startup_timeout = 5
-
-
+    
+    
       class RESTfulClient:
           rest_username = 'prisma'
           rest_password = 'pass'
           alert_url = 'http://localhost:2202/api/'
           post_via = 'amqp' # or 'http'
-
-
+    
+    
       class Externalizer(RESTfulClient):
           """
               Wake up every one minute and call grouping and policy methods with alerts from the last ten minutes:
@@ -140,7 +140,7 @@ data:
           wakeup_period_sec = 60
           collection_name = 'pulse-alert'
           send_inner_external_alerts = False
-
+    
           """
               run_mode - 'offline' or 'online' or 'offline_all', when configured to 'offline' - read alerts only from
               mongoDB, when 'online' is configured - read the alerts in the history_time_window_seconds window from the
@@ -155,11 +155,11 @@ data:
                              
           """
           run_mode = 'online'
-  
+    
           # used when run mode is 'offline' or 'offline_all':
           offline_alerts_start_time = datetime.datetime(2021, 5, 25, 0, 0, 0)
           offline_alerts_end_time = datetime.datetime(2021, 5, 26, 0, 0, 0)
-  
+    
           # trust algorithms and automatically mark is_external=True alerts as external alerts:
           forward_is_external = True
           external_scores = [0, 1, 2, 3]
@@ -172,17 +172,17 @@ data:
           enable_mapview_fibercut = True
           enable_mars_fibercut = True
           bulk_alerts_broker_uri = None
-
+    
           class StatusSender:
               default_message_interval = 30
               endpoint = 'updateSystemInfo/'
-
+    
       class RunAlgo:
           heartbeat_sec = 10
-
+    
       class Storage:
           storage_conf = '/home/prisma/pz/config/storage_manager/storage.yaml'
-
+    
       class Recording:
           class AWG:
               digitizer_samprate = 180e6
@@ -199,17 +199,17 @@ data:
                       F_center = 285E6
                       Order = [17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
                       channelizer_filter_file_path = None
-
+    
               class trig:
                   TriggStartLocation = 0.02
                   delay_ns = 10e-9
-
+    
               class internal:
                   AOM1delay = 0
                   AOM3delay = 0
                   clockPhase = 0.5
                   trigShift = 0
-
+    
       class Peripherals:
           clock = 1080e6
           continuous = True
@@ -227,12 +227,12 @@ data:
           tx_json_file_path = os.path.join(awg_folder, tx_json_file_name)
           # window_coeff_file_name = 'win_coeff.f32'
           # window_coeff_file_path = os.path.join(awg_folder, window_coeff_file_name)
-  
+    
           calibration_safety_margin = 0.01
-  
+    
           reconnection_tries = 3
           hwid_description = 'VID:PID=0000:0002'
-
+    
           class EdfaPulse:
               # variable name prefixes are for auto_config
               # effective parameters represent this variable as tx_edfa
@@ -240,7 +240,7 @@ data:
               edp_current = 75  # [mA]
               edp_min_current = 0  # [mA]
               edp_max_current = 100  # [mA]
-
+    
           class EdfaCW:
               # variable name prefixes are for auto_config
               # effective parameters represent this variable as rx_edfa
@@ -248,7 +248,7 @@ data:
               edc_current = 50  # [mA]
               edc_min_current = 0  # [mA]
               edc_max_current = 70  # [mA]
-
+    
           class ICR:
               # variable name prefixes are for auto_config
               # effective parameters represent these values in [V] units
@@ -256,7 +256,7 @@ data:
               icr_gain = 100  # [0.01 V]
               icr_min_gain = 0  # [0.01 V]
               icr_max_gain = 200  # [0.01 V]
-
+    
           class Raman:
               # variable name prefixes are for auto_config
               # effective parameters represent these values in [mA] units
@@ -264,25 +264,25 @@ data:
               raman_current = 0  # [0.1 mA]
               raman_min_current = 0  # [0.1 mA]
               raman_max_current = 9000  # [0.1 mA]
-
-
+    
+    
       class Cluster:
           cluster_broker_uris = ['amqp://control.prismaphotonics.net']
           sleep_duration = 10
           tls_heartbeat = True
-
+    
       """
       The following field 'time_zone' is to be used by the recording API.
       It determintes what timezone should be appended to new recordings in their metadata.
       """
       time_zone = 'Asia/Jerusalem'
-
+    
       class Sweeper:
           write_thread_max_queue_size = 250 # Default size just to regulate memory in case of writing slowness.
       class Lifeboat:
           # service_disk_path = 'D:\\LB\\RPC'
           service_disk_path = r'C:\temp\sweep\rpc'
-
+    
       class DataManager:
           service_disk_path = r'Z:\data_manager'
           init_cleanup_days_interval = 7
@@ -291,13 +291,13 @@ data:
           min_free_space_mb = 40000
           recording_file_limit_size = 100
           supported_extensions = ['prp', 'prp2', 'segy', 'gz']
-
+    
       class Metrics:
           prometheus_client = 'http://localhost:9273/metrics'
           telegraf_http_input_url = 'http://localhost:39273/telegraf'
           prometheus_htaccess_username = 'prisma'
           prometheus_htaccess_password = 'pass'
-
+    
       class FiberInspector:
           # by the table at the end of https://prismaphotonics.atlassian.net/l/cp/MLnjKMwc
           window_size = 80
@@ -307,7 +307,7 @@ data:
           min_major_loss = 4.5
           max_internal_alerts = 8
           max_internal_baselines = 8
-
+    
       class Notifier:
           weekly_active_time = {
               0: [{'hour': 6, 'minute': 0}, {'hour': 20, 'minute': 0}],  # Monday
@@ -318,7 +318,7 @@ data:
               5: [{'hour': 6, 'minute': 0}, {'hour': 20, 'minute': 0}],  # Saturday
               6: [{'hour': 6, 'minute': 0}, {'hour': 20, 'minute': 0}],  # Sunday
           }
-
+    
       class Focus:
           mongo_mapper_url = 'mongodb://prisma:prisma@mongodb'
           #storage_mount_path = '/prisma/root/recordings/kuler'
@@ -337,12 +337,12 @@ data:
           focus_debug_mode = False
           focus_amount_of_gpu_slices = 200
           focus_research_grpc_job_starting_port = 12300
-
+    
       class Grpc:
           max_stream_queue_size = 10000
           channel_queues_timeout = 3
           grpc_consumption_timeout = 60
-
+    
       class OTDR:
           class Reports:
               OTDR_report_loss_prominence = 9
