@@ -23,9 +23,6 @@
        pip_packages: "{{ spec.components.pip_packages | default([]) }}"
        artifact_path: "{{ spec.configurations.artifact_path }}"
 
-    - role: ecr-login
-      when: enable_ecr_login | default(false)
-
     - role: drivers-install
       when: enable_drivers_install | default(false)
       vars:
