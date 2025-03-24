@@ -4,48 +4,48 @@ metadata:
   name: prisma-config
 data:
   default_config.py: |
-    """Default configuration for Prisma Photonics.
-  Example:
-
-      from pspy.configuration import Config
-      Config.Broker.broker_server
-
-
-  Author:
-
-      Uri London
-  """
-  
-  import datetime
-  import os
-  
-  # ----------------------------------------- Prisma Master Configuration ----------------------------------------
-  
-  
-  class ConfigMeta(type):
-      @property
-      @classmethod
-      def electricity_pole_config(cls):
-          from algo_configs import electricity_pole_default_config
-          return electricity_pole_default_config
-  
-      @property
-      @classmethod
-      def gas_sensing_config(cls):
-          from algo_configs import default_gas_sensing_config
-          return default_gas_sensing_config
-  
-      @property
-      @classmethod
-      def perimeter_sensing_config(cls):
-          from algo_configs import default_perimeter_sensing_config
-          return default_perimeter_sensing_config
-  
-  
-  class Config(metaclass=ConfigMeta):
-      class Backoffice:
-          backoffice_port = 8050
-          drives_blacklist = ["C:\\", "I:\\"]
+        """Default configuration for Prisma Photonics.
+      Example:
+    
+          from pspy.configuration import Config
+          Config.Broker.broker_server
+    
+    
+      Author:
+    
+          Uri London
+      """
+      
+      import datetime
+      import os
+      
+      # ----------------------------------------- Prisma Master Configuration ----------------------------------------
+      
+      
+      class ConfigMeta(type):
+          @property
+          @classmethod
+          def electricity_pole_config(cls):
+              from algo_configs import electricity_pole_default_config
+              return electricity_pole_default_config
+      
+          @property
+          @classmethod
+          def gas_sensing_config(cls):
+              from algo_configs import default_gas_sensing_config
+              return default_gas_sensing_config
+      
+          @property
+          @classmethod
+          def perimeter_sensing_config(cls):
+              from algo_configs import default_perimeter_sensing_config
+              return default_perimeter_sensing_config
+      
+      
+      class Config(metaclass=ConfigMeta):
+          class Backoffice:
+              backoffice_port = 8050
+              drives_blacklist = ["C:\\", "I:\\"]
 
       class Broker:
           #broker_server = 'rabbitmq-panda-0.rabbitmq-panda-headless.default.svc.cluster.local' #'localhost'

@@ -1,10 +1,10 @@
 # Focus Server values
+cleanupService:
+  serviceAccountName: cleanup-sa
+
 configurations:
   defaultConfig:
     mountPath: "/home/prisma/pz/config/"
-
-cleanupService:
-  serviceAccountName: cleanup-sa
 
 debugEnv:
   enabled: false
