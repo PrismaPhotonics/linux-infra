@@ -36,9 +36,9 @@ focusServer:
     pullPolicy: IfNotPresent
   workingDir: "/home/prisma"
   command:
-    - "bash"
-    - "-c"
-    - "sleep 6000"
+    - "./debug-codebase/active-python-env.sh"
+    - "-m"
+    - "focus_server"
   service:
     type: ClusterIP
     port: 5000
