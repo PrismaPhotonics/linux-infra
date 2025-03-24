@@ -45,6 +45,18 @@ spec:
               mountPath: {{ .Values.player.volumeMounts.storageSan.mountPath | quote }}
       terminationGracePeriodSeconds: {{ .Values.player.terminationGracePeriodSeconds }}
       volumes:
+        { { - if .Values.debug-env.enabled } }
+        - name: debug-env-volume
+          hostPath:
+            path: {{ .Values.debug-env.mountPath | quote }}
+            type: Directory
+        { { - end } }
+        - name: prisma-config-volume
+          configMap:
+            name: prisma-config
+        - name: recordings
+          persistentVolumeClaim:
+            claimName: recordings-pvc
         - name: certs
           projected:
             sources:
@@ -57,16 +69,5 @@ spec:
                       path: {{ .Values.player.tlsSecret.items.tlsCrtPath }}
                     - key: tls.key
                       path: {{ .Values.player.tlsSecret.items.tlsKeyPath }}
-        - name: debug-env-volume
-          hostPath:
-            path: {{ .Values.player.volumes.debugEnv.path | quote }}
-            type: Directory
-        - name: prisma-config-volume
-          hostPath:
-            path: {{ .Values.player.volumes.prismaConfig.path | quote }}
-            type: Directory
-        - name: storage-san-volume
-          hostPath:
-            path: {{ .Values.player.volumes.storageSan.path | quote }}
-            type: Directory
+
 {{- end }}

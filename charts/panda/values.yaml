@@ -2,6 +2,17 @@
 cleanupService:
   serviceAccountName: cleanup-sa
 
+debug-env:
+  enabled: false
+  mountPath: "/home/prisma/debug-codebase"
+
+recordings:
+  persistence:
+    enabled: true
+    capacity: 100Gi
+    storageClassName: openebs-zfspv
+    mountPath: "/prisma/root/recordings"
+
 focusServer:
   nameOverride: "focus-server"
   replicaCount: 1
@@ -26,18 +37,6 @@ focusServer:
   env:
     PZ_IMAGE_TAG: "10.7.104"
     PRISMA_CONFIG: "/home/prisma/pz/config/"
-  volumeMounts:
-    debugEnv:
-      mountPath: "/home/prisma/debug-codebase"
-    prismaConfig:
-      mountPath: "/home/prisma/pz/config"
-  volumes:
-    debugEnv:
-      path: "/home/prisma/debug-codebase"
-    prismaConfig:
-      path: "/home/prisma/pz/config"
-    pythonPackages:
-      path: "/home/prisma/.local/lib/python3.10/site-packages"
   terminationGracePeriodSeconds: 30
 
 # SEGY Recorder values
@@ -73,20 +72,7 @@ segyRecorder:
     PRISMA_RABBIT_MACHINE_NAME: "data-rabbitmq.prismaphotonics.net"
     PRISMA_CERTIFICATES: "/etc/ssl/certs"
     PRISMA_CONFIG: "/home/prisma/pz/config"
-  volumeMounts:
-    debugEnv:
-      mountPath: "/home/prisma/debug-codebase"
-    prismaConfig:
-      mountPath: "/home/prisma/pz/config"
-    storageSan:
-      mountPath: "/prisma/root/recordings"
-  volumes:
-    debugEnv:
-      path: "/home/prisma/debug-codebase"
-    prismaConfig:
-      path: "/home/prisma/pz/config"
-    storageSan:
-      path: "/prisma/root/recordings"
+
   tlsSecret:
     name: "rabbitmq-tls-secret"
     items:
@@ -121,20 +107,6 @@ player:
     PRISMA_RABBIT_MACHINE_NAME: "data-rabbitmq.prismaphotonics.net"
     PRISMA_CERTIFICATES: "/etc/ssl/certs"
     PRISMA_CONFIG: "/home/prisma/pz/config"
-  volumeMounts:
-    debugEnv:
-      mountPath: "/home/prisma/debug-codebase"
-    prismaConfig:
-      mountPath: "/home/prisma/pz/config"
-    storageSan:
-      mountPath: "/prisma/root/recordings"
-  volumes:
-    debugEnv:
-      path: "/home/prisma/debug-codebase"
-    prismaConfig:
-      path: "/home/prisma/pz/config"
-    storageSan:
-      path: "/prisma/root/recordings"
   tlsSecret:
     name: "rabbitmq-tls-secret"
     items:
