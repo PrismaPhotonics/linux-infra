@@ -2,9 +2,9 @@ apiVersion: v1
 entries:
   curator:
   - apiVersion: v2
-    created: "2025-03-24T13:37:52.321506866Z"
+    created: "2025-03-24T13:38:42.002393633Z"
     description: Index rotation of elasticsearch
-    digest: da68b400fb89d46c92d50749aeffb9fe0d88b64f19524b69f3ec6670b0abe557
+    digest: 6c0388eb1524194a3181e9ccc73c76589b34d9fdd3fe06799fbbe8d43b197d55
     name: curator
     type: application
     urls:
@@ -13,9 +13,9 @@ entries:
   helm-dashboard:
   - apiVersion: v2
     appVersion: 2.0.3
-    created: "2025-03-24T13:37:52.322250791Z"
+    created: "2025-03-24T13:38:42.00312238Z"
     description: A GUI Dashboard for Helm by Komodor
-    digest: b1d144454d0a5ba12344f91562e6c109c553acf840752d0071ca7d8139c35b80
+    digest: 8eb10f4c2740385b2481735d1db1281d7d1847b69b8ad1d06b7be33159e57276
     icon: https://raw.githubusercontent.com/komodorio/helm-dashboard/refs/heads/main/images/logo.svg
     name: helm-dashboard
     type: application
@@ -24,9 +24,9 @@ entries:
     version: 2.0.3
   metallb:
   - apiVersion: v2
-    created: "2025-03-24T13:37:52.32281555Z"
+    created: "2025-03-24T13:38:42.00368398Z"
     description: Ip provider
-    digest: 4e26326da4b17a020e67647a2cffe04b5668f74a844a58e6231a95110c166d01
+    digest: 50cd0e479fae8b2f4a03c4182b9396e762dca84164af5d79ddc2f78e53b406ec
     name: metallb
     type: application
     urls:
@@ -35,9 +35,9 @@ entries:
   panda:
   - apiVersion: v2
     appVersion: 10.7.104
-    created: "2025-03-24T13:37:52.323660579Z"
+    created: "2025-03-24T13:38:42.006358238Z"
     description: A Helm chart for the focus-server deployment and service.
-    digest: 4d972781cdbdbe1694ba55daa265dcd8bd955ddcbe742c94838c0afcc104a34f
+    digest: 79ef3467c1660ab83a624596d863f1938f14c418837ad6e76c4a75c5316cde66
     name: panda
     type: application
     urls:
@@ -46,10 +46,10 @@ entries:
   telegraf:
   - apiVersion: v2
     appVersion: 1.32.1
-    created: "2025-03-24T13:37:52.324688434Z"
+    created: "2025-03-24T13:38:42.008465544Z"
     description: Telegraf is an agent written in Go for collecting, processing, aggregating,
       and writing metrics.
-    digest: 89485eef3e91eac841609b7a52c23698ee969307f72204c5a92395b7a7ba186e
+    digest: 9a3399303226696c7216355601fd57f65a30f57ab35c7327a2018efd14073891
     home: https://www.influxdata.com/time-series-platform/telegraf/
     icon: https://avatars0.githubusercontent.com/u/5713248?s=200&v=4
     keywords:
@@ -74,12 +74,12 @@ entries:
   tileserver-gl:
   - apiVersion: v2
     appVersion: 5.1.3
-    created: "2025-03-24T13:37:52.325023786Z"
+    created: "2025-03-24T13:38:42.009094587Z"
     description: Helm chart for TileServer-GL
-    digest: c483ec3b67a8e5e4e11dae3535cbdbde3539fa2f74f9848d65d6c10d56df8eec
+    digest: 8bf977d07c40d2c722ee74e417899a205d142b036fbb323cf9f0ee6c1c7f2579
     name: tileserver-gl
     type: application
     urls:
     - https://prismaphotonics.github.io/linux-infra/tileserver-gl-1.0.0.tgz
     version: 1.0.0
-generated: "2025-03-24T13:37:52.321161674Z"
+generated: "2025-03-24T13:38:42.002054091Z"
