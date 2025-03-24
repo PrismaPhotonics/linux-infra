@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: active-python-config
 data:
-  active-python.sh: |
+  active-python-env.sh: |
     #!/bin/bash
 
     # Manually configurable DEBUG variable
