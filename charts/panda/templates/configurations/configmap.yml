@@ -4,7 +4,7 @@ metadata:
   name: prisma-config
 data:
   default_config.py: |
-        """Default configuration for Prisma Photonics.
+      """Default configuration for Prisma Photonics.
       Example:
     
           from pspy.configuration import Config
