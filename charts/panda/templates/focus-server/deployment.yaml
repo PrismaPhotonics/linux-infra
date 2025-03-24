@@ -41,10 +41,10 @@ spec:
               mountPath: {{ .Values.focusServer.volumeMounts.prismaConfig.mountPath | quote }}
       terminationGracePeriodSeconds: {{ .Values.focusServer.terminationGracePeriodSeconds }}
       volumes:
-        {{- if .Values.debug-env.enabled }}
+        {{- if .Values.debugEnv.enabled }}
         - name: debug-env-volume
           hostPath:
-            path: {{ .Values.debug-env.mountPath | quote }}
+            path: {{ .Values.debugEnv.mountPath | quote }}
             type: Directory
         {{- end }}
         - name: prisma-config-volume
