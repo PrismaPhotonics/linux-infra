@@ -73,7 +73,7 @@ spec:
       - name: "zip"
         version: "3.0-13ubuntu0.2"
       - name: "python3-pip"
-        version: "20.0.2-5ubuntu1.11"
+        version: "24.0+dfsg-1ubuntu1.1"
     
     aws_s3_src: 
       - bucket_name: prisma-linux-platform 
