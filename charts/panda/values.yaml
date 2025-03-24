@@ -35,10 +35,6 @@ focusServer:
     tag: "10.7.104"
     pullPolicy: IfNotPresent
   workingDir: "/home/prisma"
-  command:
-    - "./debug-codebase/active-python-env.sh"
-    - "-m"
-    - "focus_server"
   service:
     type: ClusterIP
     port: 5000
