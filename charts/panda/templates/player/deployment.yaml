@@ -37,18 +37,20 @@ spec:
             - name: certs
               mountPath: /etc/ssl/certs
               readOnly: true
+            {{- if .Values.debugEnv.enabled }}
             - name: debug-env-volume
-              mountPath: {{ .Values.player.volumeMounts.debugEnv.mountPath | quote }}
+              mountPath: {{ .Values.debugEnv.persistence.mountPath | quote }}
+            {{- end }}
             - name: prisma-config-volume
-              mountPath: {{ .Values.player.volumeMounts.prismaConfig.mountPath | quote }}
-            - name: storage-san-volume
-              mountPath: {{ .Values.player.volumeMounts.storageSan.mountPath | quote }}
+              mountPath: {{ .Values.configurations.defaultConfig.mountPath | quote }}
+            - name: recordings
+              mountPath: {{ .Values.recordings.persistence.mountPath | quote }}
       terminationGracePeriodSeconds: {{ .Values.player.terminationGracePeriodSeconds }}
       volumes:
         {{- if .Values.debugEnv.enabled }}
         - name: debug-env-volume
           hostPath:
-            path: {{ .Values.debugEnv.mountPath | quote }}
+            path: {{ .Values.debugEnv.persistence.mountPath | quote }}
             type: Directory
         {{- end }}
         - name: prisma-config-volume

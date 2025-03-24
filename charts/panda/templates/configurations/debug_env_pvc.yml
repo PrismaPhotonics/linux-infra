@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: debug-env-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.debugEnv.persistence.capacity }}
+{{- if .Values.debugEnv.persistence.storageClassName }}
+  storageClassName: {{ .Values.debugEnv.persistence.storageClassName | quote }}
+{{- end }}
+{{- if .Values.debugEnv.persistence.hostPath }}
+  volumeName: debugEnv-pv
+  storageClassName: debugEnv
+{{- end }}

@@ -1,10 +1,18 @@
 # Focus Server values
+configurations:
+  defaultConfig:
+    mountPath: "/home/prisma/pz/config/"
+
 cleanupService:
   serviceAccountName: cleanup-sa
 
 debugEnv:
   enabled: false
-  mountPath: "/home/prisma/debug-codebase"
+  persistence:
+    enabled: true
+    capacity: 100Gi
+    storageClassName: openebs-zfspv
+    mountPath: "/home/prisma/debug-codebase"
 
 recordings:
   persistence:

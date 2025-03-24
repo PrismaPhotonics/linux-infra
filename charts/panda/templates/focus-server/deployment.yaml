@@ -35,21 +35,20 @@ spec:
             - name: PRISMA_CONFIG
               value: "{{ .Values.focusServer.env.PRISMA_CONFIG }}"
           volumeMounts:
+            {{- if .Values.debugEnv.enabled }}
             - name: debug-env-volume
-              mountPath: {{ .Values.focusServer.volumeMounts.debugEnv.mountPath | quote }}
+              mountPath: {{ .Values.debugEnv.persistence.mountPath | quote }}
+            {{- end }}
             - name: prisma-config-volume
-              mountPath: {{ .Values.focusServer.volumeMounts.prismaConfig.mountPath | quote }}
+              mountPath: {{ .Values.configurations.defaultConfig.mountPath | quote }}
       terminationGracePeriodSeconds: {{ .Values.focusServer.terminationGracePeriodSeconds }}
       volumes:
         {{- if .Values.debugEnv.enabled }}
         - name: debug-env-volume
           hostPath:
-            path: {{ .Values.debugEnv.mountPath | quote }}
+            path: {{ .Values.debugEnv.persistence.mountPath | quote }}
             type: Directory
         {{- end }}
         - name: prisma-config-volume
           configMap:
             name: prisma-config
-        - name: recordings
-          persistentVolumeClaim:
-            claimName: recordings-pvc
