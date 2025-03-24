@@ -45,12 +45,12 @@ spec:
               mountPath: {{ .Values.player.volumeMounts.storageSan.mountPath | quote }}
       terminationGracePeriodSeconds: {{ .Values.player.terminationGracePeriodSeconds }}
       volumes:
-        { { - if .Values.debug-env.enabled } }
+        {{- if .Values.debug-env.enabled }}
         - name: debug-env-volume
           hostPath:
             path: {{ .Values.debug-env.mountPath | quote }}
             type: Directory
-        { { - end } }
+        {{ - end }}
         - name: prisma-config-volume
           configMap:
             name: prisma-config
