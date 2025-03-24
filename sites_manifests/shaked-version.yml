@@ -24,6 +24,8 @@ spec:
         version: "1.7.25-1"
       - name: "curl"
         version: "8.5.0-2ubuntu10.6"
+      - name: "ca-certificates"
+        version: "20240203"
       - name: "docker-ce"
         version: "5:28.0.1-1~ubuntu.24.04~noble"
       - name: "dos2unix"
