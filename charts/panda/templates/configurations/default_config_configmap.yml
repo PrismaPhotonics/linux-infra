@@ -4,23 +4,10 @@ metadata:
   name: prisma-config
 data:
   default_config.py: |
-      """Default configuration for Prisma Photonics.
-      Example:
-    
-          from pspy.configuration import Config
-          Config.Broker.broker_server
-    
-    
-      Author:
-    
-          Uri London
-      """
-      
       import datetime
       import os
-      
+
       # ----------------------------------------- Prisma Master Configuration ----------------------------------------
-      
       
       class ConfigMeta(type):
           @property
