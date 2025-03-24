@@ -36,22 +36,17 @@ spec:
             - name: certs
               mountPath: /etc/ssl/certs
               readOnly: true
-            {{- if .Values.debugEnv.enabled }}
-            - name: debug-env-volume
+            - name: active-python-config
               mountPath: {{ .Values.debugEnv.persistence.mountPath | quote }}
-            {{- end }}
             - name: prisma-config-volume
               mountPath: {{ .Values.configurations.defaultConfig.mountPath | quote }}
             - name: recordings
               mountPath: {{ .Values.recordings.persistence.mountPath | quote }}
       terminationGracePeriodSeconds: {{ .Values.segyRecorder.terminationGracePeriodSeconds }}
       volumes:
-        {{- if .Values.debugEnv.enabled }}
-        - name: debug-env-volume
-          hostPath:
-            path: {{ .Values.debugEnv.persistence.mountPath | quote }}
-            type: Directory
-        {{- end }}
+        - name: active-python-config
+          configMap:
+            name: active-python-config
         - name: prisma-config-volume
           configMap:
             name: prisma-config

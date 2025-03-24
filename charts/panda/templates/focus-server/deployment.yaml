@@ -35,20 +35,15 @@ spec:
             - name: PRISMA_CONFIG
               value: "{{ .Values.focusServer.env.PRISMA_CONFIG }}"
           volumeMounts:
-            {{- if .Values.debugEnv.enabled }}
-            - name: debug-env-volume
+            - name: active-python-config
               mountPath: {{ .Values.debugEnv.persistence.mountPath | quote }}
-            {{- end }}
             - name: prisma-config-volume
               mountPath: {{ .Values.configurations.defaultConfig.mountPath | quote }}
       terminationGracePeriodSeconds: {{ .Values.focusServer.terminationGracePeriodSeconds }}
       volumes:
-        {{- if .Values.debugEnv.enabled }}
-        - name: debug-env-volume
-          hostPath:
-            path: {{ .Values.debugEnv.persistence.mountPath | quote }}
-            type: Directory
-        {{- end }}
+        - name: active-python-config
+          configMap:
+            name: active-python-config
         - name: prisma-config-volume
           configMap:
             name: prisma-config

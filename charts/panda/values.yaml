@@ -12,14 +12,14 @@ debugEnv:
     enabled: true
     capacity: 100Gi
     storageClassName: openebs-zfspv
-    mountPath: "/home/prisma/debug-codebase"
+    mountPath: "/home/prisma/debug-codebase/"
 
 recordings:
   persistence:
     enabled: true
     capacity: 100Gi
     storageClassName: openebs-zfspv
-    mountPath: "/prisma/root/recordings"
+    mountPath: "/prisma/root/recordings/"
 
 focusServer:
   nameOverride: "focus-server"
