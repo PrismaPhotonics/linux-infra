@@ -1,0 +1,28 @@
+
+- import_tasks: check_if_to_skip.yml
+
+- import_tasks: aws_configure.yml
+  when: not aws_folder_valid
+
+- name: Import from aws
+  include_tasks: aws_import.yml
+  loop: "{{ aws_s3_src }}"
+  loop_control:
+    loop_var: item
+  vars:
+    bucket_name: "{{ item.bucket_name }}"
+    object_prefix: "{{ item.object_prefix }}"
+  when: not aws_folder_valid
+
+- name: Find downloaded part files in destination directory recursively
+  find:
+    paths: "{{ artifact_path }}"
+    patterns: "*_part_*"
+    file_type: file
+    recurse: yes
+  register: downloaded_parts
+  when: not aws_folder_valid
+
+- import_tasks: assemble_parts.yml
+  when: not aws_folder_valid and not downloaded_parts.matched == 0
+

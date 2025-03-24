@@ -14,14 +14,10 @@ releases:
       - postgres/values.yml.gotmpl
       
   - name: airflow
-    namespace: airflow
+    namespace: control-center
     chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/airflow       
     timeout: 600
     hooks:
-      - events: ["presync"]
-        showlogs: true
-        command: "kubectl"
-        args: ["apply", "-f", "airflow/pvs.yml"] 
       - events: ["presync"]
         showlogs: true
         command: "kubectl"
@@ -37,7 +33,7 @@ releases:
       - tileserver/values.yml.gotmpl
   
   - name: control-server
-    namespace: airflow
+    namespace: control-center
     chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/kube-prometheus-stack       
     timeout: 600
     values:

@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ pod_name }}"
+  namespace: "{{ namespace }}"
+spec:
+  restartPolicy: Never
+  containers:
+    - name: "{{ container_name }}"
+      image: "busybox:1.35.0"
+      command: ["sh", "-c", "sleep 3600"]
+      volumeMounts:
+        - mountPath: "{{ dest_path }}"
+          name: pvc-volume
+        - mountPath: "{{ host_path }}"
+          name: host-volume
+  volumes:
+    - name: pvc-volume
+      persistentVolumeClaim:
+        claimName: "{{ pvc_name }}"
+    - name: host-volume
+      hostPath:
+        path: "{{ host_path }}"
+        type: Directory

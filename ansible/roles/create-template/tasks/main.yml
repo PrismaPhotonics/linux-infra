@@ -39,7 +39,7 @@
 
 - name: Resize disk (if needed)
   shell: >
-    qm resize {{ template_vmid }} scsi0 +20G
+    qm resize {{ template_vmid }} scsi0 +200G
   register: resize_disk
 
 - name: Convert VM to a template

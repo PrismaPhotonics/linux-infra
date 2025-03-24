@@ -1,0 +1,15 @@
+- name: "Check if AWS folder exists"
+  stat:
+    path: "{{ artifact_path }}/aws/"
+  register: aws_folder_stat
+
+- name: "Check for content in AWS folder if it exists"
+  find:
+    paths: "{{ artifact_path }}/aws/"
+    file_type: any
+  register: aws_dir_content
+  when: aws_folder_stat.stat.exists
+
+- name: "Set flag if AWS folder exists and is not empty"
+  set_fact:
+    aws_folder_valid: "{{ aws_folder_stat.stat.exists and (aws_dir_content.matched | default(0)) > 0 }}"

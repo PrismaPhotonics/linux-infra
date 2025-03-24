@@ -1,0 +1,27 @@
+- name: List all objects under the project prefix in S3
+  amazon.aws.s3_object:
+    bucket: "{{ bucket_name }}"
+    mode: list
+    prefix: "{{ object_prefix }}/"
+  register: s3_object_list
+
+- name: Create directories for S3 keys
+  file:
+    path: "{{ artifact_path }}/aws/{{ s3_item if s3_item.endswith('/') else (s3_item | dirname) }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ s3_object_list.s3_keys | unique }}"
+  loop_control:
+    loop_var: s3_item
+    label: "{{ s3_item if s3_item.endswith('/') else (s3_item | dirname) }}"
+
+- name: Download each object from S3
+  amazon.aws.s3_object:
+    bucket: "{{ bucket_name }}"
+    mode: get
+    object: "{{ s3_item }}"
+    dest: "{{ artifact_path }}/aws/{{ s3_item }}"
+  loop: "{{ s3_object_list.s3_keys }}"
+  loop_control:
+    loop_var: s3_item
+  when: not s3_item.endswith('/')

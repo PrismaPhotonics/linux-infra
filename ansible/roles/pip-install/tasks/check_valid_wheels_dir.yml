@@ -1,0 +1,19 @@
+- name: Set the template name
+  set_fact:
+    pip_wheels_dir: "{{ artifact_path }}/pip_wheels_dir"
+
+- name: "Check if pip wheels folder exists"
+  stat:
+    path: "{{ pip_wheels_dir }}"
+  register: pip_wheels_dir_stat
+
+- name: "Check if pip wheels folder is not empty"
+  find:
+    paths: "{{ pip_wheels_dir }}"
+    file_type: any
+  register: pip_wheels_contents
+  when: pip_wheels_dir_stat.stat.exists
+
+- name: "Set flag if pip wheels folder exists and is not empty"
+  set_fact:
+    pip_wheels_folder_valid: "{{ pip_wheels_dir_stat.stat.exists and (pip_wheels_contents.matched | default(0)) > 0 }}"

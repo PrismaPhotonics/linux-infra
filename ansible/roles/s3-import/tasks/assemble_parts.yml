@@ -1,0 +1,42 @@
+- name: Group part files by base file name including directory
+  set_fact:
+    grouped_parts: "{{ grouped_parts | default({}) | combine({ base: (grouped_parts[base] | default([])) + [item.path] }) }}"
+  vars:
+    base: "{{ (item.path | dirname) ~ '/' ~ (item.path | basename | regex_replace('^(.*?)_part_.*', '\\1')) }}"
+  loop: "{{ downloaded_parts.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+
+- name: Debug grouped parts
+  debug:
+    var: grouped_parts
+
+- name: Concatenate part files to reassemble original file for each key
+  shell: "cat {{ item.value | sort | join(' ') }} > {{ item.key }}"
+  args:
+    executable: /bin/bash
+  loop: "{{ grouped_parts | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Verify reassembled files exist
+  stat:
+    path: "{{ item.key }}"
+  loop: "{{ grouped_parts | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  register: assembled_files
+
+- name: Fail if any reassembled file was not created
+  fail:
+    msg: "Reassembled file {{ item.item.key }} was not created."
+  when: not item.stat.exists
+  loop: "{{ assembled_files.results }}"
+  loop_control:
+    label: "{{ item.item.key }}"
+    
+- name: Delete all part files after reassembly
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ grouped_parts.values() | flatten }}"

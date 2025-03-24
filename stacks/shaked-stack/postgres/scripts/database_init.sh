@@ -21,15 +21,28 @@ wait_for_pod_readiness() {
   fi
 }
 
-init_db() {
-    HOST="$THREE_FIRST_OCTETS.104"
-    PORT="5672"
-    DB="postgres"
-    USER="postgres"
-    PASSWORD="postgres"
-    SQL_FILE="postgres/scripts/database_script.sql"
-    DATA_SCRIPT="postgres/scripts/data_script.sql"
+HOST="$THREE_FIRST_OCTETS.104"
+PORT="5672"
+DB="postgres"
+USER="postgres"
+PASSWORD="postgres"
+SQL_FILE="postgres/scripts/database_script.sql"
+DATA_SCRIPT="postgres/scripts/data_script.sql"
 
+wait_for_postgres() {
+  log "Waiting for PostgreSQL to accept connections (max 30s)..."
+  for i in {1..6}; do
+    PGPASSWORD="$PASSWORD" psql -h "$HOST" -U "$USER" -d "$DB" -c "SELECT 1;" >/dev/null 2>&1 && {
+      log "PostgreSQL is ready."
+      return 0
+    }
+    log "Attempt $i: not ready, sleeping 5s..."
+    sleep 5
+  done
+  error_exit "PostgreSQL failed to become ready after 30 seconds."
+}
+
+init_db() {
   # Check if the SQL file exists
     if [[ ! -f "$SQL_FILE" ]]; then
         error_exit "SQL file $SQL_FILE not found."
@@ -55,4 +68,5 @@ init_db() {
 }
 
 wait_for_pod_readiness
+wait_for_postgres
 init_db

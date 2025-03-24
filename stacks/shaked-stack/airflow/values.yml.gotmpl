@@ -3,7 +3,7 @@
 images:
   airflow:
     repository: 262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-airflow
-    tag: 1.0.6
+    tag: 1.1.0
 
 env:
   - name: AIRFLOW__CORE__PARALLELISM
@@ -82,8 +82,7 @@ workers:
           resources:
             requests:
               storage: 100Mi
-          storageClassName: "" 
-          volumeName: config-pv
+          storageClassName: "openebs-zfspv" 
 
     - metadata:
         name: report-volume
@@ -101,8 +100,7 @@ workers:
           resources:
             requests:
               storage: 100Mi
-          storageClassName: ""
-          volumeName: coordinates-pv
+          storageClassName: "openebs-zfspv"
 webserver:
   service:
     type: LoadBalancer
