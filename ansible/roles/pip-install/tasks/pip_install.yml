@@ -3,7 +3,7 @@
     name: >-
       {{ item.name }}{{ '=='+(item.version | trim)
       if (item.version | trim)[0].isdigit() else item.version | trim }}
-    extra_args: "--no-index --find-links=file://{{ pip_wheels_dir }}"
+    extra_args: "--no-index --find-links=file://{{ pip_wheels_dir }} --break-system-packages"
     state: present
   loop: "{{ pip_packages }}"
   when: pip_wheels_folder_valid
@@ -14,5 +14,6 @@
       {{ item.name }}{{ '=='+(item.version | trim)
       if (item.version | trim)[0].isdigit() else item.version | trim }}
     state: present
+    extra_args: "--break-system-packages"
   loop: "{{ pip_packages }}"
   when: not pip_wheels_folder_valid

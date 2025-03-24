@@ -5,4 +5,5 @@ enable_os_tools_install: true
 enable_k3s_install: true
 enable_configure_registry_mirroring: true
 enable_pip_install: true
+enable_download_from_s3: true
 enable_helm_install: true

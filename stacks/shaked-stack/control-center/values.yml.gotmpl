@@ -1,16 +1,16 @@
 {{- $threeFirstOctets := (env "THREE_FIRST_OCTETS" | default "10.10.10") -}}
 
 grafana:
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
   persistence:
     type: pvc
     enabled: true
     storageClassName: openebs-zfspv
     size: 5Gi
+    path: /control-center 
   defaultDashboardsEnabled: false 
-  service:
-    enabled: true
-    type: LoadBalancer
-    loadBalancerIP: {{ $threeFirstOctets }}.106
   image:
     registry: "262399703539.dkr.ecr.eu-central-1.amazonaws.com"
     repository: "dashboards/grafana-shaked"
@@ -22,6 +22,10 @@ grafana:
       enabled: true -
       path: /etc/grafana/provisioning/dashboards
       updateIntervalSeconds: 10
+    server:
+      domain: localhost
+      root_url: https://localhost/control-center/
+      serve_from_sub_path: true
   env:
     GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: prisma-pulsealertsmap-panel,prisma-analysis-panel,prisma-systemmetricscontrolcenter-panel,prisma-weeklyreports-panel
   sidecar:

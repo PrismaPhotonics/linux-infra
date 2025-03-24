@@ -24,6 +24,8 @@ spec:
         version: "1.7.25-1"
       - name: "curl"
         version: "8.5.0-2ubuntu10.6"
+      - name: "ca-certificates"
+        version: "20240203"
       - name: "docker-ce"
         version: "5:28.0.1-1~ubuntu.24.04~noble"
       - name: "dos2unix"
@@ -71,7 +73,7 @@ spec:
       - name: "zip"
         version: "3.0-13ubuntu0.2"
       - name: "python3-pip"
-        version: "20.0.2-5ubuntu1.11"
+        version: "24.0+dfsg-1ubuntu1.1"
     
     aws_s3_src: 
       - bucket_name: prisma-linux-platform 
@@ -79,7 +81,7 @@ spec:
     
     helm_spec:
       project_name: shaked
-      three_first_octets: 10.10.70
+      three_first_octets: 10.20.20
       branch_name: main
       data_transfer:
         - pvc_name: config-volume-airflow-worker-0
@@ -127,7 +129,11 @@ spec:
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec:on-prem2"
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-airflow:1.1.0"
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:v0.0.35-dev"
+<<<<<<< HEAD
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:node-test05"
+=======
+          - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-node-server:dev-node06"
+>>>>>>> main
         third_party:
           - "bitnami/kubernetes-event-exporter:1.7.0-debian-12-r12"
           - "docker.elastic.co/beats/filebeat:8.5.1"
@@ -209,12 +215,12 @@ machines:
     # Connectivity to the bare-metal (proxmox host)
     ansible_host: "10.50.0.144"
     ansible_user: "root"
-    ansible_password: "Pa$$w0rd!"
+    ansible_password: "PASSW0RD"
 
     proxmox_host_ip: "10.50.0.144"
     proxmox_user: "root@pam"
-    proxmox_user_password: "Pa$$w0rd!"
-    proxmox_node: "vm1"
+    proxmox_user_password: "PASSW0RD"
+    proxmox_node: "shakedprod"
 
     template_vmid: 9000
 
@@ -235,14 +241,14 @@ machines:
         cores: 28
         memory: 57344
         zfs_configuration:
-        zpools:
-          - zpool_name: prismapool
-            zpool_device: /dev/sda2
+          zpools:
+            - zpool_name: prismapool
+              zpool_device: /dev/sda2
 
-        data_sets:
-          - name: prismapool/root/k8storage
-            mountpoint: /var/lib/rancher/k3s/storage
-            quota: 15T
+          data_sets:
+            - name: prismapool/root/k8storage
+              mountpoint: /var/lib/rancher/k3s/storage
+              quota: 15T
 
         accessable_ip: "10.20.20.150" # The IP used to connect to the VM, later it will be taken from the ipconfig part
         ipconfig:
@@ -252,6 +258,8 @@ machines:
         net:
           net0: "virtio,bridge=vmbrStaging"
           net1: "virtio,bridge=vmbr0"
+
+        scsi: "data-lvm:15500"
 
         mounts:
           src: "/mnt/shaked"
@@ -289,6 +297,8 @@ machines:
         net:
           net0: "virtio,bridge=vmbrStaging"
           net1: "virtio,bridge=vmbr0"
+
+        scsi: "data-lvm:300"
 
         mounts:
           src: "/mnt/shaked"

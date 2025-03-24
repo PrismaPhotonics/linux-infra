@@ -32,7 +32,7 @@ releases:
     values:
       - tileserver/values.yml.gotmpl
   
-  - name: control-server
+  - name: control-center
     namespace: control-center
     chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/kube-prometheus-stack       
     timeout: 600
