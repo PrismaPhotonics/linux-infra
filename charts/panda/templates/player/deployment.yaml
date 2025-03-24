@@ -50,7 +50,7 @@ spec:
           hostPath:
             path: {{ .Values.debug-env.mountPath | quote }}
             type: Directory
-        {{ - end }}
+        {{- end }}
         - name: prisma-config-volume
           configMap:
             name: prisma-config
