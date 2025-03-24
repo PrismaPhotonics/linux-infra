@@ -24,6 +24,8 @@ spec:
         version: "1.7.25-1"
       - name: "curl"
         version: "8.5.0-2ubuntu10.6"
+      - name: "ca-certificates"
+        version: "20240203"
       - name: "docker-ce"
         version: "5:28.0.1-1~ubuntu.24.04~noble"
       - name: "dos2unix"
@@ -71,7 +73,7 @@ spec:
       - name: "zip"
         version: "3.0-13ubuntu0.2"
       - name: "python3-pip"
-        version: "20.0.2-5ubuntu1.11"
+        version: "24.0+dfsg-1ubuntu1.1"
     
     aws_s3_src: 
       - bucket_name: prisma-linux-platform 
