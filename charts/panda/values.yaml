@@ -4,7 +4,7 @@ cleanupService:
 
 configurations:
   defaultConfig:
-    mountPath: "/home/prisma/pz/config/py/"
+    mountPath: "/home/prisma/pz/config/py"
 
 debugEnv:
   enabled: true
@@ -12,14 +12,14 @@ debugEnv:
     enabled: true
     capacity: 100Gi
     storageClassName: openebs-zfspv
-    mountPath: "/home/prisma/debug-codebase/"
+    mountPath: "/home/prisma/debug-codebase"
 
 recordings:
   persistence:
     enabled: true
     capacity: 100Gi
     storageClassName: openebs-zfspv
-    mountPath: "/prisma/root/recordings/"
+    mountPath: "/prisma/root/recordings"
 
 focusServer:
   nameOverride: "focus-server"
@@ -35,6 +35,10 @@ focusServer:
     tag: "10.7.104"
     pullPolicy: IfNotPresent
   workingDir: "/home/prisma"
+  command:
+    - "./debug-codebase/active-python-env.sh"
+    - "-m"
+    - "focus_server"
   service:
     type: ClusterIP
     port: 5000
