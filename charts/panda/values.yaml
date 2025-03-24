@@ -7,7 +7,7 @@ configurations:
     mountPath: "/home/prisma/pz/config/py"
 
 debugEnv:
-  enabled: true
+  enabled: false
   persistence:
     enabled: true
     capacity: 100Gi

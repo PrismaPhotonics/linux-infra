@@ -7,7 +7,7 @@ data:
     #!/bin/bash
 
     # Manually configurable DEBUG variable
-    DEBUG=1
+    DEBUG={{ if .Values.debugEnv.enabled }}1{{ else }}0{{ end }}
 
     # Paths
     VENV_PYTHON="/home/prisma/debug-codebase/venv/bin/python"
