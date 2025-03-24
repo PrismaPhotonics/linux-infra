@@ -44,6 +44,9 @@ spec:
         - name: active-python-config
           configMap:
             name: active-python-config
+            defaultMode: 0755
         - name: prisma-config-volume
           configMap:
             name: prisma-config
+            defaultMode: 0755
+
