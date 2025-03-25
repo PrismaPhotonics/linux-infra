@@ -275,7 +275,7 @@ extraManifests:
                 "type": "prisma-pulsealertsmap-panel"
               }
             ],
-            "refresh": "5s",
+            "refresh": "",
             "schemaVersion": 39,
             "tags": [],
             "templating": {
