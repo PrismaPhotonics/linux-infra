@@ -149,11 +149,11 @@ spec:
         apache-airflow: https://airflow.apache.org
         kubernetes-dashboard: https://kubernetes.github.io/dashboard/
         nvidia: https://nvidia.github.io/gpu-operator
-        awx: https://ansible-community.github.io/awx-operator-helm/
+        awx-operator: https://ansible-community.github.io/awx-operator-helm/
 
 
       helm_charts:
-        awx/awx-operator: "3.0.0"
+        awx-operator/awx-operator: "3.0.0"
         bitnami/rabbitmq: "14.3.2"
         bitnami/mongodb: "15.6.26"
         nvidia/gpu-operator: "24.3.0"
