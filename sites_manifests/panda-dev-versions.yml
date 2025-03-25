@@ -130,6 +130,7 @@ spec:
           - "registry.k8s.io/nfd/node-feature-discovery:v0.15.4"
           - "telegraf:latest"
           - "registry:2"
+          - "quay.io/ansible/awx-operator:0.20.0"
 
 
     helm_spec:
@@ -148,7 +149,7 @@ spec:
         apache-airflow: https://airflow.apache.org
         kubernetes-dashboard: https://kubernetes.github.io/dashboard/
         nvidia: https://nvidia.github.io/gpu-operator
-
+        awx: https://ansible.github.io/awx-operator/
 
       helm_charts:
         bitnami/rabbitmq: "14.3.2"
@@ -171,6 +172,7 @@ spec:
         elastic/filebeat: "8.5.1"
         mojo2600/pihole: "2.26.1"
         apache-airflow/airflow: "1.15.0"
+        awx/awx-operator: "0.20.0"
 
     drivers:
       - name: "gpu-driver"
