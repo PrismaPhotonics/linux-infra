@@ -11,3 +11,9 @@
   command: aws configure set default.region "{{ aws_region }}"
 
 - name: Login to AWS ECR
+  shell: aws ecr get-login-password --region "{{ aws_region }}" | docker login --username AWS --password-stdin "262399703539.dkr.ecr.eu-central-1.amazonaws.com"
+  register: ecr_login
+
+- name: Display ECR login result
+  debug:
+    var: ecr_login.stdout
