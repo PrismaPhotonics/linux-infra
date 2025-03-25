@@ -173,7 +173,7 @@ spec:
         elastic/filebeat: "8.5.1"
         mojo2600/pihole: "2.26.1"
         apache-airflow/airflow: "1.15.0"
-        awx-operator/awx-operator: "2.19.1"
+        awx-operator/awx-operator: "3.0.0"
 
     drivers:
       - name: "gpu-driver"
