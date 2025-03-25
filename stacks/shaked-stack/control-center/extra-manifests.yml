@@ -28,9 +28,9 @@ extraManifests:
                 - name: DB_HOST
                   value: "postgres-shaked-postgresql.postgres-shaked.svc.cluster.local"
                 - name: DB_USER
-                  value: "shaked"
+                  value: "postgres"
                 - name: DB_PASSWORD
-                  value: "shaked@2025"
+                  value: "postgres"
                 - name: DB_NAME
                   value: "postgres"
                 - name: SCHEMA_NAME
