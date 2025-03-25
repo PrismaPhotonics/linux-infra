@@ -70,7 +70,15 @@ kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath="{.data.token}
 ## Development
 
 ### 1. Setting up a development environment
-TBD
-### 2. Testing
+TODO
+### 2. Linting
+We use [pre-commit](https://github.com/pre-commit/pre-commit) to run a bunch of linters/formatters.
+You can check out the pre-commit [config](.pre-commit-config.yaml) for details.
 
-#### Running CI
+To run all formatter/linters, execute from the repo root:
+```shell
+pre-commit run --all-files --show-diff-on-failure
+```
+
+### 3. Testing
+TODO
