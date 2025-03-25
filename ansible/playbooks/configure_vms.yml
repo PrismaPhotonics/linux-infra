@@ -11,9 +11,6 @@
       vars:
         artifact_path: "{{ spec.configurations.artifact_path }}"
 
-    - role: ecr-login
-      when: enable_ecr_login | default(false)
-
     - role: apt-install
       when: enable_apt_install | default(false)
       vars:
