@@ -68,5 +68,4 @@ init_db() {
 }
 
 wait_for_pod_readiness
-wait_for_postgres
 init_db
