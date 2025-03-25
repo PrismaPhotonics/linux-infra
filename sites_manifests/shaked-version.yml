@@ -88,10 +88,12 @@ spec:
           folder_name: config
           dest_path: /app/config
           namespace: control-center
+          override_data: true
         - pvc_name: coordinates-volume-airflow-worker-0
           folder_name: coordinates
           dest_path: /app/report/coordinates
           namespace: control-center
+          override_data: true
           command_after_transfer: "kubectl rollout restart statefullset airflow-worker -n control-center"
       helm_repos:
         prometheus-community: https://prometheus-community.github.io/helm-charts
@@ -123,7 +125,7 @@ spec:
         apache-airflow/airflow: "1.15.0"
 
     docker_spec:
-      docker_registry_address: 10.20.10.150:5000
+      docker_registry_address: 10.20.20.151:5000
       docker_images:
         prisma_images:
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec:on-prem2"

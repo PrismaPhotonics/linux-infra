@@ -38,5 +38,5 @@ releases:
     timeout: 600
     values:
       - control-center/values.yml.gotmpl
-      - control-center/extra-manifests.yml.gotmpl
+      - control-center/extra-manifests.yml
     
