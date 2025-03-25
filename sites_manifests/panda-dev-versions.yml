@@ -149,7 +149,7 @@ spec:
         apache-airflow: https://airflow.apache.org
         kubernetes-dashboard: https://kubernetes.github.io/dashboard/
         nvidia: https://nvidia.github.io/gpu-operator
-        awx: https://github.com/ansible/awx-operator/
+        awx: https://ansible-community.github.io/awx-operator-helm/
 
 
       helm_charts:
