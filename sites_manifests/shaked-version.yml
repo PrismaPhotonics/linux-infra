@@ -130,7 +130,7 @@ spec:
         prisma_images:
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/grafana-iec:on-prem2"
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-airflow:1.1.0"
-          - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:v0.0.35-dev"
+          - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/dashboards/grafana-shaked:v0.0.39-dev"
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/shaked-node-server:dev-node06"
         third_party:
           - "bitnami/kubernetes-event-exporter:1.7.0-debian-12-r12"
