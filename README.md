@@ -56,7 +56,7 @@ You can configure just one VM by passing --limit <VM-name>
 ansible-playbook -i inventory/hosts.ini playbooks/configure_vms.yml -l panda-worker-node -e @../sites_manifests/panda-dev-versions.yml
 ```
 
-### 3. Get the password for kunernetes dashboard
+### 3. Get the password for Kubernetes Dashboard
 
 1. Configure the VMs
 Once your VMs are created and reachable (ensure they are added to your inventory as needed), run:
@@ -64,3 +64,21 @@ Once your VMs are created and reachable (ensure they are added to your inventory
 ```bash
 kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath="{.data.token}" | base64 -d
 ```
+
+
+
+## Development
+
+### 1. Setting up a development environment
+TODO
+### 2. Linting
+We use [pre-commit](https://github.com/pre-commit/pre-commit) to run a bunch of linters/formatters.
+You can check out the pre-commit [config](.pre-commit-config.yaml) for details.
+
+To run all formatter/linters, execute from the repo root:
+```shell
+pre-commit run --all-files --show-diff-on-failure
+```
+
+### 3. Testing
+TODO
