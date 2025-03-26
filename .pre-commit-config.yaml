@@ -43,6 +43,16 @@ repos:
         args: [ '-l', '-i', '2', '-ci', '-sr', '-w' ]
       - id: shellcheck
 
+  # TODO: This needs work - fails on trying to fetch "local" downloaded_helm_charts
+  # This means it needs staging prep to run. no bueno.
+#  - repo: local
+#    hooks:
+#      - id: helmfile-lint
+#        name: helmfile lint
+#        entry: helmfile lint --file **/*/helmfile.yaml
+#        language: system
+#        pass_filenames: false
+
   # TODO: Enable this separately after everything else passes
   # Ansible lint - See .ansible-lint for configuration
 #  - repo: https://github.com/ansible/ansible-lint.git
