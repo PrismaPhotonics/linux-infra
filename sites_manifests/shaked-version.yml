@@ -94,7 +94,7 @@ spec:
           dest_path: /app/report/coordinates
           namespace: control-center
           override_data: true
-          command_after_transfer: "kubectl rollout restart statefullset airflow-worker -n control-center"
+          command_after_transfer: "kubectl rollout restart statefulset airflow-worker -n control-center"
       helm_repos:
         prometheus-community: https://prometheus-community.github.io/helm-charts
         bitnami: https://charts.bitnami.com/bitnami
