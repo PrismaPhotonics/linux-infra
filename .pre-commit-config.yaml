@@ -43,6 +43,15 @@ repos:
         args: [ '-l', '-i', '2', '-ci', '-sr', '-w' ]
       - id: shellcheck
 
+  # TODO: Enable this separately after everything else passes
+  # Ansible lint - See .ansible-lint for configuration
+#  - repo: https://github.com/ansible/ansible-lint.git
+#    rev: v25.1.3
+#    hooks:
+#      - id: ansible-lint
+#        args: [ 'ansible' ]
+#        verbose: true
+
   - repo: https://github.com/codespell-project/codespell
     rev: v2.3.0
     hooks:
