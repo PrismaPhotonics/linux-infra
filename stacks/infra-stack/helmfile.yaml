@@ -51,4 +51,13 @@ releases:
     values:
       - pihole/values.yml.gotmpl
       - pihole/projects/{{ $project_name }}/values.yml.gotmpl
+
+  - name: awx-operator
+    namespace: awx
+    chart: { { $artifactPath } }/helm_charts/downloaded_helm_charts/awx-operator
+    wait: true
+    timeout: 600
+    values:
+      - awx/values.yml.gotmpl
+
     

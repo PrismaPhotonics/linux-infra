@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "focus-server.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "focus-server.name" . }}
+    helm.sh/chart: {{ include "focus-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  replicas: {{ .Values.focusServer.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "focus-server.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "focus-server.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ .Values.focusServer.serviceAccountName }}
+      containers:
+        - name: focus-server
+          image: "{{ .Values.focusServer.image.repository }}:{{ .Values.focusServer.image.tag }}"
+          imagePullPolicy: {{ .Values.focusServer.image.pullPolicy }}
+          workingDir: {{ .Values.focusServer.workingDir | quote }}
+          command: {{ toYaml .Values.focusServer.command | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.focusServer.service.port }}
+              name: http
+          env:
+            - name: PZ_IMAGE_TAG
+              value: "{{ .Values.focusServer.env.PZ_IMAGE_TAG }}"
+            - name: PRISMA_CONFIG
+              value: "{{ .Values.focusServer.env.PRISMA_CONFIG }}"
+          volumeMounts:
+            - name: active-python-config
+              mountPath: {{ .Values.debugEnv.persistence.mountPath | quote }}
+            - name: prisma-config
+              mountPath: {{ .Values.configurations.defaultConfig.mountPath | quote }}
+      terminationGracePeriodSeconds: {{ .Values.focusServer.terminationGracePeriodSeconds }}
+      volumes:
+        - name: active-python-config
+          configMap:
+            name: active-python-config
+            defaultMode: 0755
+        - name: prisma-config
+          configMap:
+            name: prisma-config
+            defaultMode: 0755
+

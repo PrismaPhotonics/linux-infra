@@ -88,7 +88,7 @@ git add .
 echo "Committing changes..."
 git commit -m "Publish Helm charts on $(date '+%Y-%m-%d %H:%M:%S')" || echo "Nothing to commit."
 echo "Pushing changes to remote branch: $GH_PAGES_BRANCH"
-git push origin "$GH_PAGES_BRANCH"
+git push origin "$GH_PAGES_BRANCH" --force
 
 # Switch back to the original branch if it was set.
 if [ -n "$CURRENT_BRANCH" ]; then

@@ -32,7 +32,7 @@
   set_fact:
     new_image: "{{ docker_registry_address }}/{{ new_repo }}:{{ image_tag }}"
 
-- name: Tag and push image to local registry (if not already present)
+- name: "Tag and push image {{ original_image }} to local registry (if not already present)"
   community.docker.docker_image:
     name: "{{ original_image }}"
     tag: "{{ image_tag }}"

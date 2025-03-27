@@ -1,0 +1,133 @@
+{{- $threeFirstOctets := (env "THREE_FIRST_OCTETS" | default "10.10.10") -}}
+
+{{- $password := "prismapanda" -}}
+
+auth:
+  password:  "{{ $password }}"
+  tls:
+    enabled: true
+    existingSecret: rabbitmq-tls-secret
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: "default"
+
+extraSecrets:
+  load-definition-2:
+    load_definition.json: |
+      {
+        "users": [
+            {
+                "name": "admin",
+                "password": "{{ $password }}",
+                "tags": "administrator"
+            },
+            {
+                "name": "prisma",
+                "password": "{{ $password }}",
+                "tags": "administrator"
+            },
+            {
+                "name": "user",
+                "password": "{{ $password }}",
+                "tags": "administrator"
+            }
+        ],
+        "vhosts": [
+            {
+                "name": "/"
+            }
+        ],
+        "permissions": [
+            {
+                "user": "admin",
+                "vhost": "/",
+                "configure": ".*",
+                "write": ".*",
+                "read": ".*"
+            },
+            {
+                "user": "prisma",
+                "vhost": "/",
+                "configure": ".*",
+                "write": ".*",
+                "read": ".*"
+            },
+            {
+                "user": "user",
+                "vhost": "/",
+                "configure": ".*",
+                "write": ".*",
+                "read": ".*"
+            }
+        ],
+        "exchanges": [
+            {
+                "name": "prisma",
+                "vhost": "/",
+                "type": "topic",
+                "durable": true,
+                "auto_delete": false
+            }
+        ]
+      }
+
+
+loadDefinition:
+  enabled: true
+  existingSecret: load-definition-2
+
+persistence:
+  enabled: true
+  storageClass: panda
+  size: 50Gi
+  storageClass: openebs-zfspv
+
+extraConfiguration: |
+  heartbeat = 3600
+
+  # Configure the listeners
+  listeners.ssl.default = 0.0.0.0:5671
+  listeners.tcp.1 = 127.0.0.1:5672
+
+  # Set the SSL options
+  ssl_options.verify = verify_none
+  ssl_options.fail_if_no_peer_cert = false
+
+  # Configure SSL authentication
+  auth_mechanisms.default = PLAIN
+
+  log.file.level = debug
+  log.file.rotation.size = 104857600
+  log.file = /opt/bitnami/rabbitmq/logs/rabbit.log
+  log.file.rotation.count = 20
+
+  # Disk space limit configuration
+  vm_memory_high_watermark.relative = 0.9
+  vm_memory_high_watermark_paging_ratio = 0.9
+
+resources:
+  requests:
+    memory: 10Gi
+  limits:
+    memory: 20Gi
+
+service:
+  type: LoadBalancer
+  loadBalancerIP: "{{ $threeFirstOctets }}.101"
+  nodePorts:
+    amqps: 5671
+
+volumes:
+  - name: certs
+    secret:
+      secretName: rabbitmq-tls-secret
+      items:
+        - key: ca.crt
+          path: ca.crt
+        - key: tls.crt
+          path: tls.crt
+        - key: tls.key
+          path: tls.key

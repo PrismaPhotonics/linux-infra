@@ -1,0 +1,92 @@
+# Focus Server values
+cleanupService:
+  serviceAccountName: cleanup-sa
+
+configurations:
+  defaultConfig:
+    mountPath: "/home/prisma/pz/config/py"
+  storageConfig:
+    mountPath: "/home/prisma/pz/config/storage_manager"
+
+debugEnv:
+  enabled: false
+  persistence:
+    enabled: true
+    capacity: 100Gi
+    storageClassName: openebs-zfspv
+    mountPath: "/home/prisma/debug-codebase"
+
+recordings:
+  persistence:
+    enabled: true
+    capacity: 100Gi
+    storageClassName: openebs-zfspv
+    mountPath: "/prisma/root/recordings/prisma-210-1057"
+
+focusServer:
+  nameOverride: "focus-server"
+  replicaCount: 1
+  serviceAccountName: focus-server-sa
+  ingress:
+    enabled: false
+    ingressClassName: "nginx"
+    rules: [ ]
+    tls: [ ]
+  image:
+    repository: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux"
+    tag: "10.7.104"
+    pullPolicy: IfNotPresent
+  workingDir: "/home/prisma"
+  command:
+    - "./debug-codebase/active-python-env.sh"
+    - "-m"
+    - "focus_server"
+  service:
+    type: ClusterIP
+    port: 5000
+  env:
+    PZ_IMAGE_TAG: "10.7.104"
+    PRISMA_CONFIG: "/home/prisma/pz/config/"
+  terminationGracePeriodSeconds: 30
+
+# SEGY Recorder values
+segyRecorder:
+  nameOverride: "segy-recorder"
+  replicaCount: 1
+  image:
+    repository: "262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux"
+    tag: "10.7.104"
+    pullPolicy: IfNotPresent
+  workingDir: "/home/prisma"
+  command:
+    - "./debug-codebase/active-python-env.sh"
+    - "-m"
+    - "smart_recorder"
+    - "--storage-cfg"
+    - "/home/prisma/pz/config/storage_manager/storage.yaml"
+    - "--storage"
+    - "segy"
+    - "-b"
+    - "segy"
+    - "-fl"
+    - "10000"
+    - "--file-limit-duration"
+    - "5"
+    - "--log-name"
+    - "segy-recorder"
+    - "-vf"
+    - "--record-livefs"
+    - "--mongo-mapper-index"
+    - "--allow-use-existing-queue"
+  env:
+    PRISMA_RABBIT_MACHINE_NAME: "data-rabbitmq.prismaphotonics.net"
+    PRISMA_CERTIFICATES: "/etc/ssl/certs"
+    PRISMA_CONFIG: "/home/prisma/pz/config"
+
+  tlsSecret:
+    name: "rabbitmq-tls-secret"
+    items:
+      caCrtPath: "ca.crt"
+      tlsCrtPath: "tls.crt"
+      tlsKeyPath: "tls.key"
+  terminationGracePeriodSeconds: 30

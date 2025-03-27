@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: storage-config
+data:
+  storage.yaml: |
+    segy:
+        storage:
+        -   path: /prisma/root/recordings/prisma-210-1057
+            quota: 0.98
+
+        type: filesystem

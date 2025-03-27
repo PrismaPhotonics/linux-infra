@@ -31,7 +31,7 @@
         state: directory
         mode: '0755'
 
-    - name: Write helmfile command output 
+    - name: Write helmfile command output
       copy:
         dest: "{{ artifact_path }}/helmfile_outputs/helmfile_output.txt"
         content: "{{ helmfile_output.stderr }}"

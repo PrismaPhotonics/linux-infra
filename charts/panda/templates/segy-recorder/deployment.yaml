@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "segy-recorder.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "segy-recorder.name" . }}
+    helm.sh/chart: {{ include "segy-recorder.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  replicas: {{ .Values.segyRecorder.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "segy-recorder.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "segy-recorder.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: segy-recorder
+          image: "{{ .Values.segyRecorder.image.repository }}:{{ .Values.segyRecorder.image.tag }}"
+          imagePullPolicy: {{ .Values.segyRecorder.image.pullPolicy }}
+          workingDir: {{ .Values.segyRecorder.workingDir | quote }}
+          env:
+            - name: PRISMA_RABBIT_MACHINE_NAME
+              value: {{ .Values.segyRecorder.env.PRISMA_RABBIT_MACHINE_NAME | quote }}
+            - name: PRISMA_CERTIFICATES
+              value: {{ .Values.segyRecorder.env.PRISMA_CERTIFICATES | quote }}
+            - name: PRISMA_CONFIG
+              value: {{ .Values.segyRecorder.env.PRISMA_CONFIG | quote }}
+          command: {{ toYaml .Values.segyRecorder.command | nindent 12 }}
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/ssl/certs
+              readOnly: true
+            - name: active-python-config
+              mountPath: {{ .Values.debugEnv.persistence.mountPath | quote }}
+            - name: prisma-config
+              mountPath: {{ .Values.configurations.defaultConfig.mountPath | quote }}
+            - name: recordings
+              mountPath: {{ .Values.recordings.persistence.mountPath | quote }}
+            - name: storage-config
+              mountPath: {{ .Values.configurations.storageConfig.mountPath | quote }}
+      terminationGracePeriodSeconds: {{ .Values.segyRecorder.terminationGracePeriodSeconds }}
+      volumes:
+        - name: active-python-config
+          configMap:
+            name: active-python-config
+            defaultMode: 0755
+        - name: prisma-config
+          configMap:
+            name: prisma-config
+            defaultMode: 0755
+        - name: storage-config
+          configMap:
+            name: storage-config
+            defaultMode: 0755
+        - name: recordings
+          persistentVolumeClaim:
+            claimName: recordings-pvc
+        - name: certs
+          projected:
+            sources:
+              - secret:
+                  name: rabbitmq-tls-secret
+                  items:
+                    - key: ca.crt
+                      path: prisma_ca.pem
+                    - key: tls.crt
+                      path: data-rabbitmq.prismaphotonics.net_cert.pem
+                    - key: tls.key
+                      path: data-rabbitmq.prismaphotonics.net_key.pem
+

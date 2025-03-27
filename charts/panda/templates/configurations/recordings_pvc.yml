@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: recordings-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.recordings.persistence.capacity }}
+{{- if .Values.recordings.persistence.storageClassName }}
+  storageClassName: {{ .Values.recordings.persistence.storageClassName | quote }}
+{{- end }}
+{{- if .Values.recordings.persistence.hostPath }}
+  volumeName: recordings-pv
+  storageClassName: recordings
+{{- end }}

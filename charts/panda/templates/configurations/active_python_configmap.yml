@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: active-python-config
+data:
+  active-python-env.sh: |
+    #!/bin/bash
+
+    # Manually configurable DEBUG variable
+    DEBUG={{ if .Values.debugEnv.enabled }}1{{ else }}0{{ end }}
+
+    # Paths
+    VENV_PYTHON="/home/prisma/debug-codebase/venv/bin/python"
+    SYSTEM_PYTHON="/usr/bin/python"
+
+    if [ "$DEBUG" -eq 1 ]; then
+        PYTHON_COMMAND=$VENV_PYTHON
+    else
+        PYTHON_COMMAND=$SYSTEM_PYTHON
+    fi
+
+    # Execute the python command with the passed arguments
+    $PYTHON_COMMAND "$@"

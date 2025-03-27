@@ -1,7 +1,7 @@
 enable_offline_apt_repo: false
-enable_apt_install: true
-enable_zfs_dataset_creation: true
-enable_os_tools_install: true
+enable_apt_install: false
+enable_zfs_dataset_creation: false
+enable_os_tools_install: false
 enable_setup_local_docker_registry: true
-enable_k3s_install: true
-enable_configure_registry_mirroring: true
+enable_k3s_install: false
+enable_configure_registry_mirroring: false
