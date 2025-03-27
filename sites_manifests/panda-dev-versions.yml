@@ -71,7 +71,7 @@ spec:
 
         
     docker_spec:
-      docker_registry_address: 10.50.0.186:5000
+      docker_registry_address: 10.10.90.151:5000
       docker_images:
         prisma_images:
           - "262399703539.dkr.ecr.eu-central-1.amazonaws.com/pzlinux:10.7.104"
