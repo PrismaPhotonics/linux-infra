@@ -35,16 +35,16 @@ spec:
           - containerPort: 5000
         volumeMounts:
           - name: certs
-            mountPath: /etc/ssl/certs
-            readOnly: true
-          - name: active-python-file
-            mountPath: /home/prisma/active-python-env.sh
-          - name: debug-env-volume
-            mountPath: /home/prisma/debug-codebase
-          - name: prisma-config-volume
-            mountPath: /home/prisma/pz/config
-          - name: storage-san-volume
-            mountPath: /prisma/root/recordings
+          - mountPath: /etc/ssl/certs
+          - readOnly: true
+          - name: active-python-config
+          - mountPath: {{ .Values.debugEnv.persistence.mountPath | quote }}
+          - name: prisma-config
+          - mountPath: {{ .Values.configurations.defaultConfig.mountPath | quote }}
+          - name: recordings
+          - mountPath: {{ .Values.recordings.persistence.mountPath | quote }}
+          - name: storage-config
+          - mountPath: {{ .Values.configurations.storageConfig.mountPath | quote }}
         resources:
           limits:
             nvidia.com/gpu.shared: 1
@@ -52,6 +52,21 @@ spec:
             nvidia.com/gpu.shared: 1
       restartPolicy: Never
       volumes:
+        - name: active-python-config
+          configMap:
+            name: active-python-config
+            defaultMode: 0755
+        - name: prisma-config
+          configMap:
+            name: prisma-config
+            defaultMode: 0755
+        - name: storage-config
+          configMap:
+            name: storage-config
+            defaultMode: 0755
+        - name: recordings
+          persistentVolumeClaim:
+            claimName: recordings-pvc
         - name: certs
           projected:
             sources:
@@ -64,22 +79,7 @@ spec:
                       path: data-rabbitmq.prismaphotonics.net_cert.pem
                     - key: tls.key
                       path: data-rabbitmq.prismaphotonics.net_key.pem
-        - name: active-python-file
-          hostPath:
-            path: /home/prisma/active-python-env.sh
-            type: File
-        - name: debug-env-volume
-          hostPath:
-            path: /home/prisma/debug-codebase
-            type: Directory
-        - name: prisma-config-volume
-          hostPath:
-            path: /home/prisma/pz/config
-            type: Directory
-        - name: storage-san-volume
-          hostPath:
-            path: /prisma/root/recordings
-            type: Directory
+
 ---
 apiVersion: v1
 kind: Service
