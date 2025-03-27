@@ -135,7 +135,7 @@ spec:
 
     helm_spec:
       project_name: panda
-      three_first_octets: 10.50.0
+      three_first_octets: 10.10.90
       branch_name: main
 
       helm_repos:
@@ -150,7 +150,6 @@ spec:
         kubernetes-dashboard: https://kubernetes.github.io/dashboard/
         nvidia: https://nvidia.github.io/gpu-operator
         awx-operator: https://ansible-community.github.io/awx-operator-helm/
-
 
       helm_charts:
         awx-operator/awx-operator: "3.0.0"
