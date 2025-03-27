@@ -59,7 +59,8 @@ segyRecorder:
     pullPolicy: IfNotPresent
   workingDir: "/home/prisma"
   command:
-    - "bash -c"
+    - "bash"
+    - "-c"
     - "sleep 600"
   env:
     PRISMA_RABBIT_MACHINE_NAME: "data-rabbitmq.prismaphotonics.net"
