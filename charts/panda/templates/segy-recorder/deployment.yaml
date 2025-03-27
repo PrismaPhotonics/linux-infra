@@ -65,12 +65,12 @@ spec:
           projected:
             sources:
               - secret:
-                  name: {{ .Values.segyRecorder.tlsSecret.name }}
+                  name: rabbitmq-tls-secret
                   items:
                     - key: ca.crt
-                      path: {{ .Values.segyRecorder.tlsSecret.items.caCrtPath }}
+                      path: prisma_ca.pem
                     - key: tls.crt
-                      path: {{ .Values.segyRecorder.tlsSecret.items.tlsCrtPath }}
+                      path: data-rabbitmq.prismaphotonics.net_cert.pem
                     - key: tls.key
-                      path: {{ .Values.segyRecorder.tlsSecret.items.tlsKeyPath }}
+                      path: data-rabbitmq.prismaphotonics.net_key.pems
 
