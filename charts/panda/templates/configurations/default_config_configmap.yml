@@ -43,7 +43,7 @@ data:
               heartbeat = 600
               blocked_connection_timeout = 300
               username = 'prisma'
-              password = 'pass' 
+              password = 'prismapanda' #'f4!!ODYtR4bbit'
               prefetch_count = 35
               reconnect_attempts = 60
               reconnect_timeout = 1
@@ -88,13 +88,13 @@ data:
               rec_mapper_db_name = 'prisma'
               authentication_db_name_for_mongo = 'prisma'
               mongo_hardcoded_user = 'prisma'
-              mongo_hardcoded_password = 'pass'
+              mongo_hardcoded_password = 'prisma'
         
               url = f"{schema}://{mongo_hardcoded_user}:{mongo_hardcoded_password}@{host_name}:{mongo_port}/"
         
           class AnnotationDB:
               user = 'select_only_user'
-              password = 'pass'
+              password = 'pri$ma'
               host = 'annotations.prismaphotonics.net'
               database = 'prisma_projects'
               truth_table = 'truth_table'
@@ -124,7 +124,7 @@ data:
         
           class RESTfulClient:
               rest_username = 'prisma'
-              rest_password = 'pass'
+              rest_password = 'prisma'
               alert_url = 'http://localhost:2202/api/'
               post_via = 'amqp' # or 'http'
         
@@ -296,7 +296,7 @@ data:
               prometheus_client = 'http://localhost:9273/metrics'
               telegraf_http_input_url = 'http://localhost:39273/telegraf'
               prometheus_htaccess_username = 'prisma'
-              prometheus_htaccess_password = 'pass'
+              prometheus_htaccess_password = 'ShowMeWhereItHurts'
         
           class FiberInspector:
               # by the table at the end of https://prismaphotonics.atlassian.net/l/cp/MLnjKMwc
