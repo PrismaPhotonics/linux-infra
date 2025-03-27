@@ -21,7 +21,7 @@ recordings:
     enabled: true
     capacity: 100Gi
     storageClassName: openebs-zfspv
-    mountPath: "/prisma/root/recordings"
+    mountPath: "/prisma/root/recordings/prisma-210-1057"
 
 focusServer:
   nameOverride: "focus-server"
@@ -59,25 +59,8 @@ segyRecorder:
     pullPolicy: IfNotPresent
   workingDir: "/home/prisma"
   command:
-    - "./debug-codebase/active-python-env.sh"
-    - "-m"
-    - "smart_recorder"
-    - "--storage-cfg"
-    - "/home/prisma/pz/config/storage_manager/storage.yaml"
-    - "--storage"
-    - "segy"
-    - "-b"
-    - "segy"
-    - "-fl"
-    - "10000"
-    - "--file-limit-duration"
-    - "5"
-    - "--log-name"
-    - "segy-recorder"
-    - "-vf"
-    - "--record-livefs"
-    - "--mongo-mapper-index"
-    - "--allow-use-existing-queue"
+    - "bash -c"
+    - "sleep 600"
   env:
     PRISMA_RABBIT_MACHINE_NAME: "data-rabbitmq.prismaphotonics.net"
     PRISMA_CERTIFICATES: "/etc/ssl/certs"
