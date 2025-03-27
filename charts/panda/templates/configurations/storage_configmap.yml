@@ -3,10 +3,10 @@ kind: ConfigMap
 metadata:
   name: storage-config
 data:
-  storage.yml: |
+  storage.yaml: |
     segy:
-    storage:
-    -   path: /prisma/root/recordings/prisma-210-1057
-        quota: 0.98
+        storage:
+        -   path: /prisma/root/recordings/prisma-210-1057
+            quota: 0.98
 
-    type: filesystem
+        type: filesystem
