@@ -25,7 +25,9 @@ recordings:
 
 job:
   id: "example-job-id"
-  grpcJobParameters: '["/start", "--flag"]'
+  grpcJobParameters:
+    - "/start"
+    - "--flag"
   port: 30080
 
 focusServer:
