@@ -46,27 +46,28 @@ sidecars:
         echo "[mongo-indexer] Finished the indexing"
         tail -f /dev/null
     volumeMounts:
-      - name: active-python-config
-        mountPath: {{ .Values.debugEnv.persistence.mountPath | quote }}
-      - name: prisma-config
-        mountPath: {{ .Values.configurations.defaultConfig.mountPath | quote }}
-      - name: storage-config
-        mountPath: {{ .Values.configurations.storageConfig.mountPath | quote }}
+      - name: debug-env-volume
+        mountPath: /home/prisma/debug-codebase
+      - name: prisma-config-volume
+        mountPath: /home/prisma/pz/config
+      - name: storage-san-volume
+        mountPath: /prisma/root/recordings
 
 extraVolumes:
-  - name: active-python-config
-    configMap:
-      name: active-python-config
-      defaultMode: 0755
-  - name: prisma-config
-    configMap:
-      name: prisma-config
-      defaultMode: 0755
+  - name: debug-env-volume
+    hostPath:
+      path: /home/prisma/debug-codebase
+      type: Directory
+  - name: prisma-config-volume
+    hostPath:
+      path: /home/prisma/pz/config
+      type: Directory
   - name: python-packages-volume
     hostPath:
       path: /home/prisma/.local/lib/python3.10/site-packages
       type: Directory
-  - name: storage-config
-    configMap:
-      name: storage-config
-      defaultMode: 0755
+
+  - name: storage-san-volume
+    hostPath:
+      path: /prisma/root/recordings
+      type: Directory
