@@ -5,6 +5,8 @@ cleanupService:
 configurations:
   defaultConfig:
     mountPath: "/home/prisma/pz/config/py"
+  storageConfig:
+    mountPath: "/home/prisma/pz/config/storage_manager"
 
 debugEnv:
   enabled: false
