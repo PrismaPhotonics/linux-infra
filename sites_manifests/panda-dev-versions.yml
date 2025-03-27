@@ -207,7 +207,7 @@ spec:
   configurations:
     linux_user_name: prisma
     artifact_path: '/offline_deploy'
-    master_node_ip: '10.50.0.186'
+    master_node_ip: '10.10.90.151'
     vms:
       workernode_panda:
         vmid: 108
