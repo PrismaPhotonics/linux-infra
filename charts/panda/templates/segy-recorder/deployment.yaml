@@ -72,5 +72,5 @@ spec:
                     - key: tls.crt
                       path: data-rabbitmq.prismaphotonics.net_cert.pem
                     - key: tls.key
-                      path: data-rabbitmq.prismaphotonics.net_key.pems
+                      path: data-rabbitmq.prismaphotonics.net_key.pem
 

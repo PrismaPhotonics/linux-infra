@@ -23,6 +23,11 @@ recordings:
     storageClassName: openebs-zfspv
     mountPath: "/prisma/root/recordings/prisma-210-1057"
 
+job:
+  id: "example-job-id"
+  grpcJobParameters: '["/start", "--flag"]'
+  port: 30080
+
 focusServer:
   nameOverride: "focus-server"
   replicaCount: 1
