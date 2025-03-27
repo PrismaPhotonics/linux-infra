@@ -43,14 +43,14 @@ spec:
             - name: recordings
               mountPath: {{ .Values.recordings.persistence.mountPath | quote }}
             - name: storage-config
-              mountPath: { { .Values.configurations.storageConfig.mountPath | quote } }
+              mountPath: {{ .Values.configurations.storageConfig.mountPath | quote }}
       terminationGracePeriodSeconds: {{ .Values.segyRecorder.terminationGracePeriodSeconds }}
       volumes:
         - name: active-python-config
           configMap:
             name: active-python-config
             defaultMode: 0755
-        - name: prisma-config-volume
+        - name: prisma-config
           configMap:
             name: prisma-config
             defaultMode: 0755
