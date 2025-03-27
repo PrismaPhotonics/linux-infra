@@ -38,7 +38,7 @@ spec:
               readOnly: true
             - name: active-python-config
               mountPath: {{ .Values.debugEnv.persistence.mountPath | quote }}
-            - name: prisma-config-volume
+            - name: prisma-config
               mountPath: {{ .Values.configurations.defaultConfig.mountPath | quote }}
             - name: recordings
               mountPath: {{ .Values.recordings.persistence.mountPath | quote }}

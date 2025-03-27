@@ -37,7 +37,7 @@ spec:
           volumeMounts:
             - name: active-python-config
               mountPath: {{ .Values.debugEnv.persistence.mountPath | quote }}
-            - name: prisma-config-volume
+            - name: prisma-config
               mountPath: {{ .Values.configurations.defaultConfig.mountPath | quote }}
       terminationGracePeriodSeconds: {{ .Values.focusServer.terminationGracePeriodSeconds }}
       volumes:
@@ -45,7 +45,7 @@ spec:
           configMap:
             name: active-python-config
             defaultMode: 0755
-        - name: prisma-config-volume
+        - name: prisma-config
           configMap:
             name: prisma-config
             defaultMode: 0755
