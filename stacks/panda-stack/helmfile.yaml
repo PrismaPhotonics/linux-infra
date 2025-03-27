@@ -17,7 +17,7 @@ releases:
             ./scripts/get_rabbit_secrets.sh
 
   - name: mongodb
-    namespace: mongodb
+    namespace: panda
     chart: {{ $artifactPath }}/helm_charts/downloaded_helm_charts/mongodb
     timeout: 600
     values:
